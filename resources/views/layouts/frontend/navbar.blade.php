@@ -70,7 +70,7 @@
         <a href="{{ route('databuku.index') }}" 
            class="{{ Route::currentRouteName() == 'databuku.index' ? 'active' : '' }}">Dashboard</a>
 
-        <a href="{{ route('index') }}" 
+        <a href="{{ route('katalogbuku.index') }}" 
            class="{{ in_array(Route::currentRouteName(), ['katalogbuku.index','katalogbuku.show']) ? 'active' : '' }}">
            Katalog Buku
         </a>

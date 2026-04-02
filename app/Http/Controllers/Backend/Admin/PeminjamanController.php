@@ -30,7 +30,7 @@ class PeminjamanController extends Controller
         $peminjaman = Peminjaman::findOrFail($id);
 
         // Hanya bisa diverifikasi jika status menunggu
-        if ($peminjaman->status !== 'menunggu_verifikasi') {
+        if ($peminjaman->status !== 'menunggu') {
             return back()->with('error', 'Data sudah diverifikasi sebelumnya');
         }
 

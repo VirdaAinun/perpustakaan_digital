@@ -28,10 +28,10 @@ return new class extends Migration
             $table->timestamps();
 
             // FOREIGN KEY
-            $table->foreign('peminjaman_id')
-                  ->references('id')
-                  ->on('peminjamans')
-                  ->onDelete('cascade');
+            // $table->foreign('peminjaman_id')
+            //       ->references('id')
+            //       ->on('peminjamans')
+            //       ->onDelete('cascade');
 
         });
     }

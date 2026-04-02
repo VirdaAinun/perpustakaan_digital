@@ -55,11 +55,14 @@ Route::get('/denda', [DendaController::class, 'index'])->name('denda.index');
 Route::post('/denda/{id}/bayar', [DendaController::class, 'bayar'])->name('denda.bayar');
 
 
-Route::get('/', [KatalogController::class, 'index'])->name('index');
-    Route::post('/pinjam/{id}', [KatalogController::class, 'pinjam'])->name('pinjam');
+Route::get('/pinjam/{id}', [KatalogController::class, 'pinjam'])->name('pinjam.form');
+Route::post('/pinjam', [KatalogController::class, 'store'])->name('pinjam.store');
+Route::get('/katalogbuku', [KatalogController::class, 'index'])->name('katalogbuku.index');
+Route::post('/katalogbuku/store', [KatalogController::class, 'store'])->name('katalog.store');
 
-// Daftar peminjaman anggota
 Route::get('/peminjamansaya', [PeminjamanSayaController::class, 'index'])->name('peminjamansaya.index');
-// Detail peminjaman
-Route::get('peminjamansaya/{id}', [PeminjamanSayaController::class, 'show'])->name('peminjamansaya.show');
-
+Route::post('/anggota/peminjamansaya/ajukan/{id}', 
+    [PeminjamanSayaController::class, 'ajukanPengembalian']
+)->name('peminjamansaya.ajukan');
+Route::get('/peminjamansaya/{id}', [PeminjamanSayaController::class, 'show'])
+    ->name('peminjamansaya.show');

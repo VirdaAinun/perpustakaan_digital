@@ -2,116 +2,59 @@
 
 @section('content')
 
-<style>
-    .pinjam-wrapper {
-        max-width: 600px;
-        margin: 50px auto;
-        padding: 30px;
-        background: #fff;
-        border-radius: 15px;
-        box-shadow: 0 10px 25px rgba(0,0,0,0.1);
-    }
+<div class="container py-4">
 
-    .judul {
-        text-align: center;
-        font-size: 24px;
-        font-weight: bold;
-        margin-bottom: 20px;
-    }
+    <h3 class="text-center mb-4">📦 Form Peminjaman</h3>
 
-    .buku-info {
-        background: #f8f9fa;
-        padding: 15px;
-        border-radius: 10px;
-        margin-bottom: 20px;
-    }
+    <div class="row justify-content-center">
+        <div class="col-md-6">
 
-    .buku-info h4 {
-        margin: 0;
-    }
+            <div class="card shadow">
 
-    .form-group {
-        margin-bottom: 15px;
-    }
+                <div class="card-body">
 
-    label {
-        font-weight: 600;
-        margin-bottom: 5px;
-        display: block;
-    }
+                    <div class="text-center mb-3">
+                        <img src="{{ asset('storage/'.$buku->photo) }}" 
+                             style="height:150px;">
+                    </div>
 
-    input, textarea {
-        width: 100%;
-        padding: 10px;
-        border-radius: 8px;
-        border: 1px solid #ddd;
-    }
+                    <h5 class="text-center">{{ $buku->judul }}</h5>
 
-    .btn-submit {
-        width: 100%;
-        padding: 12px;
-        background: #28a745;
-        color: #fff;
-        border: none;
-        border-radius: 8px;
-        font-size: 16px;
-        cursor: pointer;
-        transition: 0.3s;
-    }
+                    <form method="POST" action="{{ route('pinjam.store') }}">
+                        @csrf
 
-    .btn-submit:hover {
-        background: #218838;
-    }
+                        <input type="hidden" name="buku_id" value="{{ $buku->id }}">
+                        <input type="hidden" name="judul_buku" value="{{ $buku->judul }}">
 
-    .btn-back {
-        display: block;
-        text-align: center;
-        margin-top: 10px;
-        color: #555;
-        text-decoration: none;
-    }
-</style>
+                        <div class="mb-3">
+                            <label>Nama</label>
+                            <input type="text" name="nama" class="form-control" required>
+                        </div>
 
-<div class="pinjam-wrapper">
+                        <div class="mb-3">
+                            <label>Tanggal Pinjam</label>
+                            <input type="date" name="tgl_pinjam" 
+                                   class="form-control" 
+                                   value="{{ date('Y-m-d') }}" required>
+                        </div>
 
-    <div class="judul">
-        📚 Form Peminjaman Buku
+                        <div class="mb-3">
+                            <label>Tanggal Kembali</label>
+                            <input type="date" name="tgl_kembali" class="form-control" required>
+                        </div>
+
+                        <button class="btn btn-success w-100">
+                            ✅ Pinjam Sekarang
+                        </button>
+
+                    </form>
+
+                </div>
+
+            </div>
+
+        </div>
     </div>
-
-    {{-- INFO BUKU --}}
-    <div class="buku-info">
-        <h4>{{ $buku->judul }}</h4>
-        <small>{{ $buku->penulis }} - {{ $buku->penerbit }}</small>
-    </div>
-
-    {{-- FORM PINJAM --}}
-    <form action="{{ route('katalog.storePinjam', $buku->id) }}" method="POST">
-        @csrf
-
-        <div class="form-group">
-            <label>Tanggal Pinjam</label>
-            <input type="date" name="tanggal_pinjam" required>
-        </div>
-
-        <div class="form-group">
-            <label>Tanggal Kembali</label>
-            <input type="date" name="tanggal_kembali" required>
-        </div>
-
-        <div class="form-group">
-            <label>Catatan (opsional)</label>
-            <textarea name="catatan" rows="3" placeholder="Contoh: untuk tugas sekolah"></textarea>
-        </div>
-
-        <button type="submit" class="btn-submit">
-            Kirim Pengajuan Pinjam
-        </button>
-
-    </form>
-
-    <a href="{{ route('katalogbuku.index') }}" class="btn-back">
-        ← Kembali ke Katalog
-    </a>
 
 </div>
 
