@@ -126,64 +126,88 @@
                         <th class="text-center">Status</th>
                     </tr>
                 </thead>
-                <tbody>
-                    @forelse($laporan as $row)
-                        @php
-                
-                            $dataPeminjaman = ($jenis == 'Peminjaman') ? $row : $row->peminjaman;
-                            $anggota = $dataPeminjaman->anggota ?? null;
-                            $buku = $dataPeminjaman->buku ?? null;
-                        @endphp
-                        <tr>
-                            <td class="text-center">{{ $loop->iteration }}</td>
-                            <td>
-                                <div class="fw-bold">{{ $anggota->nama ?? 'Umum' }}</div>
-                                <div class="text-muted" style="font-size: 11px;">{{ $anggota->nim_nis ?? '-' }}</div>
-                            </td>
-                            <td>
-                                <div class="fw-bold">{{ $buku->judul ?? 'Data Buku Dihapus' }}</div>
-                                <div class="text-muted small">{{ $buku->kategori->nama ?? 'Tanpa Kategori' }}</div>
-                            </td>
+               <tbody>
+@forelse($laporan as $row)
+    @php
+        $dataPeminjaman = ($jenis == 'Peminjaman') ? $row : $row->peminjaman;
+        $buku = $dataPeminjaman->buku ?? null;
 
-                            {{-- Kolom Tanggal/Keterangan 1 --}}
-                            <td>
-                                @if($jenis == 'Denda')
-                                    {{ \Carbon\Carbon::parse($row->created_at)->format('d/m/Y') }}
-                                @else
-                                    {{ \Carbon\Carbon::parse($dataPeminjaman->tgl_pinjam)->format('d/m/Y') }}
-                                @endif
-                            </td>
+        // ✅ FIX NAMA
+        $namaAnggota = optional($dataPeminjaman->user)->name 
+                        ?? $dataPeminjaman->nama_anggota 
+                        ?? 'Umum';
 
-                            {{-- Kolom Tanggal/Keterangan 2 --}}
-                            <td>
-                                @if($jenis == 'Pengembalian')
-                                    <span class="text-primary">{{ \Carbon\Carbon::parse($row->tgl_dikembalikan)->format('d/m/Y') }}</span>
-                                @elseif($jenis == 'Denda')
-                                    <span class="text-danger fw-bold">Rp {{ number_format($row->total_denda, 0, ',', '.') }}</span>
-                                @else
-                                    {{ \Carbon\Carbon::parse($row->tgl_kembali)->format('d/m/Y') }}
-                                @endif
-                            </td>
+        $email = optional($dataPeminjaman->user)->email ?? '-';
+    @endphp
 
-                            <td class="text-center">
-                                @if($jenis == 'Peminjaman')
-                                    <span class="badge-status status-pinjam">Dipinjam</span>
-                                @elseif($jenis == 'Pengembalian')
-                                    <span class="badge-status status-kembali">Sudah Kembali</span>
-                                @elseif($jenis == 'Denda')
-                                    <span class="badge-status status-denda">{{ $row->status_pembayaran ?? 'Belum Lunas' }}</span>
-                                @endif
-                            </td>
-                        </tr>
-                    @empty
-                        <tr>
-                            <td colspan="6" class="text-center text-muted py-5">
-                                <i class="fas fa-folder-open d-block mb-2 fa-2x"></i>
-                                Tidak ada data laporan {{ $jenis }} untuk periode ini.
-                            </td>
-                        </tr>
-                    @endforelse
-                </tbody>
+    <tr>
+        <td class="text-center">{{ $loop->iteration }}</td>
+
+        {{-- NAMA --}}
+        <td>
+            <div class="fw-bold">{{ $namaAnggota }}</div>
+            <div class="text-muted" style="font-size: 11px;">{{ $email }}</div>
+        </td>
+
+        {{-- BUKU --}}
+        <td>
+    <div class="fw-bold">
+        {{ $buku->judul ?? 'Data Buku Dihapus' }}
+    </div>
+    <div class="text-muted small">
+        {{ optional(optional($buku)->kategori)->nama_kategori ?? 'Tanpa Kategori' }}
+    </div>
+</td>
+
+        {{-- TANGGAL 1 --}}
+        <td>
+            @if($jenis == 'Denda')
+                {{ \Carbon\Carbon::parse($row->created_at)->format('d/m/Y') }}
+            @else
+                {{ \Carbon\Carbon::parse($dataPeminjaman->tgl_pinjam)->format('d/m/Y') }}
+            @endif
+        </td>
+
+        {{-- TANGGAL 2 / NOMINAL --}}
+        <td>
+            @if($jenis == 'Pengembalian')
+                <span class="text-primary">
+                    {{ \Carbon\Carbon::parse($row->tgl_dikembalikan)->format('d/m/Y') }}
+                </span>
+
+            @elseif($jenis == 'Denda')
+                <span class="text-danger fw-bold">
+                    Rp {{ number_format($row->total_denda ?? 0, 0, ',', '.') }}
+                </span>
+
+            @else
+                {{ \Carbon\Carbon::parse($dataPeminjaman->tgl_kembali)->format('d/m/Y') }}
+            @endif
+        </td>
+
+        {{-- STATUS --}}
+        <td class="text-center">
+            @if($jenis == 'Peminjaman')
+                <span class="badge-status status-pinjam">Dipinjam</span>
+
+            @elseif($jenis == 'Pengembalian')
+                <span class="badge-status status-kembali">Sudah Kembali</span>
+
+            @elseif($jenis == 'Denda')
+                <span class="badge-status status-denda">
+                    {{ $row->status == 'menunggu' ? 'Belum Lunas' : 'Lunas' }}
+                </span>
+            @endif
+        </td>
+    </tr>
+@empty
+    <tr>
+        <td colspan="6" class="text-center text-muted py-5">
+            Tidak ada data laporan {{ $jenis }}
+        </td>
+    </tr>
+@endforelse
+</tbody>
             </table>
         </div>
     </div>

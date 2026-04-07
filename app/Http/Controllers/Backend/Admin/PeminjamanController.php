@@ -50,4 +50,11 @@ class PeminjamanController extends Controller
 
         return back()->with('success', 'Status peminjaman berhasil diperbarui');
     }
+
+    public function show($id)
+{
+    $data = \App\Models\Peminjaman::with('buku.kategori', 'user')->findOrFail($id);
+
+    return view('page/backend/admin/peminjaman/show', compact('data'));
+}
 }

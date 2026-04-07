@@ -194,7 +194,7 @@
                                 <button type="submit" class="btn-action btn-cross" title="Tolak">✖</button>
                             </form>
                         @else
-                            <a href="#" class="btn-action btn-view" title="Detail">👁</a>
+                            <a href="{{ route('peminjaman.show', $item->id) }}" class="btn-action btn-view" title="Detail">👁</a>
                         @endif
                     </td>
                 </tr>

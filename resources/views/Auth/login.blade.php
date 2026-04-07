@@ -159,9 +159,6 @@
         <button type="submit">Masuk ke Akun</button>
     </form>
 
-    <div class="footer">
-        <p>Belum punya akun? <a href="#">Hubungi Admin</a></p>
-    </div>
 </div>
 
 <script>

@@ -142,7 +142,7 @@ min-height:100vh;
         <h2>Perpustakaan Digital</h2>
     </div>
     
-   <a href="{{ route('profile') }}" style="text-decoration: none; color: white;">
+   <a href="{{ route('profile.anggota') }}" style="text-decoration: none; color: white;">
     👤
 </a>
 </div>

@@ -94,14 +94,5 @@
 
 <hr>
 
-<a href="{{ route('logout') }}"
-   class="logout"
-   onclick="event.preventDefault();document.getElementById('logout-form').submit();">
-    <i>🚪</i> Logout
-</a>
-
-<form id="logout-form" method="POST" action="{{ route('logout') }}">
-    @csrf
-</form>
-
 </div>
+

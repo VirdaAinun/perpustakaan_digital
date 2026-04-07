@@ -10,38 +10,28 @@ class CekAkses
 {
     public function handle(Request $request, Closure $next, $role = null)
     {
-        // =========================
-        // ✅ LOGIN SEBAGAI ANGGOTA
-        // =========================
-        if (session()->has('anggota_id')) {
-
-            if ($role === null || $role === 'anggota') {
-                return $next($request);
-            }
-
-            return redirect()->route('')
-                ->with('error', 'Akses ditolak!');
-        }
-
-        // =========================
-        // ✅ LOGIN SEBAGAI ADMIN / PETUGAS / KEPALA
-        // =========================
-        if (Auth::check()) {
-
-            $user = Auth::user();
-
-            if ($role === null || $user->role === $role) {
-                return $next($request);
-            }
-
+        // 🔥 CEK LOGIN (WAJIB)
+        if (!Auth::check()) {
             return redirect()->route('login')
-                ->with('error', 'Akses ditolak!');
+                ->with('error', 'Silakan login dulu!');
         }
 
-        // =========================
-        // ❌ BELUM LOGIN
-        // =========================
-        return redirect()->route('login')
-            ->with('error', 'Silakan login dulu!');
+        $user = Auth::user();
+
+        // 🔥 JIKA TIDAK ADA ROLE YANG DIMINTA
+        if ($role === null) {
+            return $next($request);
+        }
+
+        // 🔥 SUPPORT MULTI ROLE (pisah pakai |)
+        $allowedRoles = explode('|', $role);
+
+        if (in_array($user->role, $allowedRoles)) {
+            return $next($request);
+        }
+
+        // ❌ AKSES DITOLAK
+        return redirect()->back()
+            ->with('error', 'Akses ditolak!');
     }
 }

@@ -7,6 +7,7 @@ use App\Models\Buku;
 use App\Models\Peminjaman;
 use App\Models\Kategori;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class KatalogController extends Controller
 {
@@ -63,14 +64,14 @@ class KatalogController extends Controller
 
         // SIMPAN PEMINJAMAN
         Peminjaman::create([
-            'buku_id' => $request->buku_id,
-            'nama_anggota' => $request->nama,
-            'judul_buku' => $request->judul_buku,
-            'jumlah_pinjam' => $request->jumlah_pinjam, // <--- INI WAJIB ADA
-            'tgl_pinjam' => $request->tgl_pinjam,
-            'tgl_kembali' => $request->tgl_kembali,
-            'status' => 'menunggu'
-        ]);
+    'user_id' => Auth::id(), // 🔥 fix utama
+    'buku_id' => $request->buku_id,
+    'nama_anggota' => Auth::user()->name, // 🔥 ambil dari login
+    'jumlah_pinjam' => $request->jumlah_pinjam,
+    'tgl_pinjam' => $request->tgl_pinjam,
+    'tgl_kembali' => $request->tgl_kembali,
+    'status' => 'menunggu'
+]);
 
         // KURANGI STOK
         $buku->stok = $buku->stok - $request->jumlah_pinjam;

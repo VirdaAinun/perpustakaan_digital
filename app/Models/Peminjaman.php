@@ -12,19 +12,18 @@ class Peminjaman extends Model
     protected $table = 'peminjamans';
 
     protected $fillable = [
+        'user_id', // 🔥 WAJIB
         'buku_id',
         'nama_anggota',
-        'id_buku',
-        'jumlah_pinjam', // Pastikan baris ini ada di Model Peminjaman
+        'jumlah_pinjam',
         'tgl_pinjam',
         'tgl_kembali',
         'status'
     ];
-    // Tambahkan fungsi relasi ini
-    public function anggota()
+
+    public function user()
     {
-        // Ganti 'id_anggota' dengan nama kolom foreign key di tabel peminjamanmu
-        return $this->belongsTo(Anggota::class, 'id_anggota'); 
+        return $this->belongsTo(User::class);
     }
 
     public function buku()

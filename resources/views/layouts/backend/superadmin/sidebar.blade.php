@@ -166,20 +166,44 @@
     </a>
 </li>
         <li>
-            <a href="#">
-                <i class="bi bi-person"></i>
-                <span>Akun</span>
-            </a>
-        </li>
+    <a href="{{ route('superadmin.profilekepala') }}" 
+       class="{{ Route::is('superadmin.profilekepala') ? 'active' : '' }}">
+        <i class="bi bi-person"></i>
+        <span>Akun</span>
+    </a>
+</li>
         <li class="logout-item">
-            <a href="#" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+            <a href="#" onclick="confirmLogout(event)">
                 <i class="bi bi-box-arrow-right"></i>
                 <span>Logout</span>
             </a>
         </li>
+
     </ul>
 </div>
 
 <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
     @csrf
 </form>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<script>
+function confirmLogout(event) {
+    event.preventDefault();
+
+    Swal.fire({
+        title: 'Yakin?',
+        text: 'Apakah anda yakin ingin keluar?',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#4c6fff',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Ya, keluar!',
+        cancelButtonText: 'Batal'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            document.getElementById('logout-form').submit();
+        }
+    });
+}
+</script>

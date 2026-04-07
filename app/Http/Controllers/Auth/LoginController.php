@@ -5,84 +5,74 @@ namespace App\Http\Controllers\Auth;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use App\Models\User;
 use App\Models\Anggota;
 use Illuminate\Support\Facades\Hash;
 
 class LoginController extends Controller
 {
+    // 📌 HALAMAN LOGIN
     public function index()
     {
         return view('auth.login');
     }
 
+    // 📌 PROSES LOGIN
     public function login(Request $request)
-    {
-        $request->validate([
-            'login' => 'required',
-            'password' => 'required'
-        ]);
+{
+    $request->validate([
+        'login' => 'required',
+        'password' => 'required'
+    ]);
 
-        $login = $request->login;
-        $password = $request->password;
+    // ======================
+    // 🔵 LOGIN USER (ADMIN / PETUGAS / KEPALA)
+    // ======================
+    $credentials = [
+        'email' => $request->login,
+        'password' => $request->password
+    ];
 
-        // ======================
-        // 🟢 LOGIN ANGGOTA
-        // ======================
-        $anggota = Anggota::where('nis', $login)->first();
+    if (Auth::attempt($credentials)) {
 
-        if ($anggota) {
-        if (Hash::check($password, $anggota->password)) {
+        $request->session()->regenerate();
 
-                // simpan session anggota
-                session([
-                    'login_type' => 'anggota',
-                    'anggota_id' => $anggota->id,
-                    'anggota_nama' => $anggota->nama
-                ]);
+        $user = Auth::user();
 
-                return redirect()->route('katalogbuku.index');
-            }
+        if ($user->role == 'kepala') {
+            return redirect()->route('superadmin.dashboardkepala');
 
-            return back()->withErrors([
-                'login' => 'NIS atau password salah'
-            ]);
+        } elseif ($user->role == 'petugas') {
+            return redirect()->route('admin.dashboard');
+
+        } elseif ($user->role == 'anggota') {
+            return redirect()->route('katalogbuku.index');
         }
-
-        // ======================
-        // 🔵 LOGIN PETUGAS / KEPALA
-        // ======================
-        if (Auth::attempt([
-            'email' => $login,
-            'password' => $password
-        ])) {
-
-            $request->session()->regenerate();
-
-            $user = Auth::user();
-
-            if ($user->role == 'kepala') {
-                return redirect()->route('superadmin.dashboardkepala');
-            } elseif ($user->role == 'petugas') {
-                return redirect()->route('admin.dashboard');
-            }
-        }
-
-        return back()->withErrors([
-            'login' => 'Login gagal!'
-        ]);
     }
 
+    // ======================
+    // 🟢 LOGIN ANGGOTA (DARI TABEL ANGGOTA)
+    // ======================
+    $anggota = Anggota::where('nis', $request->login)->first();
+
+    if ($anggota && Hash::check($request->password, $anggota->password)) {
+
+        // 🔥 MASUKKAN KE AUTH BIAR LOLOS MIDDLEWARE
+        Auth::loginUsingId($anggota->user_id);
+
+        $request->session()->regenerate();
+
+        return redirect()->route('katalogbuku.index');
+    }
+
+    // ❌ GAGAL LOGIN
+    return back()->withErrors([
+        'login' => 'Login gagal!'
+    ]);
+}
+    // 📌 LOGOUT
     public function logout(Request $request)
     {
         Auth::logout();
-
-        // hapus session anggota
-        session()->forget([
-            'login_type',
-            'anggota_id',
-            'anggota_nama'
-        ]);
 
         $request->session()->invalidate();
         $request->session()->regenerateToken();

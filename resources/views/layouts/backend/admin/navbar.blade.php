@@ -93,26 +93,20 @@
 <!-- LEFT -->
 <div class="navbar-left">
     <div class="logo">📚</div>
-    <div class="title">Sistem Informasi Perpustakaan</div>
+    <div class="title">Perpustakaan Digital</div>
 </div>
 
 <!-- RIGHT -->
 <div class="navbar-right">
 
-    <!-- NOTIF -->
-    <div class="icon-btn">
-        🔔
-        <span>3</span>
-    </div>
-
     <!-- USER -->
-    <div class="user">
-        <div class="avatar">A</div>
-        <div>
-            <div style="font-weight:500;">Administrator</div>
-            <div style="font-size:12px; color:#888;">Online</div>
-        </div>
+<a href="{{ route('admin.profile') }}" class="user" style="text-decoration:none;">
+    <div class="avatar">{{ strtoupper(substr(Auth::user()->name,0,1)) }}</div>
+    <div>
+        <div style="font-weight:500;">{{ Auth::user()->name }}</div>
+        <div style="font-size:12px; color:#888;">Online</div>
     </div>
+</a>
 
 </div>
 

@@ -10,6 +10,7 @@ use App\Http\Controllers\Backend\SuperAdmin\DashboardController as SuperAdminDas
 use App\Http\Controllers\Backend\SuperAdmin\LaporanPerpustakaanController;
 use App\Http\Controllers\Backend\SuperAdmin\LaporanAnggotaController;
 use App\Http\Controllers\Backend\SuperAdmin\DataUserController;
+use App\Http\Controllers\Backend\SuperAdmin\ProfileKepalaController;
 
 // ===============================
 // 🔵 ADMIN / PETUGAS
@@ -21,6 +22,7 @@ use App\Http\Controllers\Backend\Admin\PengembalianController;
 use App\Http\Controllers\Backend\Admin\DendaController as AdminDendaController;
 use App\Http\Controllers\Backend\Admin\DataAnggotaController;
 use App\Http\Controllers\Backend\Admin\LaporanController;
+use App\Http\Controllers\Backend\Admin\ProfilePetugasController;
 
 // ===============================
 // 🟢 ANGGOTA (FRONTEND)
@@ -30,9 +32,9 @@ use App\Http\Controllers\Frontend\PeminjamanSayaController;
 use App\Http\Controllers\Frontend\DendaController as AnggotaDendaController;
 use App\Http\Controllers\Frontend\ProfileController;
 
-
-
-
+Route::get('/', function () {
+    return redirect()->route('login'); // redirect ke named route login
+});
 
 // ===============================
 // 🔐 AUTH
@@ -49,7 +51,7 @@ Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 // ===============================
 // 🔴 SUPER ADMIN
 // ===============================
-Route::middleware('cekakses:kepala')->prefix('superadmin')->group(function () {
+Route::middleware(['auth','cekakses:kepala'])->prefix('superadmin')->group(function () {
 
     Route::get('/dashboardkepala', [SuperAdminDashboard::class, 'index'])
         ->name('superadmin.dashboardkepala');
@@ -71,6 +73,9 @@ Route::middleware('cekakses:kepala')->prefix('superadmin')->group(function () {
 
     Route::delete('/data-user/{id}', [DataUserController::class, 'destroy'])
         ->name('superadmin.datauser.destroy');
+    
+    Route::get('/profile-kepala', [ProfileKepalaController::class, 'index'])
+        ->name('superadmin.profilekepala');
 });
 
 
@@ -80,7 +85,7 @@ Route::middleware('cekakses:kepala')->prefix('superadmin')->group(function () {
 // ===============================
 // 🔵 ADMIN / PETUGAS
 // ===============================
-Route::middleware('cekakses:petugas')->prefix('admin')->group(function () {
+Route::middleware(['auth','cekakses:petugas'])->prefix('admin')->group(function () {
 
     Route::get('/dashboard', [DashboardController::class, 'index'])
         ->name('admin.dashboard');
@@ -96,6 +101,9 @@ Route::middleware('cekakses:petugas')->prefix('admin')->group(function () {
     Route::post('/peminjaman/{id}/verifikasi', [PeminjamanController::class, 'verifikasi'])
         ->name('peminjaman.verifikasi');
 
+    Route::get('/peminjaman/{id}', [PeminjamanController::class, 'show'])
+        ->name('peminjaman.show');
+
     Route::get('/pengembalian', [PengembalianController::class, 'index'])
         ->name('pengembalian.index');
 
@@ -110,7 +118,11 @@ Route::middleware('cekakses:petugas')->prefix('admin')->group(function () {
 
     Route::get('/laporan', [LaporanController::class, 'index'])
         ->name('admin.laporan.index');
+    
+    Route::get('/profile', [ProfilePetugasController::class, 'index'])
+        ->name('admin.profile');
 });
+
 
 
 
@@ -119,7 +131,7 @@ Route::middleware('cekakses:petugas')->prefix('admin')->group(function () {
 // ===============================
 // 🟢 ANGGOTA
 // ===============================
-Route::middleware('cekakses:anggota')->group(function () {
+Route::middleware(['cekakses:anggota'])->group(function () {
 
     Route::get('/katalogbuku', [KatalogController::class, 'index'])
         ->name('katalogbuku.index');
@@ -145,6 +157,8 @@ Route::middleware('cekakses:anggota')->group(function () {
     Route::get('/denda-saya', [AnggotaDendaController::class, 'index'])
         ->name('frontend.denda');
 
-    Route::get('/profile', [ProfileController::class, 'index'])
-        ->name('profile');
+    Route::get('/profile-anggota', [ProfileController::class, 'index'])
+    ->name('profile.anggota');
+
+    Route::put('/profile/update', [ProfileController::class, 'update'])->name('profile.update');
 });

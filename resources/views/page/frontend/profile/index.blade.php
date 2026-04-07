@@ -2,210 +2,194 @@
 
 @section('content')
 <style>
-    /* Menggunakan Font yang sama dengan login agar konsisten */
-    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap');
-
+    /* Styling khusus agar lebih aesthetic */
     .profile-wrapper {
-        min-height: 90vh;
+        margin-top: 60px;
         display: flex;
         justify-content: center;
-        align-items: center;
-        /* Ganti gambar dengan gradient navy yang elegan */
-        background:silver;
-        font-family: 'Inter', sans-serif;
-        padding: 20px;
     }
 
     .profile-card {
-        background: white;
-        border-radius: 20px;
-        width: 100%;
-        max-width: 800px;
         display: flex;
-        flex-wrap: wrap; /* Agar responsif di HP */
-        overflow: hidden;
-        box-shadow: 0 15px 35px rgba(0,0,0,0.3);
-        position: relative;
-    }
-
-    /* Bagian Kiri (Foto) */
-    .profile-left {
-        flex: 1;
-        background: #f8fafc;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
+        flex-wrap: wrap;
+        gap: 40px;
+        background: rgba(255, 255, 255, 0.9);
+        backdrop-filter: blur(10px);
         padding: 40px;
-        min-width: 280px;
+        border-radius: 20px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        max-width: 900px;
+        width: 100%;
     }
 
-    .avatar-wrapper {
-        width: 180px;
-        height: 180px;
+    .profile-left {
+        flex: 0 0 250px;
+        text-align: center;
+        border-right: 1px solid #f0f0f0;
+        padding-right: 20px;
+    }
+
+    .avatar-img {
+        width: 150px;
+        height: 150px;
         border-radius: 50%;
-        background: #e2e8f0;
+        object-fit: cover;
         margin-bottom: 20px;
-        overflow: hidden;
-        border: 5px solid white;
+        border: 4px solid #fff;
         box-shadow: 0 5px 15px rgba(0,0,0,0.1);
     }
 
-    .avatar-wrapper img {
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-    }
-
-    .btn-change-photo {
-        background: #5dade2;
-        color: white;
-        border: none;
-        padding: 10px 20px;
-        border-radius: 8px;
-        font-weight: 600;
-        cursor: pointer;
-        transition: 0.3s;
-        text-decoration: none;
-    }
-
-    .btn-change-photo:hover {
-        background: #3498db;
-    }
-
-    /* Bagian Kanan (Form) */
     .profile-right {
-        flex: 1.5;
-        padding: 40px;
-        min-width: 320px;
-    }
-
-    .profile-right h3 {
-        color: #0f172a;
-        margin-bottom: 25px;
-        font-weight: 600;
-    }
-
-    .form-group {
-        margin-bottom: 15px;
+        flex: 1;
+        min-width: 300px;
     }
 
     .form-group label {
         display: block;
-        font-size: 14px;
         font-weight: 600;
-        color: #334155;
         margin-bottom: 8px;
+        color: #475569;
+        font-size: 0.9rem;
     }
 
-    .form-control-custom {
+    .form-control {
         width: 100%;
         padding: 12px 15px;
-        border: 1.5px solid #e2e8f0;
-        border-radius: 10px;
-        font-size: 14px;
-        outline: none;
-        transition: 0.3s;
+        border-radius: 8px;
+        border: 1px solid #e2e8f0;
+        background: #f8fafc;
+        transition: all 0.3s ease;
     }
 
-    .form-control-custom:focus {
-        border-color: #5dade2;
-        box-shadow: 0 0 0 3px rgba(93, 173, 226, 0.1);
+    .form-control:focus {
+        outline: none;
+        border-color: #1f5f99;
+        background: #fff;
+        box-shadow: 0 0 0 3px rgba(31, 95, 153, 0.1);
+    }
+
+    /* Input readonly style */
+    .form-control[readonly] {
+        background-color: #f1f5f9;
+        color: #64748b;
+        cursor: not-allowed;
     }
 
     .btn-save {
-        background: #5dade2;
+        background: #1f5f99;
         color: white;
         border: none;
-        padding: 12px 30px;
-        border-radius: 10px;
+        padding: 12px 25px;
+        border-radius: 8px;
         font-weight: 600;
-        margin-top: 10px;
         cursor: pointer;
-        transition: 0.3s;
+        transition: transform 0.2s;
     }
 
     .btn-save:hover {
-        background: #3498db;
+        background: #164a7a;
         transform: translateY(-2px);
     }
 
-    /* Tombol Logout Pojok Kanan Atas */
-    .logout-box {
-        position: absolute;
-        top: 20px;
-        right: 20px;
-    }
-
     .btn-logout {
-        background: #f1948a;
-        color: white;
-        padding: 8px 15px;
-        border-radius: 12px;
-        text-decoration: none;
+        background: #fee2e2;
+        color: #dc2626;
+        border: none;
+        padding: 8px 20px;
+        border-radius: 8px;
         font-weight: 600;
-        font-size: 14px;
-        display: flex;
-        align-items: center;
-        gap: 8px;
+        cursor: pointer;
+        margin-top: 15px;
+        transition: 0.3s;
     }
 
     .btn-logout:hover {
-        background: #e74c3c;
+        background: #dc2626;
+        color: #fff;
+    }
+
+    @media (max-width: 768px) {
+        .profile-left {
+            flex: 1 1 100%;
+            border-right: none;
+            border-bottom: 1px solid #f0f0f0;
+            padding-right: 0;
+            padding-bottom: 30px;
+        }
     }
 </style>
-<script>
-function confirmLogout() {
-    if (confirm("Apakah anda yakin ingin logout?")) {
-        document.getElementById('logout-form').submit();
-    }
-}
-</script>
-<div class="profile-wrapper">
-    <div class="profile-card">
-        
-        <form id="logout-form" action="{{ route('logout') }}" method="POST" class="logout-box">
-    @csrf
-    <button type="button" class="btn-logout" onclick="confirmLogout()">
-        <span>🚪</span> Log out
-    </button>
-</form>
 
+<div class="container profile-wrapper">
+    <div class="profile-card">
+
+        {{-- LEFT SIDE --}}
         <div class="profile-left">
-            <div class="avatar-wrapper">
-                {{-- Ganti src dengan path foto anggota jika ada --}}
-                <img src="https://ui-avatars.com/api/?name={{ urlencode($anggota->nama) }}&background=cbd5e1&color=0f172a&size=180" alt="Profile">
-            </div>
-            <button class="btn-change-photo">Ubah Foto Profil</button>
+            @php
+                $nama = $anggota->nama ?? Auth::user()->name ?? 'User';
+            @endphp
+
+            <img 
+                src="https://ui-avatars.com/api/?name={{ urlencode($nama) }}&background=1f5f99&color=fff&size=180" 
+                alt="Profile"
+                class="avatar-img"
+            >
+
+            <h4 style="margin:0; color:#1e293b;">{{ $nama }}</h4>
+            <p style="color:#64748b; font-size:0.85rem; margin-top:5px;">Siswa SMK Negeri 3 Banjar</p>
+
+            <form action="{{ route('logout') }}" method="POST">
+                @csrf
+                <button type="submit" class="btn-logout" onclick="return confirm('Yakin ingin logout?')">
+                    Logout
+                </button>
+            </form>
         </div>
 
+        {{-- RIGHT SIDE --}}
         <div class="profile-right">
-            <h3>Edit Profil</h3>
+            <h3 style="margin-bottom:25px; color:#1e293b; font-weight:700;">Pengaturan Profil</h3>
 
-            <form action="#" method="POST">
+            @if(!$anggota)
+                <div style="padding:20px; background:#fff1f2; color:#be123c; border-radius:10px; border:1px solid #fecdd3;">
+                    <strong>⚠️ Data anggota belum terhubung!</strong><br>
+                    Silahkan hubungi admin perpustakaan untuk sinkronisasi data NIS Anda.
+                </div>
+            @else
+
+            <form action="{{ route('profile.update') }}" method="POST">
                 @csrf
-                <div class="form-group">
+                @method('PUT')
+
+                <div class="form-group" style="margin-bottom:18px;">
                     <label>Nama Lengkap</label>
-                    <input type="text" class="form-control-custom" value="{{ $anggota->nama ?? '' }}" placeholder="Nama Lengkap">
+                    <input type="text" value="{{ $anggota->nama }}" class="form-control" readonly>
+                    
                 </div>
 
-                <div class="form-group">
-                    <label>Email / NIS</label>
-                    <input type="text" class="form-control-custom" value="{{ $anggota->nis ?? '' }}" placeholder="Email atau NIS">
+                <div style="display:grid; grid-template-columns: 1fr 1fr; gap:15px;">
+                    <div class="form-group" style="margin-bottom:18px;">
+                        <label>NIS</label>
+                        <input type="text" value="{{ $anggota->nis }}" class="form-control" readonly>
+                    </div>
+
+                    <div class="form-group" style="margin-bottom:18px;">
+                        <label>Kelas</label>
+                        <input type="text" name="kelas" value="{{ $anggota->kelas }}" class="form-control" placeholder="Contoh: XII PPLG 1">
+                    </div>
                 </div>
 
-                <div class="form-group">
-                    <label>Kelas</label>
-                    <input type="text" class="form-control-custom" value="{{ $anggota->kelas ?? '' }}" placeholder="Kelas">
+                <div class="form-group" style="margin-bottom:25px;">
+                    <label>Status</label>
+                    <input type="text" value="{{ strtoupper($anggota->status) }}" class="form-control" readonly>
                 </div>
 
-                <div class="form-group">
-                    <label>Password baru (optional)</label>
-                    <input type="password" class="form-control-custom" placeholder="kosongkan jika tidak mengubah">
-                </div>
+                <button type="submit" class="btn-save">
+                    Simpan Perubahan
+                </button>
 
-                <button type="submit" class="btn-save">Simpan Perubahan</button>
             </form>
+            @endif
         </div>
 
     </div>

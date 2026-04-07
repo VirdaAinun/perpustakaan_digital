@@ -4,81 +4,77 @@ namespace App\Http\Controllers\Frontend;
 
 use App\Http\Controllers\Controller;
 use App\Models\Peminjaman;
-use App\Models\Pengembalian;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
-use App\Models\Denda; 
 
 class PeminjamanSayaController extends Controller
 {
     // 📌 LIST PEMINJAMAN SAYA
     public function index(Request $request)
     {
-        $namaAnggota = $request->nama;
+        $query = Peminjaman::with('buku')
+            ->where('user_id', Auth::id());
 
-        $peminjamans = Peminjaman::with('buku')
-            ->when($namaAnggota, function ($query) use ($namaAnggota) {
-                $query->where('nama_anggota', $namaAnggota);
-            })
-            ->latest()
-            ->paginate(10);
+        // 🔍 SEARCH
+        if ($request->search) {
+            $query->whereHas('buku', function ($q) use ($request) {
+                $q->where('judul', 'like', '%' . $request->search . '%');
+            });
+        }
 
-        return view('page.frontend.peminjamansaya.index', compact('peminjamans', 'namaAnggota'));
+        $peminjamans = $query->latest()->paginate(10);
+
+        return view('page.frontend.peminjamansaya.index', compact('peminjamans'));
     }
 
-    // 📌 DETAIL PEMINJAMAN
-    public function show(Request $request, $id)
+    // 📌 DETAIL
+    public function show($id)
     {
-        $namaAnggota = $request->nama;
-
         $peminjaman = Peminjaman::with('buku')
             ->where('id', $id)
-            ->when($namaAnggota, function ($query) use ($namaAnggota) {
-                $query->where('nama_anggota', $namaAnggota);
-            })
+            ->where('user_id', auth()->id())
             ->firstOrFail();
 
         return view('page.frontend.peminjamansaya.show', compact('peminjaman'));
     }
 
-    public function ajukanPengembalian(Request $request, $id)
-{
-    $peminjaman = \App\Models\Peminjaman::findOrFail($id);
+    // 📌 AJUKAN PENGEMBALIAN
+    public function ajukanPengembalian($id)
+    {
+        $peminjaman = Peminjaman::where('id', $id)
+            ->where('user_id', auth()->id())
+            ->firstOrFail();
 
-    // Pastikan membandingkan TANGGAL saja (tanpa jam agar presisi hari)
-    $tglDeadline = \Carbon\Carbon::parse($peminjaman->tgl_kembali)->startOfDay();
-    $tglSekarang = \Carbon\Carbon::now()->startOfDay();
-    
-    $peminjaman->update(['status' => 'menunggu_verifikasi']);
+        $tglDeadline = Carbon::parse($peminjaman->tgl_kembali)->startOfDay();
+        $tglSekarang = Carbon::now()->startOfDay();
 
-    \App\Models\Pengembalian::updateOrCreate(
-        ['peminjaman_id' => $id],
-        [
-            'tgl_dikembalikan' => now(),
-            'status' => 'menunggu_verifikasi'
-        ]
-    );
+        $peminjaman->update(['status' => 'menunggu_verifikasi']);
 
-    // HITUNG SELISIH HARI
-    // gt = Greater Than (Jika sekarang melewati deadline)
-    if ($tglSekarang->gt($tglDeadline)) {
-        $selisihHari = max(0, $tglSekarang->diffInDays($tglDeadline));
-        $totalDenda = $selisihHari * 2000;
-        \App\Models\Denda::updateOrCreate(
+        \App\Models\Pengembalian::updateOrCreate(
             ['peminjaman_id' => $id],
             [
-                'hari_terlambat' => $selisihHari,
-                'denda'          => $totalDenda,
-                'status'         => 'menunggu'
+                'tgl_dikembalikan' => now(),
+                'status' => 'menunggu_verifikasi'
             ]
         );
-    } else {
-        // OPSIONAL: Jika dikembalikan tepat waktu, pastikan denda dihapus atau diset 0
-        // Agar tidak muncul di tabel denda
-        \App\Models\Denda::where('peminjaman_id', $id)->delete();
+
+        if ($tglSekarang->gt($tglDeadline)) {
+            $selisihHari = $tglSekarang->diffInDays($tglDeadline);
+            $totalDenda = $selisihHari * 2000;
+
+            \App\Models\Denda::updateOrCreate(
+                ['peminjaman_id' => $id],
+                [
+                    'hari_terlambat' => $selisihHari,
+                    'denda' => $totalDenda,
+                    'status' => 'menunggu'
+                ]
+            );
+        } else {
+            \App\Models\Denda::where('peminjaman_id', $id)->delete();
+        }
+
+        return redirect()->back()->with('success', 'Berhasil diajukan!');
     }
-
-    return redirect()->back()->with('success', 'Berhasil diajukan!');
 }
-}
-
