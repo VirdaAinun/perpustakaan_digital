@@ -1,110 +1,231 @@
 @extends('layouts.backend.admin.app')
 
 @section('content')
-<div class="container">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css">
 
-    <h5 class="mb-3 fw-bold">Data Pengembalian</h5>
+<style>
+    /* 1. CONTAINER & TYPOGRAPHY */
+    .container-custom {
+        background: #ffffff;
+        padding: 30px;
+        min-height: 90vh;
+        border-radius: 12px;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+    }
 
-    {{-- ALERT --}}
+    .page-title {
+        font-weight: 700;
+        color: #2c3e50;
+        font-size: 22px;
+        margin-bottom: 25px;
+        border-left: 5px solid #1a5da4;
+        padding-left: 15px;
+    }
+
+    /* 2. TABLE STYLING */
+    .table-custom {
+        width: 100% !important;
+        border: 1px solid #f0f0f0;
+    }
+
+    .table-custom thead {
+        background: #1a5da4 !important;
+    }
+
+    .table-custom th {
+        color: white !important;
+        text-align: center;
+        font-size: 11px;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        padding: 15px;
+        border: none !important;
+    }
+
+    .table-custom td {
+        padding: 15px;
+        border-bottom: 1px solid #f8f9fa;
+        font-size: 13px;
+        vertical-align: middle;
+    }
+
+    .text-main { font-weight: 600; color: #333; display: block; }
+    .text-sub { font-size: 11px; color: #888; }
+
+    /* 3. BADGE & BUTTONS */
+    .badge-pill-custom {
+        padding: 6px 15px;
+        border-radius: 50px;
+        font-size: 11px;
+        font-weight: 600;
+        display: inline-block;
+    }
+    .status-menunggu { background: #fff4e0; color: #f39c12; }
+    .status-selesai { background: #e1f7ea; color: #27ae60; }
+
+    .btn-verifikasi {
+        background: #1a5da4;
+        color: white;
+        border: none;
+        padding: 8px 18px;
+        border-radius: 8px;
+        font-size: 12px;
+        font-weight: 600;
+        transition: 0.3s;
+    }
+
+    .btn-detail {
+        background: #f8f9fa;
+        color: #1a5da4;
+        border: 1px solid #1a5da4;
+        padding: 8px 18px;
+        border-radius: 8px;
+        font-size: 12px;
+        font-weight: 600;
+        text-decoration: none;
+    }
+
+    .btn-verifikasi:hover { background: #14467a; color: white; transform: translateY(-2px); }
+
+    /* 4. FIX PAGINATION (HILANGKAN TITIK/BULLET) */
+    .dataTables_wrapper .pagination {
+        display: flex !important;
+        list-style: none !important;
+        padding: 0 !important;
+        margin: 20px 0 0 0 !important;
+        justify-content: flex-end;
+    }
+
+    .dataTables_wrapper .pagination li {
+        margin: 0 2px !important;
+        display: inline-block !important;
+    }
+
+    .dataTables_wrapper .pagination li a {
+        border: 1px solid #dee2e6 !important;
+        padding: 8px 14px !important;
+        color: #1a5da4 !important;
+        text-decoration: none !important;
+        border-radius: 6px !important;
+        display: block !important;
+        background: #fff !important;
+    }
+
+    .page-item.active .page-link {
+        background-color: #1a5da4 !important;
+        color: white !important;
+        border-color: #1a5da4 !important;
+    }
+
+    /* 5. SEARCH & LENGTH UI (SAMA SEPERTI PEMINJAMAN) */
+    .dataTables_wrapper .dataTables_filter {
+        float: right;
+    }
+
+    .dataTables_wrapper .dataTables_filter input {
+        border: 1px solid #e0e0e0;
+        border-radius: 8px;
+        padding: 6px 12px;
+        background: #fafafa;
+        margin-left: 10px;
+        outline: none;
+        width: 200px;
+    }
+
+    .dataTables_info {
+        padding-top: 20px !important;
+        font-size: 13px;
+        color: #777;
+    }
+</style>
+
+<div class="container-custom">
+    <h5 class="page-title">Data Pengembalian</h5>
+
     @if(session('success'))
-        <div class="alert alert-success">{{ session('success') }}</div>
-    @endif
-
-    @if(session('error'))
-        <div class="alert alert-danger">{{ session('error') }}</div>
-    @endif
-
-    {{-- SEARCH UI --}}
-    <div class="mb-3">
-        <input type="text" class="form-control w-25" placeholder="Cari Pengembalian...">
-    </div>
-
-    <div class="card shadow-sm">
-        <div class="card-body p-0">
-
-            <table class="table table-bordered table-hover mb-0 align-middle">
-                <thead style="background:#198754;color:white;">
-                    <tr class="text-center">
-                        <th>No</th>
-                        <th class="text-start">Nama Anggota</th>
-                        <th class="text-start">Buku</th>
-                        <th>Tgl Pinjam</th>
-                        <th>Tgl Dikembalikan</th>
-                        <th>Status</th>
-                        <th width="150">Aksi</th>
-                    </tr>
-                </thead>
-
-                <tbody>
-                @forelse($data as $item)
-                    <tr>
-                        <td class="text-center">{{ $loop->iteration }}</td>
-
-                        {{-- NAMA --}}
-                        <td>
-                            <b>{{ $item->peminjaman->nama_anggota }}</b>
-                        </td>
-
-                        {{-- BUKU --}}
-                        <td>
-                            {{ $item->peminjaman->buku->judul ?? '-' }}<br>
-                            <small class="text-muted">
-                                {{ $item->peminjaman->buku->penulis ?? '' }}
-                            </small>
-                        </td>
-
-                        {{-- TGL PINJAM --}}
-                        <td class="text-center">
-                            {{ \Carbon\Carbon::parse($item->peminjaman->tgl_pinjam)->format('d M Y') }}
-                        </td>
-
-                        {{-- TGL KEMBALI --}}
-                        <td class="text-center">
-                            {{ \Carbon\Carbon::parse($item->tgl_dikembalikan)->format('d M Y') }}
-                        </td>
-
-                        {{-- STATUS --}}
-                        <td class="text-center">
-                            @if($item->status == 'menunggu_verifikasi')
-                                <span class="badge bg-warning text-dark">menunggu verifikasi</span>
-                            @else
-                                <span class="badge bg-success">dikembalikan</span>
-                            @endif
-                        </td>
-
-                        {{-- AKSI --}}
-                        <td class="text-center">
-
-                            @if($item->status == 'menunggu_verifikasi')
-
-                                <form action="{{ route('pengembalian.verifikasi',$item->id) }}" method="POST">
-                                    @csrf
-                                    <button class="btn btn-success btn-sm">
-                                        ✔ Verifikasi
-                                    </button>
-                                </form>
-
-                            @else
-                                <button class="btn btn-secondary btn-sm" disabled>
-                                    ✔ Selesai
-                                </button>
-                            @endif
-
-                        </td>
-                    </tr>
-                @empty
-                    <tr>
-                        <td colspan="7" class="text-center text-muted">
-                            Tidak ada data pengembalian
-                        </td>
-                    </tr>
-                @endforelse
-                </tbody>
-
-            </table>
-
+        <div class="alert alert-success alert-dismissible fade show mb-4" role="alert">
+            <i class="fas fa-check-circle me-2"></i> {{ session('success') }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
         </div>
-    </div>
+    @endif
 
+    <div class="table-responsive">
+        <table id="pengembalianTable" class="table table-hover table-custom text-center">
+            <thead>
+                <tr>
+                    <th width="50">NO</th>
+                    <th style="text-align: left;">NAMA ANGGOTA</th>
+                    <th style="text-align: left;">JUDUL BUKU</th>
+                    <th>TGL PINJAM</th>
+                    <th>TGL KEMBALI</th>
+                    <th>STATUS</th>
+                    <th width="150">AKSI</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach($data as $item)
+                <tr>
+                    <td>{{ $loop->iteration }}</td>
+                    <td style="text-align: left;">
+                        <span class="text-main">{{ $item->nama_anggota }}</span>
+                        <span class="text-sub">{{ $item->email_anggota ?? 'user@example.com' }}</span>
+                    </td>
+                    <td style="text-align: left;">
+                        <span class="text-main">{{ $item->buku->judul ?? '-' }}</span>
+                        <span class="text-sub">{{ $item->buku->penulis ?? 'Penulis' }}</span>
+                    </td>
+                    <td><span style="font-weight: 700;">{{ \Carbon\Carbon::parse($item->tgl_pinjam)->format('d - m - Y') }}</span></td>
+                    <td><span style="font-weight: 700;">{{ $item->tgl_kembali ? \Carbon\Carbon::parse($item->tgl_kembali)->format('d - m - Y') : '-' }}</span></td>
+                    <td>
+                        @if($item->status == 'menunggu_verifikasi')
+                            <span class="badge-pill-custom status-menunggu">menunggu verifikasi</span>
+                        @else
+                            <span class="badge-pill-custom status-selesai">selesai</span>
+                        @endif
+                    </td>
+                    <td>
+                        @if($item->status == 'menunggu_verifikasi')
+                            <form action="{{ route('pengembalian.verifikasi', $item->id) }}" method="POST">
+                                @csrf
+                                <button type="submit" class="btn-verifikasi">Verifikasi</button>
+                            </form>
+                        @else
+                            <a href="#" class="btn-detail">Lihat Detail</a>
+                        @endif
+                    </td>
+                </tr>
+                @endforeach
+            </tbody>
+        </table>
+    </div>
 </div>
+
+<script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
+
+<script>
+    $(document).ready(function() {
+        $('#pengembalianTable').DataTable({
+            "pageLength": 10,
+            "lengthMenu": [5, 10, 25, 50],
+            "ordering": true,
+            "responsive": true,
+            "language": {
+                "search": "Cari data:", // Menyamakan label dengan peminjaman
+                "searchPlaceholder": "Ketik nama atau buku...",
+                "lengthMenu": "Tampilkan _MENU_ entri",
+                "info": "Menampilkan _START_ sampai _END_ dari _TOTAL_ data",
+                "paginate": {
+                    "next": '<i class="fas fa-chevron-right"></i>',
+                    "previous": '<i class="fas fa-chevron-left"></i>'
+                }
+            },
+            "dom": "<'row mb-3'<'col-md-6'l><'col-md-6'f>>" +
+                   "<'row'<'col-md-12'tr>>" +
+                   "<'row mt-3'<'col-md-5'i><'col-md-7'p>>",
+        });
+    });
+</script>
 @endsection

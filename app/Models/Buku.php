@@ -16,10 +16,24 @@ class Buku extends Model
         'judul',
         'penulis',
         'penerbit',
-        'kategori',
-        'stok'
+        'kategori_id', // ✅ ganti ini
+        'stok',
+        'status'
     ];
 
+    // 🔥 RELASI KE KATEGORI
+    public function kategori()
+    {
+        return $this->belongsTo(Kategori::class, 'kategori_id');
+    }
+
+    // 🔥 RELASI KE PEMINJAMAN
+    public function peminjaman()
+    {
+        return $this->hasMany(Peminjaman::class, 'buku_id');
+    }
+
+    // 🔥 AUTO STATUS
     protected static function boot()
     {
         parent::boot();

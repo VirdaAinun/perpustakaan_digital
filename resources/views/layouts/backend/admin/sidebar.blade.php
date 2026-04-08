@@ -61,10 +61,16 @@
 
 <div class="sidebar">
 
-<a href="/dashboard" class="{{ request()->is('dashboard') ? 'active' : '' }}">
+<a href="{{ route('admin.dashboard') }}" 
+   class="{{ request()->is('admin/dashboard') ? 'active' : '' }}">
     <i>🏠</i> Dashboard
 </a>
 
+<a href="{{ route('admin.dataanggota.index') }}" 
+   class="{{ Route::is('admin.dataanggota.*') ? 'active' : '' }}">
+    <i>👥</i> Data Anggota
+</a>
+    
 <a href="{{ route('databuku.index') }}" class="{{ request()->is('databuku*') ? 'active' : '' }}">
     <i>📚</i> Data Buku
 </a>
@@ -81,7 +87,8 @@
     <i>📤</i> Denda
 </a>
 
-<a href="#">
+<a href="{{ route('admin.laporan.index') }}" 
+   class="{{ Route::is('admin.laporan.*') ? 'active' : '' }}">
     <i>📊</i> Laporan
 </a>
 

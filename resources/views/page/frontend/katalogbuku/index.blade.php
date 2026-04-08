@@ -3,17 +3,19 @@
 @section('content')
 
 <style>
-    h2 {
-    margin-top:0;       /* 🔥 ini penting */
-    margin-bottom:0px;
+.overlay{
+background:rgba(0,0,0,0.55);
+min-height:100vh;
+padding-bottom:50px;
 }
-    .container {
-    background-color:white;
-    background-size:cover;
-    padding:0px;
-    min-height:100vh;
-    color:black;
+
+.container {
+background-color: white;
+padding: 30px 40px;
+min-height: 100vh;
+color: black;
 }
+
 .filter-box{
 display:flex;
 gap:20px;
@@ -22,18 +24,12 @@ margin-bottom:30px;
 flex-wrap:wrap;
 }
 
-.filter-box input{
-flex:1;
-padding:12px;
-border-radius:6px;
-border:none;
-background-color: silver;
-}
-
+.filter-box input,
 .filter-box select{
 padding:12px;
 border-radius:6px;
 border:none;
+background-color: silver;
 }
 
 .book-grid{
@@ -66,6 +62,12 @@ color:#1f5f99;
 .penulis{
 color:#777;
 font-size:14px;
+}
+
+.kategori{
+font-size:13px;
+color:#555;
+margin-bottom:5px;
 }
 
 .book-info{
@@ -107,7 +109,6 @@ padding:8px 20px;
 border-radius:6px;
 }
 
-/* MODAL */
 .modal{
 display:none;
 position:fixed;
@@ -149,38 +150,47 @@ z-index:9999;
 animation:slideIn 0.5s ease;
 }
 
-/* animasi masuk */
 @keyframes slideIn{
-from{
-opacity:0;
-transform:translateX(100px);
+from{opacity:0;transform:translateX(100px);}
+to{opacity:1;transform:translateX(0);}
 }
-to{
-opacity:1;
-transform:translateX(0);
-}
-}
-
 </style>
+
+{{-- NOTIF --}}
 @if(session('success'))
 <div id="notif" class="notif">
     {{ session('success') }}
 </div>
 @endif
 
+<div class="overlay">
 <div class="container">
 
 <h2>Katalog Buku</h2>
 
+{{-- FILTER --}}
+<form method="GET" action="{{ route('katalogbuku.index') }}">
 <div class="filter-box">
-<input type="text" placeholder="Cari judul buku....">
-<select>
-<option>Kategori : Semua</option>
-</select>
-<select>
-<option>Urutkan : Terbaru</option>
-</select>
+
+    {{-- SEARCH --}}
+    <input type="text" name="search" placeholder="Cari judul buku...."
+        value="{{ request('search') }}">
+
+    {{-- KATEGORI --}}
+    <select name="kategori_id" onchange="this.form.submit()">
+        <option value="">Semua Kategori</option>
+        @foreach($kategoris as $k)
+            <option value="{{ $k->id }}"
+                {{ request('kategori_id') == $k->id ? 'selected' : '' }}>
+                {{ $k->nama_kategori }}
+            </option>
+        @endforeach
+    </select>
+
+    <button type="submit">Filter</button>
+
 </div>
+</form>
 
 {{-- GRID --}}
 <div class="book-grid">
@@ -188,21 +198,26 @@ transform:translateX(0);
 @forelse($bukus as $buku)
 <div class="book-card">
 
-    {{-- COVER --}}
-   @if($buku->photo)
-    <img src="{{ asset('storage/'.$buku->photo) }}">
-@else
-    <img src="https://via.placeholder.com/120x160">
-@endif
+    {{-- FOTO --}}
+    @if($buku->photo)
+        <img src="{{ asset('storage/'.$buku->photo) }}">
+    @else
+        <img src="https://via.placeholder.com/120x160">
+    @endif
 
     <h3>{{ $buku->judul }}</h3>
     <p class="penulis">{{ $buku->penulis }}</p>
+
+    {{-- ✅ KATEGORI --}}
+    <p class="kategori">
+        {{ $buku->kategori->nama_kategori ?? '-' }}
+    </p>
 
     <div class="book-info">
         @if($buku->stok > 0)
             <span class="badge tersedia">Tersedia</span>
         @else
-            <span class="badge dipinjam">Dipinjam</span>
+            <span class="badge dipinjam">Habis</span>
         @endif
 
         <span>Stok: {{ $buku->stok }}</span>
@@ -211,7 +226,7 @@ transform:translateX(0);
     {{-- BUTTON --}}
     @if($buku->stok > 0)
         <button class="btn-pinjam"
-            onclick="openModal(`{{ $buku->id }}`, `{{ $buku->judul }}`, `{{ $buku->penulis }}`)">
+            onclick="openModal('{{ $buku->id }}','{{ $buku->judul }}','{{ $buku->penulis }}')">
             Pinjam Buku
         </button>
     @else
@@ -227,7 +242,7 @@ transform:translateX(0);
 
 </div>
 
-{{-- MODAL (WAJIB DI LUAR LOOP) --}}
+{{-- MODAL --}}
 <div id="modalPinjam" class="modal">
 <div class="modal-content">
 
@@ -240,8 +255,8 @@ transform:translateX(0);
 @csrf
 
 <input type="hidden" name="buku_id" id="mIdBuku">
-
 <input type="text" name="nama" placeholder="Nama" required>
+<input type="number" name="jumlah_pinjam" required>
 <input type="date" name="tgl_pinjam" required>
 <input type="date" name="tgl_kembali" required>
 
@@ -267,14 +282,13 @@ document.getElementById("modalPinjam").style.display="none";
 }
 
 setTimeout(() => {
-    let notif = document.getElementById('notif');
-    if(notif){
-        notif.style.transition = "0.5s";
-        notif.style.opacity = "0";
-        setTimeout(()=> notif.remove(), 500);
-    }
+let notif = document.getElementById('notif');
+if(notif){
+notif.style.transition = "0.5s";
+notif.style.opacity = "0";
+setTimeout(()=> notif.remove(), 500);
+}
 }, 3000);
-
 </script>
 
 @endsection

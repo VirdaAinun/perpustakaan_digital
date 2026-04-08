@@ -30,6 +30,12 @@
                             <label>Nama</label>
                             <input type="text" name="nama" class="form-control" required>
                         </div>
+                        <div class="mb-3">
+                                <label>Jumlah Pinjam</label>
+                                <input type="number" name="jumlah_pinjam" class="form-control" placeholder="Jumlah Buku"
+                                       min="1" max="{{ $buku->stok }}" value="1" required>
+                                <small class="text-muted">* Maksimal sesuai stok tersedia</small>
+                            </div>
 
                         <div class="mb-3">
                             <label>Tanggal Pinjam</label>

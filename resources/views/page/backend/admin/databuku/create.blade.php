@@ -107,9 +107,16 @@
     </div>
 
     <div class="input-group">
-        <label>Kategori</label>
-        <input type="text" name="kategori" value="{{ old('kategori') }}">
-    </div>
+    <label>Kategori</label>
+    <select name="kategori_id" class="form-control">
+        <option value="">-- Pilih Kategori --</option>
+        @foreach($kategoris as $k)
+            <option value="{{ $k->id }}">
+                {{ $k->nama_kategori }}
+            </option>
+        @endforeach
+    </select>
+</div>
 
     <div class="input-group">
         <label>Stok</label>

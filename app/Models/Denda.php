@@ -16,7 +16,7 @@ class Denda extends Model
     protected $fillable = [
         'peminjaman_id',
         'hari_terlambat',  // jumlah hari terlambat
-        'total_denda',     // jumlah denda
+        'denda',     // jumlah denda
         'status'           // menunggu / selesai
     ];
 

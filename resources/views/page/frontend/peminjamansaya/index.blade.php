@@ -1,204 +1,280 @@
 @extends('layouts.frontend.app')
 
 @section('content')
-
 <style>
-.container {
-    max-width: 1100px;
-    margin: 20px auto;
-    padding: 15px;
+/* CONTENT */
+.container-custom {
+    padding: 50px;
+    min-height: 90vh;
+    background-color:white;
 }
 
-h1 {
-    font-size: 1.6rem;
-    margin-bottom: 20px;
-    color: #2c3e50;
+/* SEARCH */
+.search-box {
+    margin: 20px 0;
+    display: flex;
+    gap: 15px;
 }
 
-/* TABLE */
-.table {
-    width: 100%;
-    border-collapse: collapse;
-    background: white;
+.search-box input {
+    width: 350px;
+    padding: 12px;
+    border-radius: 6px;
+    border: 1px solid #ddd; /* Tambahan sedikit border agar terlihat jika bg putih */
 }
 
-.table th, .table td {
-    padding: 10px;
-    border: 1px solid #ddd;
-}
-
-.table th {
-    background: #2c3e50;
-    color: white;
-}
-
-/* BUTTON */
-.btn {
-    padding: 6px 12px;
-    border-radius: 4px;
-    font-size: 13px;
+.search-box button {
+    background: #4a8fcf;
     border: none;
+    color: white;
+    padding: 10px 25px;
+    border-radius: 8px;
     cursor: pointer;
 }
 
-.btn-detail {
-    background: #27ae60;
-    color: white;
+/* Perbaikan Pagination agar tidak muncul gambar besar */
+.table-box svg {
+    width: 20px; /* Membatasi ukuran icon panah */
+    height: 20px;
 }
 
-.btn-pengembalian {
-    background: #c0392b;
-    color: white;
+.table-box nav div:first-child {
+    display: none; /* Menyembunyikan teks "Showing X to Y" versi mobile yang berantakan */
 }
 
-/* STATUS */
-.status {
-    padding: 4px 8px;
+.table-box nav div:last-child {
+    display: flex;
+    justify-content: center;
+    gap: 5px;
+}
+
+/* Opsional: Mempercantik tampilan link angka pagination */
+.table-box nav a, .table-box nav span {
+    padding: 8px 12px;
+    border: 1px solid #ddd;
     border-radius: 4px;
+    text-decoration: none;
+    color: #1f5f99;
+}
+
+.table-custom {
+    width: 100%;
+    border-collapse: collapse;
+    color: black;
+}
+
+.table-custom thead {
+    background: #1f5f99;
     color: white;
-    font-size: 12px;
 }
 
-.status-dipinjam { background:#2980b9; }
-.status-mengajukan_pengembalian { background:#f39c12; }
-.status-selesai { background:#27ae60; }
-.status-ditolak { background:#c0392b; }
-.status-menunggu { background:#8e44ad; }
-
-/* MODAL */
-.modal {
-    display:none;
-    position:fixed;
-    top:0; left:0;
-    width:100%; height:100%;
-    background:rgba(0,0,0,0.5);
-    justify-content:center;
-    align-items:center;
+.table-custom th, .table-custom td {
+    padding: 14px;
+    text-align: left;
 }
 
-.modal-content {
-    background:white;
-    padding:20px;
-    border-radius:8px;
-    text-align:center;
+.table-custom tbody tr {
+    border-bottom: 1px solid #ddd;
 }
 
-/* NOTIF */
-.notif{
-position:fixed;
-top:20px;
-right:20px;
-background:#2c3e50;
-color:white;
-padding:10px 20px;
-border-radius:6px;
+.penulis {
+    color: #777;
+    font-size: 14px;
+}
+
+/* BADGE STATUS */
+.badge-custom {
+    padding: 5px 12px;
+    border-radius: 6px;
+    font-size: 13px;
+    font-weight: bold;
+    display: inline-block;
+}
+
+.dipinjam {
+    background: #a6c9e2;
+    color: #114e7d;
+}
+
+.menunggu_verifikasi {
+    background: #fcf3cf;
+    color: #856404;
+}
+
+.terlambat {
+    background: #f3a2a2;
+    color: #a00000;
+}
+
+.selesai {
+    background: #9dd89d;
+    color: #0c6b0c;
+}
+
+.ditolak {
+    background: #f5b7b1;
+    color: #943126;
+}
+
+/* BUTTON */
+.btn-kembali {
+    background: #1f5f99;
+    color: white;
+    border: none;
+    padding: 8px 15px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 600;
+}
+
+.btn-detail-custom {
+    background: #ecf0f1;
+    color: #2c3e50;
+    padding: 8px 15px;
+    border-radius: 6px;
+    text-decoration: none;
+    font-size: 13px;
+    display: inline-block;
+    margin-right: 5px;
 }
 </style>
 
-{{-- NOTIF --}}
-@if(session('success'))
-<div id="notif" class="notif">
-    {{ session('success') }}
-</div>
-@endif
+<div class="overlay">
+    <div class="container-custom">
+        <h2>Peminjaman Saya</h2>
 
-@if(session('error'))
-<div class="alert alert-danger">
-    {{ session('error') }}
-</div>
-@endif
+        <form action="{{ route('peminjamansaya.index') }}" method="GET" class="search-box">
+            <input type="text" name="search" placeholder="Cari judul buku...." value="{{ request('search') }}">
+            <button type="submit">Cari</button>
+        </form>
 
-<div class="container">
+        <div class="table-box">
+            @if($peminjamans->count())
+            <table class="table-custom">
+                <thead>
+                    <tr>
+                        <th>No</th>
+                        <th>Judul</th>
+                        <th>Tgl Pinjam</th>
+                        <th>Tgl Kembali</th>
+                        <th>Status</th>
+                        <th>Aksi</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach($peminjamans as $index => $p)
+                    <tr>
+                        <td>{{ $peminjamans->firstItem() + $index }}</td>
+                        <td>
+                            <b>{{ $p->buku->judul ?? '-' }}</b>
+                            <br>
+                            <span class="penulis">Peminjam: {{ $p->nama_anggota }}</span>
+                        </td>
+                        <td>{{ \Carbon\Carbon::parse($p->tgl_pinjam)->format('d M Y') }}</td>
+                        <td>{{ \Carbon\Carbon::parse($p->tgl_kembali)->format('d M Y') }}</td>
+                        <td>
+                            <span class="badge-custom {{ $p->status }}">
+                                {{ ucfirst(str_replace('_',' ',$p->status)) }}
+                            </span>
+                        </td>
+                        <td>
+                            <a href="{{ route('peminjamansaya.show',$p->id) }}" class="btn-detail-custom">
+                                Detail
+                            </a>
 
-<h1>Peminjaman Saya</h1>
+                            @if($p->status == 'dipinjam')
+                            <form id="form-{{ $p->id }}" action="{{ route('peminjamansaya.ajukan', $p->id) }}" method="POST" style="display:inline;">
+                                @csrf
+                                <button type="button" class="btn-kembali" 
+                                    onclick="konfirmasi(event, {{ $p->id }}, '{{ $p->tgl_kembali }}', '{{ $p->buku->judul }}', '{{ $p->tgl_pinjam }}')">
+                                    Ajukan Pengembalian
+                                </button>
+                            </form>
+                            @elseif($p->status == 'selesai')
+                                -
+                            @endif
+                        </td>
+                    </tr>
+                    @endforeach
+                </tbody>
+            </table>
 
-@if($peminjamans->count())
-<table class="table">
-<thead>
-<tr>
-    <th>Buku</th>
-    <th>Tgl Pinjam</th>
-    <th>Tgl Kembali</th>
-    <th>Status</th>
-    <th>Aksi</th>
-</tr>
-</thead>
-
-<tbody>
-@foreach($peminjamans as $p)
-<tr>
-    <td>{{ $p->buku->judul ?? '-' }}</td>
-    <td>{{ $p->tgl_pinjam }}</td>
-    <td>{{ $p->tgl_kembali }}</td>
-
-    <td>
-        <span class="status status-{{ $p->status }}">
-            {{ ucfirst(str_replace('_',' ',$p->status)) }}
-        </span>
-    </td>
-
-    <td>
-        <a href="{{ route('peminjamansaya.show',$p->id) }}" class="btn btn-detail">Detail</a>
-
-        @if($p->status == 'dipinjam')
-        <button class="btn btn-pengembalian"
-            onclick="openModal('{{ $p->id }}','{{ $p->buku->judul }}')">
-            Ajukan Pengembalian
-        </button>
-        @endif
-    </td>
-</tr>
-@endforeach
-</tbody>
-
-</table>
-
-{{ $peminjamans->links() }}
-
-@else
-<p>Tidak ada peminjaman</p>
-@endif
-
-</div>
-
-{{-- MODAL --}}
-<div id="modalPinjam" class="modal">
-<div class="modal-content">
-
-<p id="modalText"></p>
-
-<form id="formPengembalian" method="POST">
-@csrf
-
-<button type="submit" class="btn btn-pengembalian">Ya</button>
-<button type="button" class="btn btn-detail" onclick="closeModal()">Batal</button>
-
-</form>
-
-</div>
+            <div style="margin-top: 20px;">
+                {{ $peminjamans->links() }}
+            </div>
+            @else
+            <div style="text-align: center; padding: 40px; color: #95a5a6;">
+                <p>Tidak ada riwayat peminjaman.</p>
+            </div>
+            @endif
+        </div>
+    </div>
 </div>
 
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
-function openModal(id,judul){
-document.getElementById("modalPinjam").style.display="flex";
-document.getElementById("modalText").innerText =
-"Yakin ingin mengajukan pengembalian buku '"+judul+"' ?";
-document.getElementById("formPengembalian").action =
-"/anggota/peminjamansaya/ajukan/"+id;
-}
+    function konfirmasi(event, id, tglKembali, judul, tglPinjam) {
+        // 1. Logika Perhitungan Keterlambatan
+        const hariIni = new Date();
+        hariIni.setHours(0, 0, 0, 0); // Reset waktu ke jam 00:00
+        
+        const deadline = new Date(tglKembali);
+        deadline.setHours(0, 0, 0, 0);
 
-function closeModal(){
-document.getElementById("modalPinjam").style.display="none";
-}
+        let statusText = '<span style="color: #2ecc71;">Tepat Waktu</span>';
+        let dendaHtml = '';
+        
+        // Cek jika terlambat
+        if (hariIni > deadline) {
+            const selisihWaktu = hariIni.getTime() - deadline.getTime();
+            const selisihHari = Math.ceil(selisihWaktu / (1000 * 3600 * 24));
+            const dendaPerHari = 1000; // Sesuaikan nominal denda Anda
+            const totalDenda = selisihHari * dendaPerHari;
 
-// auto hilang notif
-setTimeout(()=>{
-let notif=document.getElementById('notif');
-if(notif){
-notif.style.opacity="0";
-setTimeout(()=>notif.remove(),500);
-}
-},3000);
+            statusText = `<span style="color: #ff4d4d;">Terlambat ${selisihHari} hari</span>`;
+            dendaHtml = `<p style="margin: 5px 0;">Estimasi Denda : Rp ${totalDenda.toLocaleString('id-ID')}</p>`;
+        }
+
+        // 2. Tampilkan SweetAlert2 dengan Custom UI
+        Swal.fire({
+            title: 'Ajukan Pengembalian',
+            html: `
+                <div style="text-align: left; font-size: 14px; line-height: 1.6;">
+                    <p style="margin: 5px 0;">Judul Buku : ${judul}</p>
+                    <p style="margin: 5px 0;">Tanggal Pinjam : ${formatDate(tglPinjam)}</p>
+                    <p style="margin: 5px 0;">Tanggal Kembali : ${formatDate(tglKembali)}</p>
+                    <p style="margin: 5px 0;">Status : ${statusText}</p>
+                    ${dendaHtml}
+                </div>
+            `,
+            background: '#1f5f99', // Warna biru sesuai gambar
+            color: '#ffffff',      // Warna teks putih
+            showCancelButton: true,
+            confirmButtonColor: '#3498db',
+            cancelButtonColor: '#95a5a6',
+            confirmButtonText: 'Ajukan',
+            cancelButtonText: 'Batal',
+            reverseButtons: false,
+            width: '400px',
+            customClass: {
+                title: 'text-white border-0',
+                popup: 'rounded-lg'
+            }
+        }).then((result) => {
+            if (result.isConfirmed) {
+                document.getElementById('form-' + id).submit();
+            }
+        });
+    }
+
+    // Fungsi pembantu untuk memformat tanggal (YYYY-MM-DD ke DD-MM-YYYY)
+    function formatDate(dateString) {
+        const d = new Date(dateString);
+        const day = String(d.getDate()).padStart(2, '0');
+        const month = String(d.getMonth() + 1).padStart(2, '0');
+        const year = d.getFullYear();
+        return `${day} - ${month} - ${year}`;
+    }
 </script>
-
 @endsection

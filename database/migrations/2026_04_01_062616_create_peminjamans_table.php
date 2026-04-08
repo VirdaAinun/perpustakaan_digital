@@ -18,6 +18,9 @@ return new class extends Migration
             // DATA ANGGOTA
             $table->string('nama_anggota');
 
+            // JUMLAH PINJAM (Tambahkan ini)
+        $table->integer('jumlah_pinjam')->default(1);
+
             // TANGGAL PINJAM
             $table->date('tgl_pinjam');
             $table->date('tgl_kembali');

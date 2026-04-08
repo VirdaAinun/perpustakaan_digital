@@ -86,6 +86,15 @@
     border-radius: 6px;
     border: 1px solid #ddd;
 }
+.input-group select {
+    width: 100%;
+    padding: 10px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+    font-size: 14px;
+    background: white;
+    outline: none;
+}
 </style>
 
 <div class="form-card">
@@ -137,11 +146,17 @@
         <input type="text" name="penerbit" value="{{ old('penerbit', $buku->penerbit) }}" required>
     </div>
 
-    {{-- KATEGORI --}}
     <div class="input-group">
-        <label>Kategori</label>
-        <input type="text" name="kategori" value="{{ old('kategori', $buku->kategori) }}" required>
-    </div>
+    <label>Kategori</label>
+    <select name="kategori_id" required>
+        <option value="">-- Pilih Kategori --</option>
+        @foreach($kategoris as $k)
+            <option value="{{ $k->id }}" {{ old('kategori_id', $buku->kategori_id) == $k->id ? 'selected' : '' }}>
+                {{ $k->nama_kategori }}
+            </option>
+        @endforeach
+    </select>
+</div>
 
     {{-- STOK --}}
     <div class="input-group">

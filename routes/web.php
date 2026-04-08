@@ -1,68 +1,150 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\backend\admin\DataBukuController;
-use Illuminate\Support\Facades\Auth;
-use App\Http\Controllers\backend\admin\PeminjamanController;
-use App\Http\Controllers\backend\admin\PengembalianController;
-use App\Http\Controllers\backend\admin\DendaController;
+use App\Http\Controllers\Auth\LoginController;
+
+// ===============================
+// 🔴 SUPER ADMIN
+// ===============================
+use App\Http\Controllers\Backend\SuperAdmin\DashboardController as SuperAdminDashboard;
+use App\Http\Controllers\Backend\SuperAdmin\LaporanPerpustakaanController;
+use App\Http\Controllers\Backend\SuperAdmin\LaporanAnggotaController;
+use App\Http\Controllers\Backend\SuperAdmin\DataUserController;
+
+// ===============================
+// 🔵 ADMIN / PETUGAS
+// ===============================
+use App\Http\Controllers\Backend\Admin\DashboardController;
+use App\Http\Controllers\Backend\Admin\DataBukuController;
+use App\Http\Controllers\Backend\Admin\PeminjamanController;
+use App\Http\Controllers\Backend\Admin\PengembalianController;
+use App\Http\Controllers\Backend\Admin\DendaController as AdminDendaController;
+use App\Http\Controllers\Backend\Admin\DataAnggotaController;
+use App\Http\Controllers\Backend\Admin\LaporanController;
+
+// ===============================
+// 🟢 ANGGOTA (FRONTEND)
+// ===============================
 use App\Http\Controllers\Frontend\KatalogController;
 use App\Http\Controllers\Frontend\PeminjamanSayaController;
+use App\Http\Controllers\Frontend\DendaController as AnggotaDendaController;
+use App\Http\Controllers\Frontend\ProfileController;
 
-Route::post('/logout', function () {
-    Auth::logout();
-    return redirect('/');
-})->name('logout');
 
-// 🔥 Redirect halaman awal ke data buku
-Route::get('/', function () {
-    return redirect()->route('databuku.index');
+
+
+
+// ===============================
+// 🔐 AUTH
+// ===============================
+Route::get('/login', [LoginController::class, 'index'])->name('login');
+Route::post('/login', [LoginController::class, 'login'])->name('login.proses');
+
+Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
+
+
+
+
+
+// ===============================
+// 🔴 SUPER ADMIN
+// ===============================
+Route::middleware('cekakses:kepala')->prefix('superadmin')->group(function () {
+
+    Route::get('/dashboardkepala', [SuperAdminDashboard::class, 'index'])
+        ->name('superadmin.dashboardkepala');
+
+    Route::get('/laporanperpustakaan', [LaporanPerpustakaanController::class, 'index'])
+        ->name('superadmin.laporanperpustakaan.index');
+
+    Route::get('/laporan-anggota', [LaporanAnggotaController::class, 'index'])
+        ->name('superadmin.laporananggota.index');
+
+    Route::get('/data-user', [DataUserController::class, 'index'])
+        ->name('superadmin.datauser.index');
+
+    Route::post('/data-user', [DataUserController::class, 'store'])
+        ->name('superadmin.datauser.store');
+
+    Route::put('/data-user/{id}', [DataUserController::class, 'update'])
+        ->name('superadmin.datauser.update');
+
+    Route::delete('/data-user/{id}', [DataUserController::class, 'destroy'])
+        ->name('superadmin.datauser.destroy');
 });
 
 
+
+
+
 // ===============================
-// 📚 DATA BUKU (FULL CRUD)
+// 🔵 ADMIN / PETUGAS
 // ===============================
+Route::middleware('cekakses:petugas')->prefix('admin')->group(function () {
 
-// tampil semua data
-Route::get('/databuku', [DataBukuController::class, 'index'])->name('databuku.index');
+    Route::get('/dashboard', [DashboardController::class, 'index'])
+        ->name('admin.dashboard');
 
-// form tambah
-Route::get('/databuku/create', [DataBukuController::class, 'create'])->name('databuku.create');
+    Route::resource('/databuku', DataBukuController::class);
 
-// simpan data
-Route::post('/databuku', [DataBukuController::class, 'store'])->name('databuku.store');
+    Route::resource('/dataanggota', DataAnggotaController::class)
+        ->names('admin.dataanggota');
 
-// form edit
-Route::get('/databuku/{id}/edit', [DataBukuController::class, 'edit'])->name('databuku.edit');
+    Route::get('/peminjaman', [PeminjamanController::class, 'index'])
+        ->name('peminjaman.index');
 
-// update data
-Route::put('/databuku/{id}', [DataBukuController::class, 'update'])->name('databuku.update');
+    Route::post('/peminjaman/{id}/verifikasi', [PeminjamanController::class, 'verifikasi'])
+        ->name('peminjaman.verifikasi');
 
-// hapus data
-Route::delete('/databuku/{id}', [DataBukuController::class, 'destroy'])->name('databuku.destroy');
+    Route::get('/pengembalian', [PengembalianController::class, 'index'])
+        ->name('pengembalian.index');
 
-Route::get('/peminjaman', [PeminjamanController::class, 'index'])->name('peminjaman.index');
-Route::post('/peminjaman/{id}/verifikasi', [PeminjamanController::class, 'verifikasi'])->name('peminjaman.verifikasi');
+    Route::post('/pengembalian/{id}/verifikasi', [PengembalianController::class, 'verifikasi'])
+        ->name('pengembalian.verifikasi');
 
-Route::get('/pengembalian', [PengembalianController::class, 'index'])
-    ->name('pengembalian.index');
+    Route::get('/denda', [AdminDendaController::class, 'index'])
+        ->name('denda.index');
 
-Route::post('/pengembalian/{id}/verifikasi', [PengembalianController::class, 'verifikasi'])
-    ->name('pengembalian.verifikasi');
+    Route::post('/denda/{id}/bayar', [AdminDendaController::class, 'bayar'])
+        ->name('denda.bayar');
 
-Route::get('/denda', [DendaController::class, 'index'])->name('denda.index');
-Route::post('/denda/{id}/bayar', [DendaController::class, 'bayar'])->name('denda.bayar');
+    Route::get('/laporan', [LaporanController::class, 'index'])
+        ->name('admin.laporan.index');
+});
 
 
-Route::get('/pinjam/{id}', [KatalogController::class, 'pinjam'])->name('pinjam.form');
-Route::post('/pinjam', [KatalogController::class, 'store'])->name('pinjam.store');
-Route::get('/katalogbuku', [KatalogController::class, 'index'])->name('katalogbuku.index');
-Route::post('/katalogbuku/store', [KatalogController::class, 'store'])->name('katalog.store');
 
-Route::get('/peminjamansaya', [PeminjamanSayaController::class, 'index'])->name('peminjamansaya.index');
-Route::post('/anggota/peminjamansaya/ajukan/{id}', 
-    [PeminjamanSayaController::class, 'ajukanPengembalian']
-)->name('peminjamansaya.ajukan');
-Route::get('/peminjamansaya/{id}', [PeminjamanSayaController::class, 'show'])
-    ->name('peminjamansaya.show');
+
+
+// ===============================
+// 🟢 ANGGOTA
+// ===============================
+Route::middleware('cekakses:anggota')->group(function () {
+
+    Route::get('/katalogbuku', [KatalogController::class, 'index'])
+        ->name('katalogbuku.index');
+
+    Route::get('/pinjam/{id}', [KatalogController::class, 'pinjam'])
+        ->name('pinjam.form');
+
+    Route::post('/pinjam', [KatalogController::class, 'store'])
+        ->name('pinjam.store');
+
+    Route::post('/katalogbuku/store', [KatalogController::class, 'store'])
+        ->name('katalog.store');
+
+    Route::get('/peminjamansaya', [PeminjamanSayaController::class, 'index'])
+        ->name('peminjamansaya.index');
+
+    Route::get('/peminjamansaya/{id}', [PeminjamanSayaController::class, 'show'])
+        ->name('peminjamansaya.show');
+
+    Route::post('/peminjamansaya/{id}/ajukan', [PeminjamanSayaController::class, 'ajukanPengembalian'])
+        ->name('peminjamansaya.ajukan');
+
+    Route::get('/denda-saya', [AnggotaDendaController::class, 'index'])
+        ->name('frontend.denda');
+
+    Route::get('/profile', [ProfileController::class, 'index'])
+        ->name('profile');
+});

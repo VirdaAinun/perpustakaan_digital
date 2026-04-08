@@ -15,10 +15,17 @@ class Peminjaman extends Model
         'buku_id',
         'nama_anggota',
         'id_buku',
+        'jumlah_pinjam', // Pastikan baris ini ada di Model Peminjaman
         'tgl_pinjam',
         'tgl_kembali',
         'status'
     ];
+    // Tambahkan fungsi relasi ini
+    public function anggota()
+    {
+        // Ganti 'id_anggota' dengan nama kolom foreign key di tabel peminjamanmu
+        return $this->belongsTo(Anggota::class, 'id_anggota'); 
+    }
 
     public function buku()
     {

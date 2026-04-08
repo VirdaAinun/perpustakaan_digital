@@ -8,16 +8,22 @@ use App\Models\Peminjaman;
 
 class PeminjamanController extends Controller
 {
-    /**
-     * Menampilkan semua data peminjaman
-     */
-    public function index()
+    public function index(Request $request) // <-- Tambahkan Request $request di sini
     {
-        $data = Peminjaman::with('buku')->latest()->get();
+        // 1. Mulai query dengan relasi buku
+        $query = Peminjaman::with('buku');
 
+        // 2. LOGIKA CARI: Jika input search diisi, saring berdasarkan NAMA ANGGOTA
+        if ($request->filled('search')) {
+            $query->where('nama_anggota', 'like', '%' . $request->search . '%');
+        }
+
+        // 3. Ambil datanya (yang sudah difilter maupun tidak)
+        $data = $query->latest()->get();
+
+        // 4. Kirim ke view
         return view('page/backend/admin/peminjaman.index', compact('data'));
     }
-
     /**
      * Verifikasi peminjaman (Setuju / Tolak)
      */

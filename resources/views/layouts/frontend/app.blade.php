@@ -1,45 +1,171 @@
 <!DOCTYPE html>
-<html lang="id">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <title>Perpustakaan Digital</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+<title>halaman utama</title>
+<link rel="stylesheet">
+<style>
 
-    <link href="https://fonts.googleapis.com/css2?family=Poppins&display=swap" rel="stylesheet">
+body{
+margin:0;
+font-family:Arial, Helvetica, sans-serif;
+background-size:cover;
+background-position:center;
+background-repeat:no-repeat;
+min-height:100vh;
+position:relative;
 
-    <style>
-        /* RESET TOTAL */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+}
 
-        html, body {
-            height: 100%;
-        }
+/* CONTENT */
+.container {
+    color: #000000;
+    background-size:cover;
+    padding:50px;
+    min-height:90vh;
+}
 
-        body {
-            font-family: 'Poppins', sans-serif;
+/* HEADER */
 
-            /* FULL BACKGROUND GAMBAR */
-            background: url('{{ asset('images/bg.jpg') }}') no-repeat center center fixed;
-            background-size: cover;
-            color: white;
-        }
+.header{
+background:#1f5f99;
+color:white;
+display:flex;
+justify-content:space-between;
+align-items:center;
+padding:15px 30px;
+}
 
-        .content {
-            padding: 80px 20px 60px 20px;
-            min-height: 100vh;
+.logo{
+display:flex;
+align-items:center;
+gap:10px;
+}
 
-            /* PASTIIN TRANSPARAN */
-            background: transparent !important;
-        }
-    </style>
+.avatar{
+width:45px;
+height:45px;
+border-radius:50%;
+object-fit:cover;
+}
+
+/* NAVBAR */
+.navbar{
+background:#eaeaea;
+padding:12px 30px;
+}
+
+.navbar a{
+margin-right:25px;
+text-decoration:none;
+color:#333;
+font-weight:bold;
+}
+
+.navbar a.active{
+color:#1f5f99;
+border-bottom:3px solid #1f5f99;
+padding-bottom:5px;
+}
+
+/* BACKGROUND IMAGE */
+
+.background{
+background-image:url("../image/foto1.jpg.jpeg");
+background-size:cover;
+background-position:center;
+background-repeat:no-repeat;
+min-height:100vh;
+position:relative;
+}
+
+/* OVERLAY */
+
+.overlay{
+background:rgba(0,0,0,0.55);
+min-height:100vh;
+}
+/* BARIS ATAS (BIRU) */
+.header-top {
+    background: #1f5f99;
+    color: white;
+    padding: 30px 30px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.logo-area {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.logo-area h2 {
+    margin: 0;
+    font-size: 24px;
+    font-weight: bold;
+}
+
+/* BARIS BAWAH (PUTIH) */
+.navbar-row {
+    background: white;
+    padding:12px 30px;
+    display: flex;
+    border-bottom: 1px solid #ddd;
+}
+
+.nav-link-custom {
+    padding: 15px 20px;
+    text-decoration: none;
+    color: #333;
+    font-weight: bold;
+    font-size: 18px;
+    border-bottom: 4px solid transparent;
+    display: inline-block;
+}
+
+.nav-link-custom:hover {
+    color: #1f5f99;
+}
+
+.nav-link-custom.active {
+    color: #1f5f99;
+    border-bottom: 4px solid #1f5f99; /* Garis biru di bawah menu aktif */
+}
+</style>
 </head>
-<body>
 
-    @include('layouts.frontend.navbar')
+<body>
+<div class="header-top">
+    <div class="logo-area">
+        <span>📚</span> 
+        <h2>Perpustakaan Digital</h2>
+    </div>
+    
+   <a href="{{ route('profile') }}" style="text-decoration: none; color: white;">
+    👤
+</a>
+</div>
+</div>
+
+<div class="navbar-row">
+
+    <a href="{{ route('katalogbuku.index') }}" 
+       class="nav-link-custom {{ in_array(Route::currentRouteName(), ['katalogbuku.index','katalogbuku.show']) ? 'active' : '' }}">
+       Katalog Buku
+    </a>
+
+    <a href="{{ route('peminjamansaya.index') }}" 
+       class="nav-item nav-link-custom {{ in_array(Route::currentRouteName(), ['peminjamansaya.index','peminjamansaya.show']) ? 'active' : '' }}">
+       Peminjaman Saya
+    </a>
+
+    <a href="{{ route('frontend.denda') }}" 
+       class="nav-link-custom {{ Route::currentRouteName() == 'frontend.denda' ? 'active' : '' }}">
+       Denda
+    </a>
+</div>
+   
 
     <div class="content">
         @yield('content')

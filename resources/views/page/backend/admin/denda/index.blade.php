@@ -1,105 +1,232 @@
 @extends('layouts.backend.admin.app')
 
 @section('content')
-<div class="container">
+<style>
+/* CONTAINER */
+.container-custom {
+    background: #ffffff;
+    padding: 30px;
+    min-height: 90vh;
+}
 
-    <h5 class="mb-3 fw-bold">Data Denda</h5>
+/* TITLE */
+.page-title {
+    font-weight: 700;
+    color: #000;
+    font-size: 22px;
+    margin-bottom: 25px;
+}
 
-    {{-- ALERT --}}
+/* SEARCH SYSTEM */
+.search-wrapper {
+    display: flex;
+    align-items: center;
+    margin-bottom: 30px;
+}
+
+.input-search-custom {
+    border: 1px solid #e0e0e0;
+    border-right: none;
+    background: #fafafa;
+    padding: 12px 20px;
+    border-radius: 10px 0 0 10px;
+    width: 300px;
+    outline: none;
+    font-size: 14px;
+}
+
+.btn-search-custom {
+    background: #1a5da4;
+    color: white;
+    border: 1px solid #1a5da4;
+    padding: 0 20px;
+    height: 47px;
+    border-radius: 0 10px 10px 0;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    font-weight: 500;
+}
+
+.btn-reset-custom {
+    color: #8e44ad;
+    text-decoration: none;
+    font-weight: 600;
+    margin-left: 15px;
+    font-size: 14px;
+}
+
+/* TABLE STYLING */
+.table-custom {
+    width: 100%;
+    border-collapse: collapse;
+    border: 1px solid #f0f0f0;
+}
+
+.table-custom thead {
+    background: #1a5da4; /* Header Biru sesuai desain */
+}
+
+.table-custom th {
+    color: white;
+    text-align: center;
+    font-size: 12px;
+    text-transform: uppercase;
+    padding: 15px;
+}
+
+.table-custom td {
+    padding: 18px 15px;
+    border-bottom: 1px solid #f1f1f1;
+    font-size: 13px;
+    vertical-align: middle;
+}
+
+/* TEXT DETAILS */
+.text-main { font-weight: 600; color: #333; display: block; }
+.text-sub { font-size: 11px; color: #888; }
+
+/* BADGE STATUS (PILL STYLE) */
+.badge-pill-custom {
+    padding: 5px 15px;
+    border-radius: 50px;
+    font-size: 11px;
+    font-weight: 600;
+    display: inline-block;
+}
+
+.status-belum-bayar { background: #fceaea; color: #e74c3c; } /* Merah Soft */
+.status-lunas { background: #e1f7ea; color: #27ae60; }        /* Hijau Soft */
+
+/* ACTION BUTTONS */
+.btn-bayar {
+    background: #badcfc; /* Biru muda transparan sesuai gambar */
+    color: #1a5da4;
+    border: none;
+    padding: 8px 15px;
+    border-radius: 8px;
+    font-size: 12px;
+    font-weight: 600;
+    transition: 0.3s;
+    width: 100%;
+}
+
+.btn-bayar:hover { background: #96b9f9; }
+
+.btn-selesai {
+    background: #eeeeee;
+    color: #999999;
+    border: none;
+    padding: 8px 15px;
+    border-radius: 8px;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: not-allowed;
+    width: 100%;
+}
+
+/* NOTIF CUSTOM */
+.notif-popup {
+    position: fixed; top: 20px; right: 20px;
+    background: #1a5da4; color: white;
+    padding: 15px 25px; border-radius: 8px;
+    z-index: 9999; box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+</style>
+
+<div class="container-custom">
+    <h5 class="page-title">Denda & Pembayaran</h5>
+
+    {{-- Alert Notification --}}
     @if(session('success'))
-        <div class="alert alert-success">{{ session('success') }}</div>
-    @endif
-
-    @if(session('error'))
-        <div class="alert alert-danger">{{ session('error') }}</div>
-    @endif
-
-    <div class="card shadow-sm">
-        <div class="card-body p-0">
-
-            <table class="table table-bordered table-hover mb-0 align-middle">
-                <thead style="background:#dc3545;color:white;">
-                    <tr class="text-center">
-                        <th>No</th>
-                        <th class="text-start">Nama Anggota</th>
-                        <th class="text-start">Buku</th>
-                        <th>Hari Terlambat</th>
-                        <th>Total Denda</th>
-                        <th>Status</th>
-                        <th width="150">Aksi</th>
-                    </tr>
-                </thead>
-
-                <tbody>
-                @forelse($data as $item)
-                    <tr>
-                        <td class="text-center">{{ $loop->iteration }}</td>
-
-                        {{-- NAMA --}}
-                        <td>
-                            <b>{{ $item->peminjaman->nama_anggota }}</b>
-                        </td>
-
-                        {{-- BUKU --}}
-                        <td>
-                            {{ $item->peminjaman->buku->judul ?? '-' }}<br>
-                            <small class="text-muted">
-                                {{ $item->peminjaman->buku->penulis ?? '' }}
-                            </small>
-                        </td>
-
-                        {{-- TERLAMBAT --}}
-                        <td class="text-center">
-                            {{ $item->hari_terlambat }} hari
-                        </td>
-
-                        {{-- DENDA --}}
-                        <td class="text-center">
-                            Rp {{ number_format($item->denda,0,',','.') }}
-                        </td>
-
-                        {{-- STATUS --}}
-                        <td class="text-center">
-                            @if($item->status == 'menunggu')
-                                <span class="badge bg-warning text-dark">menunggu</span>
-                            @else
-                                <span class="badge bg-success">selesai</span>
-                            @endif
-                        </td>
-
-                        {{-- AKSI --}}
-                        <td class="text-center">
-
-                            @if($item->status == 'menunggu')
-
-                                <form action="{{ route('denda.bayar',$item->id) }}" method="POST">
-                                    @csrf
-                                    <button class="btn btn-success btn-sm">
-                                        ✔ Bayar
-                                    </button>
-                                </form>
-
-                            @else
-                                <button class="btn btn-secondary btn-sm" disabled>
-                                    ✔ Lunas
-                                </button>
-                            @endif
-
-                        </td>
-                    </tr>
-                @empty
-                    <tr>
-                        <td colspan="7" class="text-center text-muted">
-                            Tidak ada data denda
-                        </td>
-                    </tr>
-                @endforelse
-                </tbody>
-
-            </table>
-
+        <div id="notif" class="notif-popup">
+            {{ session('success') }}
         </div>
-    </div>
+    @endif
 
+    {{-- SEARCH SYSTEM --}}
+    <form action="{{ route('denda.index') }}" method="GET" class="search-wrapper">
+        <input type="text" name="search" class="input-search-custom" 
+               placeholder="Cari Anggota..." value="{{ request('search') }}">
+        <button type="submit" class="btn-search-custom">
+            <i class="fas fa-search me-2"></i> Cari
+        </button>
+        
+        @if(request('search'))
+            <a href="{{ route('denda.index') }}" class="btn-reset-custom">Reset</a>
+        @endif
+    </form>
+
+    <table class="table-custom text-center">
+        <thead>
+            <tr>
+                <th width="50">NO</th>
+                <th style="text-align: left;">NAMA ANGGOTA</th>
+                <th style="text-align: left;">JUDUL BUKU</th>
+                <th>TGL KEMBALI</th>
+                <th>JUMLAH DENDA</th>
+                <th>STATUS</th>
+                <th width="180">AKSI</th>
+            </tr>
+        </thead>
+        <tbody>
+            @forelse($data as $item)
+            <tr>
+                <td>{{ $loop->iteration }}</td>
+                <td style="text-align: left;">
+                    <span class="text-main">{{ $item->peminjaman->nama_anggota }}</span>
+                    <span class="text-sub">{{ $item->peminjaman->email_anggota ?? 'user@email.com' }}</span>
+                </td>
+                <td style="text-align: left;">
+                    <span class="text-main">{{ $item->peminjaman->buku->judul ?? '-' }}</span>
+                    <span class="text-sub">{{ $item->peminjaman->buku->penulis ?? 'Penulis' }}</span>
+                </td>
+                <td>
+                    <span style="font-weight: 500; color: #444;">
+                        {{ $item->peminjaman->tgl_kembali ? \Carbon\Carbon::parse($item->peminjaman->tgl_kembali)->format('d - m - Y') : '-' }}
+                    </span>
+                </td>
+                <td>
+                    <span style="font-weight: 700; color: #333;">
+                        Rp {{ number_format($item->denda, 0, ',', '.') }}
+                    </span>
+                </td>
+                <td>
+                    @if($item->status == 'menunggu')
+                        <span class="badge-pill-custom status-belum-bayar">belum bayar</span>
+                    @else
+                        <span class="badge-pill-custom status-lunas">Lunas</span>
+                    @endif
+                </td>
+                <td>
+                    @if($item->status == 'menunggu')
+                        <form action="{{ route('denda.bayar', $item->id) }}" method="POST">
+                            @csrf
+                            <button type="submit" class="btn-bayar">Tandai sudah bayar</button>
+                        </form>
+                    @else
+                        <button class="btn-selesai" disabled>Tandai sudah bayar</button>
+                    @endif
+                </td>
+            </tr>
+            @empty
+            <tr>
+                <td colspan="7" class="py-5 text-muted">Belum ada data denda yang tercatat.</td>
+            </tr>
+            @endforelse
+        </tbody>
+    </table>
 </div>
+
+<script>
+// Auto-hide notifikasi
+setTimeout(() => {
+    let notif = document.getElementById('notif');
+    if(notif){
+        notif.style.transition = "0.5s";
+        notif.style.opacity = "0";
+        setTimeout(()=> notif.remove(), 500);
+    }
+}, 3000);
+</script>
 @endsection
