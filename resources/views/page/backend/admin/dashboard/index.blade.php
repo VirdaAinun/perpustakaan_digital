@@ -89,8 +89,7 @@
         </div>
 
         <div class="white-card">
-            <h5 class="fw-bold text-dark mb-1">Buku paling sering dipinjam</h5>
-            <p class="text-muted small mb-4">Daftar buku dengan peminjaman tertinggi</p>
+            <h5 class="fw-bold text-dark mb-1">Daftar Buku paling sering dipinjam</h5>
             
             @foreach($bukuPopuler as $index => $buku)
             <div class="progress-item">

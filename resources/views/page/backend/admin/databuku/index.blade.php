@@ -204,9 +204,8 @@
         </table>
     </div>
 
-    <div class="mt-3">
-        {{ $bukus->links() }}
-    </div>
+    <div class="mt-4 d-flex justify-content-center">
+    {{ $bukus->links('pagination::bootstrap-5') }}
 </div>
 
 @endsection

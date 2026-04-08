@@ -59,6 +59,7 @@
     .card-filter label {
         margin-bottom: 0;
         padding-left: 5px;
+        background: #ffffff;
     }
 
     /* Table Styling */
@@ -70,8 +71,8 @@
     }
 
     .custom-table thead th {
-        background: #f4f7fe;
-        color: #a3aed0;
+        background: #2b3674;
+        color: #ffffff;
         text-transform: uppercase;
         font-size: 12px;
         font-weight: 700;
@@ -88,7 +89,7 @@
     }
 
     .btn-export {
-        background: #4318ff;
+        background: #2b3674;
         color: white;
         border-radius: 12px;
         padding: 10px 24px;

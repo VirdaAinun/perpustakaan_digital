@@ -36,6 +36,7 @@
         border-bottom: 1px solid #ddd;
         display: flex;
         align-items: center;
+        justify-content: flex-end;
         padding: 0 20px;
         z-index: 1000;
     }
@@ -105,15 +106,16 @@
 
 </head>
 <body>
+<!-- NAVBAR -->
+<div class="navbar-wrapper">
+    @include('layouts.backend.superadmin.navbar')
+</div>
+
 <!-- SIDEBAR -->
 <div class="sidebar-wrapper">
     @include('layouts.backend.superadmin.sidebar')
 </div>
 
-<!-- NAVBAR -->
-<div class="navbar-wrapper">
-    @include('layouts.backend.superadmin.navbar')
-</div>
 
 <!-- CONTENT -->
 <div class="content">

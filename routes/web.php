@@ -120,6 +120,9 @@ Route::middleware(['auth','cekakses:petugas'])->prefix('admin')->group(function 
     Route::get('/laporan', [LaporanController::class, 'index'])
         ->name('admin.laporan.index');
     
+    Route::get('/laporan/export-pdf', [LaporanController::class, 'exportPdf'])
+        ->name('admin.laporan.export-pdf');
+    
     Route::get('/profile', [ProfilePetugasController::class, 'index'])
         ->name('admin.profile');
 });

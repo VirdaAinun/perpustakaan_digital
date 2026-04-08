@@ -13,10 +13,24 @@ class DataAnggotaController extends Controller
     // ======================
     // TAMPIL DATA
     // ======================
-    public function index()
+    public function index(Request $request)
     {
-        $anggota = Anggota::latest()->paginate(10)->withQueryString();
-        return view('page.backend.admin.dataanggota.index', compact('anggota'));
+        $kelasList = Anggota::select('kelas')->distinct()->orderBy('kelas', 'asc')->get();
+        $query = Anggota::query();
+
+        if ($request->filled('search')) {
+            $query->where(function($q) use ($request) {
+                $q->where('nama', 'like', '%' . $request->search . '%')
+                  ->orWhere('nis', 'like', '%' . $request->search . '%');
+            });
+        }
+
+        if ($request->filled('kelas')) {
+            $query->where('kelas', $request->kelas);
+        }
+
+        $anggota = $query->latest()->paginate(10)->withQueryString();
+        return view('page.backend.admin.dataanggota.index', compact('anggota', 'kelasList'));
     }
 
     // ======================

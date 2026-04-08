@@ -1,25 +1,22 @@
 <style>
-    /* 1. Impor Font Inter - Ini adalah font yang paling mirip dengan desain tersebut */
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
 
     :root {
-        --active-bg: #4c6fff; /* Warna biru cerah pada tombol aktif */
+        --active-bg: #707070; /* Warna biru cerah pada tombol aktif */
         --text-active: #ffffff; /* Warna teks putih pada tombol aktif */
-        --text-inactive: #8c8c8c; /* Warna teks abu-abu pudar */
-        --icon-inactive: #8c8c8c; /* Warna ikon abu-abu */
-        --sidebar-bg: #ffffff;
-        --sidebar-width: 260px; /* Lebar sidebar yang disesuaikan */
+        --text-inactive: #ffffff; /* Warna teks abu-abu pudar */
+        --icon-inactive: #ffffff; /* Warna ikon abu-abu */
+        --sidebar-bg: #2c3e50;
+        --sidebar-width: 250px; /* Lebar sidebar yang disesuaikan */
     }
 
-    /* Reset dasar agar konsisten */
     * {
         box-sizing: border-box;
     }
 
     body {
-        font-family: 'Inter', sans-serif; /* Menggunakan Inter */
+        font-family: 'Inter', sans-serif; 
         margin: 0;
-        background-color: #f8f9fa; /* Latar belakang body sedikit abu-abu */
     }
 
     .sidebar {
@@ -32,17 +29,16 @@
         padding: 24px 16px; /* Padding sisi luar */
         display: flex;
         flex-direction: column;
-        /* Bayangan sidebar sangat tipis seperti di gambar */
         box-shadow: 1px 0px 10px rgba(0, 0, 0, 0.03); 
         z-index: 1000;
+        
     }
 
-    /* Perapihan Brand Area */
     .sidebar-brand {
         display: flex;
         align-items: center;
         gap: 10px;
-        padding: 0 8px; /* Padding dalam brand agar sejajar menu */
+        padding: 0 8px; 
         margin-bottom: 40px; /* Jarak ke menu pertama */
     }
 
@@ -53,8 +49,8 @@
 
     .sidebar-brand span {
         font-weight: 700;
-        color: #1a1a1a;
-        font-size: 16px; /* Ukuran teks brand */
+        color: #ffffff;
+        font-size: 16px;
         letter-spacing: -0.3px;
     }
 
@@ -75,12 +71,12 @@
         display: flex;
         align-items: center;
         gap: 12px; /* Jarak ikon ke teks */
-        padding: 10px 16px; /* Padding dalam tombol */
+        padding: 10px 16px; 
         text-decoration: none;
         color: var(--text-inactive);
-        font-weight: 500; /* Medium weight */
-        font-size: 13px; /* Ukuran teks menu kecil cerah */
-        border-radius: 8px; /* Rounding tipis pada tombol */
+        font-weight: 500; 
+        font-size: 13px; 
+        border-radius: 8px; 
         transition: all 0.2s ease;
     }
 
@@ -134,7 +130,7 @@
 
 <div class="sidebar">
     <div class="sidebar-brand">
-        <img src="{{ asset('path/to/logo.png') }}" alt="Logo">
+        <div class="logo">📚</div>
         <span>Perpustakaan Digital</span>
     </div>
 

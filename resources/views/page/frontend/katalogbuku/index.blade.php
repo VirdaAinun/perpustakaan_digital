@@ -16,22 +16,76 @@ min-height: 100vh;
 color: black;
 }
 
-.filter-box{
-display:flex;
-gap:20px;
-margin-top:20px;
-margin-bottom:30px;
-flex-wrap:wrap;
+/* Container Utama Filter */
+.filter-box {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    background-color: #f8f9fa;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+    margin-bottom: 30px;
+    flex-wrap: wrap; /* Supaya rapi di layar HP */
 }
 
-.filter-box input,
-.filter-box select{
-padding:12px;
-border-radius:6px;
-border:none;
-background-color: silver;
+/* Styling Input Pencarian */
+.filter-box input[type="text"] {
+    flex: 1; /* Mengambil ruang sisa agar panjang */
+    min-width: 200px;
+    padding: 10px 15px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    font-size: 14px;
+    transition: border-color 0.3s ease;
 }
 
+.filter-box input[type="text"]:focus {
+    outline: none;
+    border-color: #3498db;
+    box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.2);
+}
+
+/* Styling Dropdown (Select) */
+.filter-box select {
+    padding: 10px 15px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    background-color: white;
+    cursor: pointer;
+    font-size: 14px;
+    min-width: 150px;
+}
+
+/* Styling Tombol Filter */
+.filter-box button {
+    padding: 10px 25px;
+    background-color: #3498db;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.filter-box button:hover {
+    background-color: #2980b9;
+}
+
+/* Responsif untuk HP */
+@media (max-width: 600px) {
+    .filter-box {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    
+    .filter-box input[type="text"], 
+    .filter-box select, 
+    .filter-box button {
+        width: 100%;
+    }
+}
 .book-grid{
 display:grid;
 grid-template-columns:repeat(auto-fit,minmax(250px,1fr));

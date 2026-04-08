@@ -104,9 +104,9 @@
     </div>
 
     <div class="d-flex justify-content-end">
-        <button class="btn btn-export shadow-sm">
+        <a href="{{ route('admin.laporan.export-pdf', request()->query()) }}" class="btn btn-export shadow-sm" style="text-decoration:none">
             <i class="fas fa-file-pdf me-1"></i> EKSPORT PDF
-        </button>
+        </a>
     </div>
 
     <div class="table-card">

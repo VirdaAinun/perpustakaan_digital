@@ -11,36 +11,32 @@ use Illuminate\Support\Facades\Storage;
 class DataBukuController extends Controller
 {
     public function index(Request $request)
-    {
-        // 1. Ambil daftar penerbit unik untuk filter
-        $penerbitList = Buku::select('penerbit')->distinct()->orderBy('penerbit', 'asc')->get();
+{
+    $penerbitList = Buku::select('penerbit')->distinct()->orderBy('penerbit', 'asc')->get();
+    $query = Buku::with('kategori');
 
-        // 2. Mulai Query dengan Eager Loading 'kategori' agar tidak muncul JSON di view
-        // Gabungkan .with() di awal query agar tidak menimpa variabel
-        $query = Buku::with('kategori');
-
-        // Filter: Cari Judul Buku
-        if ($request->filled('search')) {
-            $query->where('judul', 'like', '%' . $request->search . '%');
-        }
-
-        // Filter: Pilih Penerbit
-        
-        if ($request->filled('penerbit')) {
-            $query->where('penerbit', $request->penerbit);
-        }
-
-        // Filter: Status Buku
-        if ($request->filled('status')) {
-            $query->where('status', $request->status);
-        }
-
-        // 3. Eksekusi Query
-        $bukus = $query->latest()->paginate(10)->withQueryString();
-
-        return view('page.backend.admin.databuku.index', compact('bukus', 'penerbitList'));
+    if ($request->filled('search')) {
+        $query->where('judul', 'like', '%' . $request->search . '%');
     }
 
+    if ($request->filled('penerbit')) {
+        $query->where('penerbit', $request->penerbit);
+    }
+
+    if ($request->filled('status')) {
+        // Logika status: Jika 'Habis' berarti stok 0, jika 'Tersedia' berarti stok > 0
+        if ($request->status == 'Habis') {
+            $query->where('stok', 0);
+        } else {
+            $query->where('stok', '>', 0);
+        }
+    }
+
+     // Paginate 10 per page, bawa query string biar filter tetap ada
+    $bukus = $query->orderBy('id', 'desc')->paginate(10)->withQueryString();
+
+    return view('page.backend.admin.databuku.index', compact('bukus', 'penerbitList'));
+}
     public function create()
     {
         $kategoris = Kategori::all();

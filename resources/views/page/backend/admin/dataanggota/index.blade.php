@@ -26,6 +26,28 @@
         <a href="{{ route('admin.dataanggota.create') }}" class="btn-tambah">+ Tambah Anggota</a>
     </div>
 
+    <div style="background: white; padding: 15px; border-radius: 8px; margin-bottom: 20px;">
+        <form action="{{ route('admin.dataanggota.index') }}" method="GET" style="display: flex; gap: 15px; align-items: center;">
+            <select name="kelas" class="form-control" style="padding: 8px 12px; border: 1px solid #ddd; border-radius: 4px; width: 200px;" onchange="this.form.submit()">
+                <option value="">Semua Kelas</option>
+                @foreach($kelasList as $k)
+                    <option value="{{ $k->kelas }}" {{ request('kelas') == $k->kelas ? 'selected' : '' }}>
+                        {{ $k->kelas }}
+                    </option>
+                @endforeach
+            </select>
+            
+            <input type="text" name="search" class="form-control" placeholder="Cari nama atau NIS..." 
+                   value="{{ request('search') }}" style="padding: 8px 12px; border: 1px solid #ddd; border-radius: 4px; width: 250px;">
+            
+            <button type="submit" style="background: #1f5f99; color: white; border: none; padding: 8px 15px; border-radius: 4px; cursor: pointer;">Cari</button>
+            
+            @if(request('kelas') || request('search'))
+                <a href="{{ route('admin.dataanggota.index') }}" style="background: #6c757d; color: white; text-decoration: none; padding: 8px 15px; border-radius: 4px;">Reset</a>
+            @endif
+        </form>
+    </div>
+
     @if(session('success'))
         <div style="background: #d4edda; color: #155724; padding: 15px; border-radius: 8px; margin-bottom: 20px;">
             {{ session('success') }}
