@@ -183,7 +183,7 @@
         @endif
     </td>
                     <td>
-                        <a href="{{ route('databuku.edit', $item->id) }}" class="text-primary btn-action">
+                        <a href="{{ route('databuku.edit', $item->id) }}" class="text-primary btn-action" style="text-decoration:none">
                             <i class="fas fa-edit"></i> Edit
                         </a>
                         <form action="{{ route('databuku.destroy', $item->id) }}" method="POST" style="display:inline;">

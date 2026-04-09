@@ -5,6 +5,7 @@ namespace App\Http\Controllers\backend\admin;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Peminjaman;
+use App\Models\Notifikasi;
 
 class PeminjamanController extends Controller
 {
@@ -40,8 +41,18 @@ class PeminjamanController extends Controller
 
         if ($request->aksi == 'setuju') {
             $peminjaman->status = 'dipinjam';
+            Notifikasi::create([
+                'user_id' => $peminjaman->user_id,
+                'judul'   => 'Peminjaman Disetujui',
+                'pesan'   => 'Peminjaman buku "' . ($peminjaman->buku->judul ?? '-') . '" telah disetujui. Silakan ambil buku di perpustakaan.',
+            ]);
         } else {
             $peminjaman->status = 'ditolak';
+            Notifikasi::create([
+                'user_id' => $peminjaman->user_id,
+                'judul'   => 'Peminjaman Ditolak',
+                'pesan'   => 'Peminjaman buku "' . ($peminjaman->buku->judul ?? '-') . '" ditolak oleh petugas.',
+            ]);
         }
 
         $peminjaman->save();

@@ -23,6 +23,7 @@ use App\Http\Controllers\Backend\Admin\DendaController as AdminDendaController;
 use App\Http\Controllers\Backend\Admin\DataAnggotaController;
 use App\Http\Controllers\Backend\Admin\LaporanController;
 use App\Http\Controllers\Backend\Admin\ProfilePetugasController;
+use App\Http\Controllers\Backend\Admin\KategoriController;
 
 // ===============================
 // 🟢 ANGGOTA (FRONTEND)
@@ -61,6 +62,9 @@ Route::middleware(['auth','cekakses:kepala'])->prefix('superadmin')->group(funct
 
     Route::get('/laporan-anggota', [LaporanAnggotaController::class, 'index'])
         ->name('superadmin.laporananggota.index');
+
+    Route::get('/laporan-anggota/export-pdf', [LaporanAnggotaController::class, 'exportPdf'])
+        ->name('superadmin.laporananggota.export-pdf');
 
     Route::get('/data-user', [DataUserController::class, 'index'])
         ->name('superadmin.datauser.index');
@@ -122,9 +126,16 @@ Route::middleware(['auth','cekakses:petugas'])->prefix('admin')->group(function 
     
     Route::get('/laporan/export-pdf', [LaporanController::class, 'exportPdf'])
         ->name('admin.laporan.export-pdf');
+
+    Route::resource('/kategori', KategoriController::class)
+        ->only(['index', 'store', 'update', 'destroy'])
+        ->names('admin.kategori');
     
     Route::get('/profile', [ProfilePetugasController::class, 'index'])
         ->name('admin.profile');
+
+    Route::put('/profile/password', [ProfilePetugasController::class, 'updatePassword'])
+        ->name('admin.profile.password.update');
 });
 
 
@@ -165,4 +176,10 @@ Route::middleware(['cekakses:anggota'])->group(function () {
     ->name('profile.anggota');
 
     Route::put('/profile/update', [ProfileController::class, 'update'])->name('profile.update');
+
+    Route::post('/notifikasi/{id}/baca', [\App\Http\Controllers\Frontend\NotifikasiController::class, 'baca'])
+        ->name('notifikasi.baca');
+
+    Route::post('/notifikasi/baca-semua', [\App\Http\Controllers\Frontend\NotifikasiController::class, 'bacaSemua'])
+        ->name('notifikasi.bacaSemua');
 });

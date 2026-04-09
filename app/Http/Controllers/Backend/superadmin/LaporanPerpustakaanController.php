@@ -4,26 +4,31 @@ namespace App\Http\Controllers\Backend\SuperAdmin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Peminjaman;
+use App\Models\Denda;
 use Illuminate\Http\Request;
 
 class LaporanPerpustakaanController extends Controller
 {
     public function index(Request $request)
     {
-        $query = Peminjaman::with(['buku', 'user']);
+        $jenis = $request->get('jenis', 'peminjaman');
+        $laporan = collect();
 
-        // Filter Rentang Tanggal
-        if ($request->filled('tgl_mulai') && $request->filled('tgl_selesai')) {
-            $query->whereBetween('tgl_pinjam', [$request->tgl_mulai, $request->tgl_selesai]);
+        if ($jenis == 'peminjaman') {
+            $laporan = Peminjaman::with(['buku', 'user'])
+                ->whereIn('status', ['menunggu', 'dipinjam', 'ditolak', 'terlambat'])
+                ->latest()->get();
+
+        } elseif ($jenis == 'pengembalian') {
+            $laporan = Peminjaman::with(['buku', 'user'])
+                ->whereIn('status', ['menunggu_verifikasi', 'selesai'])
+                ->latest()->get();
+
+        } elseif ($jenis == 'denda') {
+            $laporan = Denda::with(['peminjaman.buku', 'peminjaman.user'])
+                ->latest()->get();
         }
 
-        // Filter Status
-        if ($request->filled('status')) {
-            $query->where('status', $request->status);
-        }
-
-        $laporan = $query->latest()->get();
-
-        return view('page.backend.superadmin.laporanperpustakaan.index', compact('laporan'));
+        return view('page.backend.superadmin.laporanperpustakaan.index', compact('laporan', 'jenis'));
     }
 }

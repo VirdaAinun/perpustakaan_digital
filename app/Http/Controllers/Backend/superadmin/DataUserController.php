@@ -14,7 +14,7 @@ class DataUserController extends Controller
     // ===============================
     public function index(Request $request)
     {
-        $query = User::query();
+        $query = User::where('role', 'petugas');
 
         if ($request->filled('search')) {
             $query->where('name', 'like', '%' . $request->search . '%')

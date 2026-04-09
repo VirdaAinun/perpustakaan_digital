@@ -75,6 +75,11 @@
     <i>📚</i> Data Buku
 </a>
 
+<a href="{{ route('admin.kategori.index') }}" 
+   class="{{ Route::is('admin.kategori.*') ? 'active' : '' }}">
+    <i>🏷️</i> Kategori Buku
+</a>
+
 <a href="{{ route('peminjaman.index') }}">
     <i>📥</i> Peminjaman
 </a>

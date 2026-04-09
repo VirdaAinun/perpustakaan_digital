@@ -1,187 +1,147 @@
 @extends('layouts.backend.superadmin.app')
 
 @section('content')
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css">
+
 <style>
-    /* Jarak antar kontainer utama */
-    .header-container {
-        margin-bottom: 20px; /* Memberikan jarak ke kartu filter/tabel di bawahnya */
-    }
-
-    .header-title { 
-        color: #2b3674; 
-        font-weight: 800;
-        margin-bottom: 5px; 
-    }
-
-    /* Memberikan jarak khusus pada tombol cetak agar tidak menempel */
-    .btn-print {
-        background: #4318ff;
-        color: white;
+    .container-custom {
+        background: #ffffff;
+        padding: 30px;
         border-radius: 12px;
-        padding: 12px 28px; /* Sedikit lebih besar agar lebih click-friendly */
-        font-weight: 700;
-        border: none;
-        transition: 0.3s;
-        white-space: nowrap; /* Mencegah teks tombol terpotong */
-        margin-left: 15px; /* Jarak horizontal dari judul */
+        box-shadow: 0 4px 20px rgba(0,0,0,0.05);
     }
-    .report-page { background: #f4f7fe; padding: 25px; min-height: 100vh; font-family: 'Plus Jakarta Sans', sans-serif; }
-    .header-title { color: #2b3674; font-weight: 800; }
+    .page-title {
+        font-weight: 700; color: #2c3e50; font-size: 22px;
+        margin-bottom: 5px; border-left: 5px solid #1a5da4; padding-left: 15px;
+    }
+    .table-custom { width: 100% !important; border: 1px solid #f0f0f0; }
+    .table-custom thead { background: #1a5da4 !important; }
+    .table-custom th {
+        color: white !important; text-align: center; font-size: 11px;
+        text-transform: uppercase; padding: 15px; border: none !important;
+    }
+    .table-custom td { padding: 15px; border-bottom: 1px solid #f8f9fa; font-size: 13px; vertical-align: middle; }
     
-    .card-custom {
-        background: white;
-        border-radius: 20px;
-        padding: 25px;
-        box-shadow: 14px 17px 40px 4px rgba(112, 144, 176, 0.08);
-        border: none;
-    }
+    .badge-aktif { background: #e1f7ea; color: #27ae60; padding: 5px 15px; border-radius: 50px; font-weight: 600; }
+    .badge-tidak { background: #fff4e0; color: #f39c12; padding: 5px 15px; border-radius: 50px; font-weight: 600; }
+    .dataTables_wrapper .pagination { display: flex !important; justify-content: flex-end; list-style: none; }
+    .dataTables_wrapper .pagination li a { border: 1px solid #dee2e6 !important; padding: 8px 14px !important; color: #1a5da4 !important; text-decoration: none !important; border-radius: 6px !important; margin: 0 2px; }
+    .page-item.active .page-link { background-color: #1a5da4 !important; color: white !important; border: none; }
 
-    /* Search Bar Styling */
-    .form-search {
-        background-color: #f4f7fe !important;
-        border: 2px solid transparent !important;
-        border-radius: 12px;
-        padding: 10px 20px;
-        color: #2b3674;
-        font-weight: 600;
-        transition: 0.3s;
+    /* PRINT STYLES */
+    .print-header { display: none; }
+    @media print {
+        body * { visibility: hidden; }
+        .print-area, .print-area * { visibility: visible; }
+        .print-area { position: absolute; top: 0; left: 0; width: 100%; padding: 20px; }
+        .print-header { display: block !important; text-align: center; margin-bottom: 20px; border-bottom: 3px double #000; padding-bottom: 15px; }
+        .print-header h2 { font-size: 18px; font-weight: 800; margin: 0; }
+        .print-header p { font-size: 12px; margin: 3px 0; color: #333; }
+        .print-header .print-meta { font-size: 11px; color: #555; margin-top: 8px; }
+        .table-custom thead { background: #1a5da4 !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+        .table-custom th { color: white !important; font-size: 10px; padding: 8px; }
+        .table-custom td { font-size: 10px; padding: 7px; }
+        .badge-aktif, .badge-tidak { border: 1px solid #ccc; border-radius: 4px; padding: 2px 6px; font-size: 9px; }
+        .d-flex, #anggotaTable_wrapper .row { display: none !important; }
+        .print-area table { display: table !important; }
+        .print-area thead, .print-area tbody, .print-area tr, .print-area th, .print-area td { display: revert !important; }
     }
-    .form-search:focus {
-        border-color: #4318ff !important;
-        background-color: #fff !important;
-        box-shadow: none;
-    }
-
-    /* Table Styling agar Sejajar */
-    .custom-table { border-collapse: separate; border-spacing: 0 10px; width: 100%; }
-    .custom-table thead th {
-        background: #f4f7fe;
-        color: #a3aed0;
-        text-transform: uppercase;
-        font-size: 12px;
-        font-weight: 700;
-        padding: 15px;
-        border: none;
-    }
-    .custom-table tbody tr { background: white; transition: 0.3s; }
-    .custom-table tbody td {
-        padding: 15px;
-        color: #2b3674;
-        font-weight: 600;
-        vertical-align: middle;
-        border-bottom: 1px solid #f1f4f9;
-    }
-
-    /* Inisial Nama */
-    .user-icon {
-        width: 45px;
-        height: 45px;
-        background: #eef2ff;
-        color: #4318ff;
-        border-radius: 12px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-weight: 800;
-        font-size: 18px;
-    }
-
-    .badge-count {
-        background: #e6faf5;
-        color: #05cd99;
-        padding: 6px 16px;
-        border-radius: 10px;
-        font-size: 12px;
-        font-weight: 700;
-    }
-
-    .badge-status {
-        padding: 6px 12px;
-        border-radius: 8px;
-        font-size: 11px;
-        font-weight: 700;
-        text-transform: uppercase;
-    }
-
-    .btn-print {
-        background: #4318ff;
-        color: white;
-        border-radius: 12px;
-        padding: 10px 24px;
-        font-weight: 700;
-        border: none;
-        transition: 0.3s;
-    }
-    .btn-print:hover { background: #3311cc; transform: translateY(-2px); }
 </style>
 
-<div class="report-page">
-    <div class="d-flex justify-content-between align-items-start header-container">
+<div class="container-custom">
+    <div class="d-flex justify-content-between align-items-center mb-4">
         <div>
-            <h2 class="header-title">Laporan Data Anggota</h2>
-            <p class="text-muted mb-0" style="font-size: 14px;">
-                Daftar seluruh anggota perpustakaan yang terdaftar dalam sistem.
-            </p>
+            <h5 class="page-title">Laporan Data Anggota</h5>
+            
         </div>
-        
-        <button onclick="window.print()" class="btn-print shadow-sm">
-            <i class="bi bi-printer-fill me-2"></i> Cetak Data
-        </button>
+        <a href="{{ route('superadmin.laporananggota.export-pdf', request()->query()) }}" 
+           style="background: #1a5da4; color: #fff; text-decoration: none; padding: 10px 22px; border-radius: 8px; font-size: 13px; font-weight: 600; display: inline-flex; align-items: center; gap: 8px; box-shadow: 0 3px 8px rgba(26,93,164,0.3); letter-spacing: 0.3px;">
+            <i class="fas fa-file-pdf"></i> Eksport PDF
+        </a>
+        </div>
+
+    <div class="print-area">
+    <div class="print-header">
+        <h2>LAPORAN DATA ANGGOTA PERPUSTAKAAN DIGITAL</h2>
+        <p class="print-meta">Dicetak pada: {{ \Carbon\Carbon::now()->format('d F Y, H:i') }} &nbsp;|&nbsp; Total Anggota: {{ count($anggota) }} orang</p>
+        <hr style="border-top: 1px solid #000; margin: 8px 0 0 0;">
     </div>
 
-    <div class="card-custom">
-        <form action="{{ route('superadmin.laporananggota.index') }}" method="GET" class="mb-4">
-            <div class="input-group" style="max-width: 400px;">
-                <input type="text" name="search" class="form-search form-control" placeholder="Cari nama atau NIS..." value="{{ request('search') }}">
-                <button class="btn btn-primary ms-2 rounded-3" type="submit" style="background: #2b3674; border: none;">
-                    <i class="bi bi-search"></i>
-                </button>
-            </div>
-        </form>
-
-        <div class="table-responsive">
-            <table class="table custom-table">
-                <thead>
-                    <tr>
-                        <th>Anggota</th>
-                        <th>NIS</th>
-                        <th>Kelas</th>
-                        <th class="text-center">Total Pinjam</th>
-                        <th class="text-center">Status Akun</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @forelse($anggota as $row)
-                    <tr>
-                        <td>
-                            <div class="d-flex align-items-center gap-3">
-                                <div class="user-icon">{{ strtoupper(substr($row->nama, 0, 1)) }}</div>
-                                <div>
-                                    <div class="fw-bold text-dark">{{ $row->nama }}</div>
-                                    <small class="text-muted" style="font-size: 11px;">Anggota Aktif</small>
-                                </div>
-                            </div>
-                        </td>
-                        <td><span class="text-muted">{{ $row->nis }}</span></td>
-                        <td><span class="text-muted">{{ $row->kelas }}</span></td>
-                        <td class="text-center">
-                            <span class="badge-count">{{ $row->peminjaman_count ?? 0 }} Kali</span>
-                        </td>
-                        <td class="text-center">
-                            <span class="badge-status {{ $row->status == 'aktif' ? 'bg-success-light text-success' : 'bg-danger-light text-danger' }}" 
-                                  style="background: {{ $row->status == 'aktif' ? '#e6faf5' : '#fff5f5' }}; padding: 8px 15px; border-radius: 8px;">
-                                {{ $row->status }}
-                            </span>
-                        </td>
-                    </tr>
-                    @empty
-                    <tr>
-                        <td colspan="5" class="text-center py-5 text-muted">Data anggota tidak ditemukan.</td>
-                    </tr>
-                    @endforelse
-                </tbody>
-            </table>
-        </div>
+    <div class="table-responsive">
+        <table id="anggotaTable" class="table table-hover table-custom">
+            <thead>
+                <tr>
+                    <th width="50">NO</th>
+                    <th style="text-align: left;">NAMA ANGGOTA</th>
+                    <th>NIS</th>
+                    <th>KELAS</th>
+                    <th>STATUS</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach($anggota as $row)
+                <tr>
+                    <td class="text-center">{{ $loop->iteration }}</td>
+                    <td style="text-align: left;">
+                        <div class="fw-bold">{{ $row->nama }}</div>
+                        <div class="text-muted" style="font-size: 11px;">{{ $row->user->email ?? '-' }}</div>
+                    </td>
+                    <td class="text-center">{{ $row->nis }}</td>
+                    <td class="text-center">{{ $row->kelas }}</td>
+                    <td class="text-center">
+                        <span class="{{ $row->status == 'aktif' ? 'badge-aktif' : 'badge-tidak' }}">
+                            {{ ucfirst($row->status) }}
+                        </span>
+                    </td>
+                </tr>
+                @endforeach
+            </tbody>
+        </table>
+    </div>
     </div>
 </div>
+
+<script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
+
+<script>
+    $(document).ready(function() {
+        var table = $('#anggotaTable').DataTable({
+            "pageLength": 10,
+            "ordering": true,
+            "info": true,
+            "paging": true,
+            "drawCallback": function(settings) {
+                var api = this.api();
+                $(api.table().container()).find('.dataTables_paginate').show();
+            },
+            "language": {
+                "search": "Cari Anggota:",
+                "lengthMenu": "Tampilkan _MENU_ data",
+                "info": "Menampilkan _START_ sampai _END_ dari _TOTAL_ data",
+                "paginate": {
+                    "next": '<i class="fas fa-chevron-right"></i>',
+                    "previous": '<i class="fas fa-chevron-left"></i>'
+                }
+            },
+            "dom": "<'row mb-3'<'col-md-6'l><'col-md-6'f>>" +
+                   "<'row'<'col-md-12'tr>>" +
+                   "<'row mt-3'<'col-md-5'i><'col-md-7'p>>",
+        });
+
+        window.printAll = function() {
+            // Tampilkan semua baris
+            table.page.len(-1).draw();
+            setTimeout(function() {
+                window.print();
+                // Kembalikan ke 10 per halaman setelah print
+                setTimeout(function() {
+                    table.page.len(10).draw();
+                }, 1000);
+            }, 500);
+        };
+    });
+</script>
 @endsection

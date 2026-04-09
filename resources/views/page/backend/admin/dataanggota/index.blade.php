@@ -1,105 +1,219 @@
 @extends('layouts.backend.admin.app')
 
 @section('content')
-<style>
-    .container-admin { padding: 30px; background: #f4f7f6; min-height: 100vh; }
-    .header-admin { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
-    .btn-tambah { background: #1f5f99; color: white; text-decoration: none; padding: 10px 20px; border-radius: 8px; font-weight: bold; }
-    .table-box { background: white; padding: 20px; border-radius: 10px; box-shadow: 0 5px 15px rgba(11, 11, 11, 0.1); }
-    table { width: 100%; border-collapse: collapse; }
-    thead { background: #1f5f99; color: white; }
-    th{ padding: 15px; text-align: left; border-bottom: 1px solid #eee; color: #ffffff; }
-    td { padding: 15px; text-align: left; border-bottom: 1px solid #eee; color: #000000; }
-    
-    .status-badge { padding: 4px 10px; border-radius: 4px; font-size: 12px; font-weight: bold; }
-    .aktif { background: #d4edda; color: #155724; }
-    .nonaktif { background: #f8d7da; color: #721c24; }
 
-    .btn-aksi { padding: 6px 12px; border-radius: 4px; text-decoration: none; font-size: 13px; color: white; margin-right: 5px; border: none; cursor: pointer; }
-    .btn-edit { background: #f39c12; }
-    .btn-hapus { background: #e74c3c; }
+<style>
+.container-custom {
+    padding: 30px;
+    background-color: #f8f9fa; /* Background halaman sedikit abu-abu */
+}
+
+/* JUDUL & HEADER */
+.header-flex {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 25px;
+}
+
+.title {
+    color: #000;
+    font-weight: 700;
+    font-size: 24px;
+    margin: 0;
+}
+
+/* FILTER & SEARCH */
+.filter-row {
+    display: flex;
+    gap: 15px;
+    margin-bottom: 20px;
+    align-items: center;
+}
+
+.form-select-custom, .form-control-custom {
+    padding: 8px 12px;
+    border: 1px solid #ced4da;
+    border-radius: 8px;
+    font-size: 14px;
+    color: #495057;
+}
+
+/* BUTTON TAMBAH */
+.btn-add-data {
+    background: #005fa8; /* Biru pekat */
+    color: #fff !important;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 4px;
+    font-size: 14px;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+/* TABLE STYLING */
+.table-container {
+    background: #fff;
+    border-radius: 0; 
+    overflow: hidden;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+}
+
+.table-custom {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.table-custom thead {
+    background: #005fa8; /* Header biru pekat */
+}
+
+.table-custom th {
+    padding: 15px;
+    color: #ffffff !important;
+    text-transform: uppercase;
+    font-size: 12px;
+    font-weight: 600;
+    border: 1px solid #004a82;
+}
+
+.table-custom td {
+    padding: 15px;
+    border: 1px solid #f0f0f0;
+    vertical-align: middle;
+    font-size: 14px;
+    color: #333;
+}
+
+/* BADGE STATUS */
+.badge-status {
+    padding: 4px 12px;
+    border-radius: 6px;
+    font-size: 11px;
+    font-weight: bold;
+    text-transform: uppercase;
+    display: inline-block;
+}
+
+.status-aktif {
+    background-color: #d4edda;
+    color: #28a745;
+    border: 1px solid #c3e6cb;
+}
+
+.status-nonaktif {
+    background-color: #f8d7da;
+    color: #dc3545;
+    border: 1px solid #f5c6cb;
+}
+
+/* ACTION BUTTONS */
+.btn-action {
+    padding: 5px;
+    margin: 0 2px;
+    border-radius: 4px;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 13px;
+    text-decoration: none !important;
+}
 </style>
 
-<div class="container-admin">
-    <div class="header-admin">
-        <h2>Data Anggota Perpustakaan</h2>
-        <a href="{{ route('admin.dataanggota.create') }}" class="btn-tambah">+ Tambah Anggota</a>
-    </div>
+<div class="container-custom">
+    <h2 class="title">Data Anggota</h2>
+    <br>
 
-    <div style="background: white; padding: 15px; border-radius: 8px; margin-bottom: 20px;">
-        <form action="{{ route('admin.dataanggota.index') }}" method="GET" style="display: flex; gap: 15px; align-items: center;">
-            <select name="kelas" class="form-control" style="padding: 8px 12px; border: 1px solid #ddd; border-radius: 4px; width: 200px;" onchange="this.form.submit()">
-                <option value="">Semua Kelas</option>
+    @if(session('success'))
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            {{ session('success') }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    @endif
+
+    <div class="header-flex">
+        <form action="{{ route('admin.dataanggota.index') }}" method="GET" class="filter-row">
+            
+            <select name="kelas" class="form-select-custom" onchange="this.form.submit()">
+                <option value="">Kelas</option>
                 @foreach($kelasList as $k)
                     <option value="{{ $k->kelas }}" {{ request('kelas') == $k->kelas ? 'selected' : '' }}>
                         {{ $k->kelas }}
                     </option>
                 @endforeach
             </select>
+
+            <input type="text" name="search" class="form-control-custom" 
+                   placeholder="Cari nama atau NIS...." value="{{ request('search') }}">
             
-            <input type="text" name="search" class="form-control" placeholder="Cari nama atau NIS..." 
-                   value="{{ request('search') }}" style="padding: 8px 12px; border: 1px solid #ddd; border-radius: 4px; width: 250px;">
-            
-            <button type="submit" style="background: #1f5f99; color: white; border: none; padding: 8px 15px; border-radius: 4px; cursor: pointer;">Cari</button>
+            <button type="submit" class="btn btn-sm btn-outline-primary rounded-pill px-3">Cari</button>
             
             @if(request('kelas') || request('search'))
-                <a href="{{ route('admin.dataanggota.index') }}" style="background: #6c757d; color: white; text-decoration: none; padding: 8px 15px; border-radius: 4px;">Reset</a>
+                <a href="{{ route('admin.dataanggota.index') }}" class="btn btn-sm btn-outline-secondary rounded-pill">Reset</a>
             @endif
         </form>
+
+        <a href="{{ route('admin.dataanggota.create') }}" class="btn-add-data">
+            + Tambah Anggota
+        </a>
     </div>
 
-    @if(session('success'))
-        <div style="background: #d4edda; color: #155724; padding: 15px; border-radius: 8px; margin-bottom: 20px;">
-            {{ session('success') }}
-        </div>
-    @endif
-
-    <div class="table-box">
-        <table>
+    <div class="table-container">
+        <table class="table-custom text-center">
             <thead>
                 <tr>
-                    <th>No</th>
+                    <th width="50">NO</th>
                     <th>NIS</th>
-                    <th>Nama</th>
-                    <th>Kelas</th>
-                    <th>Status</th>
-                    <th>Aksi</th>
+                    <th>NAMA ANGGOTA</th>
+                    <th>KELAS</th>
+                    <th>STATUS</th>
+                    <th width="200">AKSI</th>
                 </tr>
             </thead>
             <tbody>
                 @forelse($anggota as $index => $row)
                 <tr>
                     <td>{{ $anggota->firstItem() + $index }}</td>
-                    <td><b>{{ $row->nis }}</b></td>
-                    <td>{{ $row->nama }}</td>
+                    <td style="font-weight: 600;">{{ $row->nis }}</td>
+                    <td class="text-primary" style="font-weight: 500; text-align: left;">
+                        {{ $row->nama }}
+                    </td>
                     <td>{{ $row->kelas }}</td>
                     <td>
-                        <span class="status-badge {{ $row->status == 'aktif' ? 'aktif' : 'nonaktif' }}">
-                            {{ ucfirst($row->status) }}
-                        </span>
+                        @if($row->status == 'aktif')
+                            <span class="badge-status status-aktif">AKTIF</span>
+                        @else
+                            <span class="badge-status status-nonaktif">NON-AKTIF</span>
+                        @endif
                     </td>
                     <td>
-                        <div style="display: flex;">
-                            <a href="{{ route('admin.dataanggota.edit', $row->id) }}" class="btn-aksi btn-edit">Edit</a>
-                            
-                            <form action="{{ route('admin.dataanggota.destroy', $row->id) }}" method="POST" onsubmit="return confirm('Yakin ingin menghapus anggota ini?')">
-                                @csrf
-                                @method('DELETE')
-                                <button type="submit" class="btn-aksi btn-hapus">Hapus</button>
-                            </form>
-                        </div>
+                        <a href="{{ route('admin.dataanggota.edit', $row->id) }}" class="text-primary btn-action">
+                            <i class="fas fa-edit"></i> Edit
+                        </a>
+                        
+                        <form action="{{ route('admin.dataanggota.destroy', $row->id) }}" method="POST" style="display:inline;">
+                            @csrf
+                            @method('DELETE')
+                            <button type="submit" class="text-danger border-0 bg-transparent btn-action" onclick="return confirm('Hapus anggota ini?')">
+                                <i class="fas fa-trash"></i> Hapus
+                            </button>
+                        </form>
                     </td>
                 </tr>
                 @empty
                 <tr>
-                    <td colspan="6" style="text-align: center; padding: 30px; color: #999;">Belum ada data anggota.</td>
+                    <td colspan="6" class="py-4 text-muted">Data anggota tidak ditemukan.</td>
                 </tr>
                 @endforelse
             </tbody>
         </table>
-        <div class="mt-3">
-            {{ $anggota->links() }}
-        </div>
+    </div>
+
+    <div class="mt-4 d-flex justify-content-center">
+        {{ $anggota->appends(request()->input())->links('pagination::bootstrap-5') }}
     </div>
 </div>
+
 @endsection

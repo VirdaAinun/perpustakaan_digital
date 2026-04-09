@@ -55,8 +55,7 @@
     /* CONTENT */
     .content {
         margin-left: 220px;
-        margin-top: 80px;
-        padding: 25px;
+        margin-top: 70px;
         min-height: 100vh;
     }
 

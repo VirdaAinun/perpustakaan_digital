@@ -142,10 +142,60 @@ min-height:100vh;
         <h2>Perpustakaan Digital</h2>
     </div>
     
-   <a href="{{ route('profile.anggota') }}" style="text-decoration: none; color: white;">
-    👤
-</a>
-</div>
+    <div style="display:flex; align-items:center; gap:20px;">
+        @php
+            $notifBelumDibaca = \App\Models\Notifikasi::where('user_id', auth()->id())
+                ->where('dibaca', false)->latest()->get();
+            $semuaNotif = \App\Models\Notifikasi::where('user_id', auth()->id())->latest()->take(10)->get();
+        @endphp
+
+        {{-- BELL NOTIFIKASI --}}
+        <div style="position:relative;">
+            <button onclick="toggleNotif()" style="background:none;border:none;cursor:pointer;color:white;font-size:22px;position:relative;">
+                🔔
+                @if($notifBelumDibaca->count() > 0)
+                    <span style="position:absolute;top:-5px;right:-5px;background:#ff4444;color:white;border-radius:50%;width:18px;height:18px;font-size:10px;display:flex;align-items:center;justify-content:center;font-weight:bold;">
+                        {{ $notifBelumDibaca->count() }}
+                    </span>
+                @endif
+            </button>
+
+            <div id="notifDropdown" style="display:none;position:absolute;right:0;top:40px;width:320px;background:white;border-radius:12px;box-shadow:0 8px 25px rgba(0,0,0,0.15);z-index:9999;overflow:hidden;">
+                <div style="padding:15px 20px;border-bottom:1px solid #f0f0f0;display:flex;justify-content:space-between;align-items:center;">
+                    <span style="font-weight:700;color:#333;font-size:14px;">Notifikasi</span>
+                    @if($notifBelumDibaca->count() > 0)
+                        <form action="{{ route('notifikasi.bacaSemua') }}" method="POST">
+                            @csrf
+                            <button type="submit" style="background:none;border:none;color:#1f5f99;font-size:12px;cursor:pointer;font-weight:600;">Tandai semua dibaca</button>
+                        </form>
+                    @endif
+                </div>
+                <div style="max-height:300px;overflow-y:auto;">
+                    @forelse($semuaNotif as $notif)
+                        <div style="padding:12px 20px;border-bottom:1px solid #f8f8f8;background:{{ $notif->dibaca ? 'white' : '#f0f6ff' }};">
+                            <div style="display:flex;justify-content:space-between;align-items:start;">
+                                <div style="flex:1;">
+                                    <div style="font-weight:700;font-size:13px;color:#333;">{{ $notif->judul }}</div>
+                                    <div style="font-size:12px;color:#666;margin-top:3px;">{{ $notif->pesan }}</div>
+                                    <div style="font-size:10px;color:#aaa;margin-top:5px;">{{ $notif->created_at->diffForHumans() }}</div>
+                                </div>
+                                @if(!$notif->dibaca)
+                                    <form action="{{ route('notifikasi.baca', $notif->id) }}" method="POST" style="margin-left:8px;">
+                                        @csrf
+                                        <button type="submit" style="background:none;border:none;color:#1f5f99;font-size:11px;cursor:pointer;white-space:nowrap;">✓ Baca</button>
+                                    </form>
+                                @endif
+                            </div>
+                        </div>
+                    @empty
+                        <div style="padding:30px;text-align:center;color:#aaa;font-size:13px;">Belum ada notifikasi</div>
+                    @endforelse
+                </div>
+            </div>
+        </div>
+
+        <a href="{{ route('profile.anggota') }}" style="text-decoration:none;color:white;">👤</a>
+    </div>
 </div>
 
 <div class="navbar-row">
@@ -172,6 +222,19 @@ min-height:100vh;
     </div>
 
     @include('layouts.frontend.footer')
+
+<script>
+function toggleNotif(){
+    const d = document.getElementById('notifDropdown');
+    d.style.display = d.style.display === 'none' ? 'block' : 'none';
+}
+document.addEventListener('click', function(e){
+    const dropdown = document.getElementById('notifDropdown');
+    if(dropdown && !dropdown.contains(e.target) && !e.target.closest('button[onclick="toggleNotif()"]')){
+        dropdown.style.display = 'none';
+    }
+});
+</script>
 
 </body>
 </html>

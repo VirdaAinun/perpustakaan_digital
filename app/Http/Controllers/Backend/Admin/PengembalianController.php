@@ -3,7 +3,8 @@
 namespace App\Http\Controllers\backend\admin;
 
 use App\Http\Controllers\Controller;
-use App\Models\Peminjaman; // Kita fokus pakai model ini saja jika data pengembalian ada di sini
+use App\Models\Peminjaman;
+use App\Models\Notifikasi;
 use Illuminate\Http\Request;
 
 class PengembalianController extends Controller
@@ -39,8 +40,14 @@ class PengembalianController extends Controller
 
         // Update status langsung di tabel peminjaman
         $data->update([
-            'status' => 'selesai',
-            'tgl_kembali' => now() // Mencatat tanggal pengembalian hari ini
+            'status'     => 'selesai',
+            'tgl_kembali' => now()
+        ]);
+
+        Notifikasi::create([
+            'user_id' => $data->user_id,
+            'judul'   => 'Pengembalian Dikonfirmasi',
+            'pesan'   => 'Pengembalian buku "' . ($data->buku->judul ?? '-') . '" telah dikonfirmasi. Terima kasih!',
         ]);
 
         return back()->with('success', 'Pengembalian berhasil diverifikasi!');
