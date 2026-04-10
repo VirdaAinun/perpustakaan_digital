@@ -20,7 +20,7 @@
             </button>
         </div>
         <div class="card-body">
-            
+
             <form action="{{ route('superadmin.datauser.index') }}" method="GET" class="row g-3 mb-4">
                 <div class="col-auto">
                     <input type="text" name="search" class="form-control" placeholder="Cari nama atau email..." value="{{ request('search') }}">
@@ -65,38 +65,6 @@
                                 </form>
                             </td>
                         </tr>
-
-                        <div class="modal fade" id="modalEdit{{ $user->id }}" tabindex="-1" aria-hidden="true">
-                            <div class="modal-dialog modal-dialog-centered">
-                                <div class="modal-content">
-                                    <form action="{{ route('superadmin.datauser.update', $user->id) }}" method="POST">
-                                        @csrf @method('PUT')
-                                        <div class="modal-header">
-                                            <h6 class="modal-title fw-bold">Edit User</h6>
-                                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                                        </div>
-                                        <div class="modal-body">
-                                            <div class="mb-3">
-                                                <label class="form-label">Nama</label>
-                                                <input type="text" name="name" class="form-control" value="{{ $user->name }}" required>
-                                            </div>
-                                            <div class="mb-3">
-                                                <label class="form-label">Email</label>
-                                                <input type="email" name="email" class="form-control" value="{{ $user->email }}" required>
-                                            </div>
-                                            <div class="mb-3">
-                                                <label class="form-label text-muted small">Kosongkan password jika tidak ingin diganti</label>
-                                                <input type="password" name="password" class="form-control" placeholder="Password baru">
-                                            </div>
-                                        </div>
-                                        <div class="modal-footer">
-                                            <button type="button" class="btn btn-light" data-bs-dismiss="modal">Batal</button>
-                                            <button type="submit" class="btn btn-primary">Simpan Perubahan</button>
-                                        </div>
-                                    </form>
-                                </div>
-                            </div>
-                        </div>
                         @empty
                         <tr>
                             <td colspan="4" class="text-center py-4 text-muted">Belum ada data user.</td>
@@ -109,6 +77,42 @@
     </div>
 </div>
 
+{{-- Modal Edit (di luar tabel) --}}
+@foreach($users as $user)
+<div class="modal fade" id="modalEdit{{ $user->id }}" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <form action="{{ route('superadmin.datauser.update', $user->id) }}" method="POST">
+                @csrf @method('PUT')
+                <div class="modal-header">
+                    <h6 class="modal-title fw-bold">Edit User</h6>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label class="form-label">Nama</label>
+                        <input type="text" name="name" class="form-control" value="{{ $user->name }}" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Email</label>
+                        <input type="email" name="email" class="form-control" value="{{ $user->email }}" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label text-muted small">Kosongkan password jika tidak ingin diganti</label>
+                        <input type="password" name="password" class="form-control" placeholder="Password baru">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-light" data-bs-dismiss="modal">Batal</button>
+                    <button type="submit" class="btn btn-primary">Simpan Perubahan</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+@endforeach
+
+{{-- Modal Tambah --}}
 <div class="modal fade" id="modalTambah" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">

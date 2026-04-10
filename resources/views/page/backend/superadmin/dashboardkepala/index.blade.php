@@ -164,7 +164,7 @@
         <div style="flex: 1;">
             <div class="card-stat bg-soft-red">
                 <span class="stat-label">Total Denda</span>
-                <h3 class="stat-value">RP 120.000</h3>
+                <h3 class="stat-value">Rp {{ number_format(abs($stats['totalDenda']), 0, ',', '.') }}</h3>
             </div>
         </div>
     </div>
@@ -192,23 +192,23 @@
                 <h5 class="card-title-main">Buku paling sering dipinjam</h5>
                 <p class="card-subtitle-main">Daftar buku dengan jumlah peminjaman tertinggi</p>
                 
-                @foreach($anggotaAktif->take(3) as $index => $agt)
+                @foreach($bukuPopuler->take(3) as $index => $buku)
                 <div class="book-list-item">
                     <div class="rank-indicator">{{ $index + 1 }}</div>
                     <div class="book-details">
-                        <span class="book-title-text">{{ Str::limit($agt->nama_anggota, 25) }}</span>
-                        <span class="book-author-text">Petugas Sistem</span>
+                        <span class="book-title-text">{{ Str::limit($buku->judul, 25) }}</span>
+                        <span class="book-author-text">{{ $buku->penulis }}</span>
                     </div>
                     <div class="progress-box">
                         <div class="progress-bar-bg">
-                            @php 
-                                // Kalkulasi persentase sederhana untuk visual bar
-                                $percent = 100 - ($index * 20); 
+                            @php
+                                $maxTotal = $bukuPopuler->first()->total ?? 1;
+                                $percent = round(($buku->total / $maxTotal) * 100);
                             @endphp
                             <div class="progress-bar-fill" style="width: {{ $percent }}%;"></div>
                         </div>
                     </div>
-                    <div class="loan-total-text">{{ $agt->total }} Peminjaman</div>
+                    <div class="loan-total-text">{{ $buku->total }} Peminjaman</div>
                 </div>
                 @endforeach
             </div>

@@ -47,7 +47,7 @@
             <tbody>
                 @forelse($anggota as $index => $row)
                 <tr>
-                    <td>{{ $index + 1 }}</td>
+                    <td>{{ $anggota->firstItem() + $index }}</td>
                     <td><b>{{ $row->nis }}</b></td>
                     <td>{{ $row->nama }}</td>
                     <td>{{ $row->kelas }}</td>
@@ -75,6 +75,9 @@
                 @endforelse
             </tbody>
         </table>
+        <div class="mt-3">
+            {{ $anggota->links() }}
+        </div>
     </div>
 </div>
 @endsection

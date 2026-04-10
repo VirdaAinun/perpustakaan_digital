@@ -97,7 +97,7 @@
 
                 <div class="col-md-4 d-flex gap-2">
                     <button type="submit" class="btn btn-apply px-4 py-2 small">TERAPKAN FILTER</button>
-                    <a href="{{ route('admin.laporan.index') }}" class="btn btn-secondary bg-secondary border-0 px-4 py-2 small opacity-50 text-white">RESET</a>
+                    <a href="{{ route('admin.laporan.index') }}" class="btn btn-secondary bg-secondary border-0 px-4 py-2 small opacity-50 text-white" style="text-decoration:none">RESET</a>
                 </div>
             </div>
         </form>

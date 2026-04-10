@@ -102,13 +102,14 @@ Route::middleware(['auth','cekakses:petugas'])->prefix('admin')->group(function 
         ->name('peminjaman.verifikasi');
 
     Route::get('/peminjaman/{id}', [PeminjamanController::class, 'show'])
-        ->name('peminjaman.show');
+    ->name('peminjaman.show');
 
     Route::get('/pengembalian', [PengembalianController::class, 'index'])
         ->name('pengembalian.index');
 
     Route::post('/pengembalian/{id}/verifikasi', [PengembalianController::class, 'verifikasi'])
         ->name('pengembalian.verifikasi');
+    Route::get('/pengembalian/{id}', [PengembalianController::class, 'show'])->name('pengembalian.show'); // route show detail
 
     Route::get('/denda', [AdminDendaController::class, 'index'])
         ->name('denda.index');

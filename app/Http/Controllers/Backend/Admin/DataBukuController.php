@@ -25,6 +25,7 @@ class DataBukuController extends Controller
         }
 
         // Filter: Pilih Penerbit
+        
         if ($request->filled('penerbit')) {
             $query->where('penerbit', $request->penerbit);
         }
@@ -35,7 +36,7 @@ class DataBukuController extends Controller
         }
 
         // 3. Eksekusi Query
-        $bukus = $query->latest()->get();
+        $bukus = $query->latest()->paginate(10)->withQueryString();
 
         return view('page.backend.admin.databuku.index', compact('bukus', 'penerbitList'));
     }

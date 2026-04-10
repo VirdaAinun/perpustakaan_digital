@@ -10,8 +10,14 @@ class DendaController extends Controller
 {
     public function index()
     {
-        // Mengambil data denda beserta relasi peminjaman dan buku
-        $data = Denda::with('peminjaman.buku')->latest()->get();
+        $dendaPerHari = 2000;
+        $data = Denda::with('peminjaman.buku', 'peminjaman.user')->latest()->get();
+
+        $data->transform(function ($item) {
+            $item->hari_fix = abs($item->hari_terlambat);
+            $item->denda_fix = abs($item->denda);
+            return $item;
+        });
 
         return view('page.backend.admin.denda.index', compact('data'));
     }

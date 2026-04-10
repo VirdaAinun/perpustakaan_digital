@@ -15,35 +15,28 @@ class DendaController extends Controller
     $userId = auth()->id();
 
     $query = Denda::with(['peminjaman.buku'])
-        // ✅ FILTER USER LOGIN
         ->whereHas('peminjaman', function ($q) use ($userId) {
             $q->where('user_id', $userId);
         })
-        // 🔍 SEARCH (opsional)
         ->when($namaAnggota, function ($query) use ($namaAnggota) {
             $query->whereHas('peminjaman', function ($q) use ($namaAnggota) {
                 $q->where('nama_anggota', 'like', '%' . $namaAnggota . '%');
             });
         });
 
+    // Hitung total denda aktif dari SEMUA data (bukan hanya halaman aktif)
+    $totalDendaAktif = (clone $query)
+        ->where('status', 'menunggu')
+        ->get()
+        ->sum(fn($item) => abs($item->denda));
+
     $dendas = $query->latest()->paginate(10);
 
-    // 🔥 NORMALISASI DATA
     $dendas->getCollection()->transform(function ($item) use ($dendaPerHari) {
-
-        $hari = max(0, $item->hari_terlambat);
-        $denda = $hari * $dendaPerHari;
-
-        $item->hari_fix = $hari;
-        $item->denda_fix = $denda;
-
+        $item->hari_fix = abs($item->hari_terlambat);
+        $item->denda_fix = abs($item->denda);
         return $item;
     });
-
-    // 🔥 TOTAL DENDA AKTIF (AMAN MESKI KOSONG)
-    $totalDendaAktif = $dendas->getCollection()
-        ->where('status', 'menunggu')
-        ->sum('denda_fix');
 
     return view('page.frontend.denda.index', compact(
         'dendas',

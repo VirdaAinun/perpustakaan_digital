@@ -255,8 +255,8 @@ to{opacity:1;transform:translateX(0);}
 @csrf
 
 <input type="hidden" name="buku_id" id="mIdBuku">
-<input type="text" name="nama" placeholder="Nama" required>
-<input type="number" name="jumlah_pinjam" required>
+<p style="margin-bottom:10px;"><b>Peminjam:</b> {{ Auth::user()->name }}</p>
+<input type="number" name="jumlah_pinjam" placeholder="Jumlah Pinjam" required>
 <input type="date" name="tgl_pinjam" required>
 <input type="date" name="tgl_kembali" required>
 

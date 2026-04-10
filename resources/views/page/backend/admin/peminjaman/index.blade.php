@@ -160,7 +160,7 @@
                     <td>{{ $loop->iteration }}</td>
                     <td style="text-align: left;">
                         <span class="text-name">{{ $item->nama_anggota }}</span>
-                        <span class="text-email">{{ $item->email_anggota ?? 'member@example.com' }}</span>
+                        <span class="text-email">{{ $item->user->email ?? '-' }}</span>
                     </td>
                     <td style="text-align: left;">
                         <span class="text-book">{{ $item->buku->judul ?? '-' }}</span>
@@ -201,6 +201,8 @@
                 @endforeach
             </tbody>
         </table>
+    </div>
+
     </div>
 </div>
 

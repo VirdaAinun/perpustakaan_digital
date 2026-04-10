@@ -164,8 +164,8 @@
                     <tr>
                         <td>#{{ $row->id }}</td>
                         <td>
-                            <div class="fw-bold">{{ $row->anggota->nama ?? $row->nama_anggota }}</div>
-                            <small class="text-muted" style="font-size: 10px;">{{ $row->anggota->email ?? '' }}</small>
+                            <div class="fw-bold">{{ $row->nama_anggota }}</div>
+                            <small class="text-muted" style="font-size: 10px;">{{ $row->user->email ?? '-' }}</small>
                         </td>
                         <td>{{ $row->buku->judul ?? 'N/A' }}</td>
                         <td>{{ \Carbon\Carbon::parse($row->tgl_pinjam)->format('d M Y') }}</td>

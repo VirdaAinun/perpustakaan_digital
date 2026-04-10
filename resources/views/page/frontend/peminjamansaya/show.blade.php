@@ -7,7 +7,7 @@
     margin: 20px auto;
     padding: 0 15px;
 }
-h1 { font-size: 1.8rem; margin-bottom: 20px; text-align: left; color: #2c3e50; }
+h1 { font-size: 20px; margin-bottom: 20px; text-align: left; color: #2c3e50; }
 .card {
     background-color: white;
     border-radius: 8px;
@@ -51,7 +51,7 @@ h1 { font-size: 1.8rem; margin-bottom: 20px; text-align: left; color: #2c3e50; }
         <div class="card-body">
             <p><strong>Judul Buku:</strong> {{ $peminjaman->buku->judul }}</p>
             <p><strong>Penulis:</strong> {{ $peminjaman->buku->penulis }}</p>
-            <p><strong>Kategori:</strong> {{ $peminjaman->buku->kategori }}</p>
+            <p><strong>Kategori:</strong> {{ $peminjaman->buku->kategori->nama_kategori ?? '-' }}</p>
             <p><strong>Tanggal Pinjam:</strong> {{ $peminjaman->tanggal_pinjam }}</p>
             <p><strong>Tanggal Kembali:</strong> {{ $peminjaman->tanggal_kembali }}</p>
             <p><strong>Status:</strong> <span class="status status-{{ str_replace('_','-',$peminjaman->status) }}">{{ ucfirst(str_replace('_',' ',$peminjaman->status)) }}</span></p>

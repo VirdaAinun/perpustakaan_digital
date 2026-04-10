@@ -154,8 +154,8 @@
                         <br>
                         <small>Peminjam: {{ $item->peminjaman->nama_anggota }}</small>
                     </td>
-                    <td>{{ $item->hari_terlambat }} Hari</td>
-                    <td>Rp {{ number_format($item->denda, 0, ',', '.') }}</td>
+                    <td>{{ $item->hari_fix }} Hari</td>
+                    <td>Rp {{ number_format($item->denda_fix, 0, ',', '.') }}</td>
                     <td>
                         @if($item->status == 'menunggu')
                             <span class="status-belum">Belum Dibayar</span>

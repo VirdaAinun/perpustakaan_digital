@@ -165,7 +165,7 @@
                 @forelse($bukus as $index => $item)
                 <tr>
                  
-    <td>{{ $index + 1 }}</td>
+    <td>{{ $bukus->firstItem() + $index }}</td>
     <td class="text-primary" style="font-weight: 500; text-align: left;">
         {{ $item->judul }}
     </td>
@@ -202,6 +202,10 @@
                 @endforelse
             </tbody>
         </table>
+    </div>
+
+    <div class="mt-3">
+        {{ $bukus->links() }}
     </div>
 </div>
 

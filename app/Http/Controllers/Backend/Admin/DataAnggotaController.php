@@ -15,7 +15,7 @@ class DataAnggotaController extends Controller
     // ======================
     public function index()
     {
-        $anggota = Anggota::latest()->get();
+        $anggota = Anggota::latest()->paginate(10)->withQueryString();
         return view('page.backend.admin.dataanggota.index', compact('anggota'));
     }
 

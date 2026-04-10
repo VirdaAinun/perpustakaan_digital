@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Buku;
 use App\Models\Peminjaman;
 use App\Models\Anggota;
+use App\Models\Denda;
 use Illuminate\Support\Facades\DB;
 
 class DashboardController extends Controller
@@ -16,18 +17,19 @@ class DashboardController extends Controller
         // 📊 Statistik Ringkasan
         // ===============================
         $stats = [
-            'totalBuku' => Buku::count(),
+            'totalBuku'    => Buku::count(),
             'totalAnggota' => Anggota::count(),
-            'totalPinjam' => Peminjaman::count(),
-            'pinjamBulanIni' => Peminjaman::whereMonth('created_at', now()->month)->count(),
+            'totalPinjam'  => Peminjaman::count(),
+            'totalDenda'   => Denda::sum('denda'),
         ];
 
         // ===============================
-        // 👥 Anggota Teraktif (Top 5)
+        // 📚 Buku Terpopuler (Top 5)
         // ===============================
-        $anggotaAktif = DB::table('peminjamans')
-            ->select('nama_anggota', DB::raw('COUNT(*) as total'))
-            ->groupBy('nama_anggota')
+        $bukuPopuler = DB::table('peminjamans')
+            ->join('bukus', 'peminjamans.buku_id', '=', 'bukus.id')
+            ->select('bukus.judul', 'bukus.penulis', DB::raw('COUNT(*) as total'))
+            ->groupBy('bukus.id', 'bukus.judul', 'bukus.penulis')
             ->orderByDesc('total')
             ->limit(5)
             ->get();
@@ -54,7 +56,7 @@ class DashboardController extends Controller
         // ===============================
         return view(
             'page.backend.superadmin.dashboardkepala.index',
-            compact('stats', 'anggotaAktif', 'dataGrafik')
+            compact('stats', 'bukuPopuler', 'dataGrafik')
         );
     }
 }

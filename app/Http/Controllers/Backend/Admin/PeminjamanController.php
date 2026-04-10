@@ -11,7 +11,7 @@ class PeminjamanController extends Controller
     public function index(Request $request) // <-- Tambahkan Request $request di sini
     {
         // 1. Mulai query dengan relasi buku
-        $query = Peminjaman::with('buku');
+        $query = Peminjaman::with('buku', 'user');
 
         // 2. LOGIKA CARI: Jika input search diisi, saring berdasarkan NAMA ANGGOTA
         if ($request->filled('search')) {
@@ -20,8 +20,6 @@ class PeminjamanController extends Controller
 
         // 3. Ambil datanya (yang sudah difilter maupun tidak)
         $data = $query->latest()->get();
-
-        // 4. Kirim ke view
         return view('page/backend/admin/peminjaman.index', compact('data'));
     }
     /**

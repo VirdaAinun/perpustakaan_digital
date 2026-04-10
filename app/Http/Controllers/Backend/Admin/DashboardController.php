@@ -17,7 +17,9 @@ class DashboardController extends Controller
         $totalBuku = Buku::count();
         $dipinjam = Peminjaman::where('status', 'dipinjam')->count();
         $anggota = Anggota::where('status', 'aktif')->count();
-        $terlambat = Peminjaman::where('status', 'terlambat')->count();
+        $terlambat = Peminjaman::where('status', 'dipinjam')
+            ->where('tgl_kembali', '<', now()->toDateString())
+            ->count();
 
         // 1. Data Buku Terpopuler (Progress Bar)
         $bukuPopuler = Buku::withCount('peminjaman')

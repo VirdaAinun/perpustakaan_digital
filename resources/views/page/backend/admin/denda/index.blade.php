@@ -175,7 +175,7 @@
                 <td>{{ $loop->iteration }}</td>
                 <td style="text-align: left;">
                     <span class="text-main">{{ $item->peminjaman->nama_anggota }}</span>
-                    <span class="text-sub">{{ $item->peminjaman->email_anggota ?? 'user@email.com' }}</span>
+                    <span class="text-sub">{{ $item->peminjaman->user->email ?? '-' }}</span>
                 </td>
                 <td style="text-align: left;">
                     <span class="text-main">{{ $item->peminjaman->buku->judul ?? '-' }}</span>
@@ -188,7 +188,7 @@
                 </td>
                 <td>
                     <span style="font-weight: 700; color: #333;">
-                        Rp {{ number_format($item->denda, 0, ',', '.') }}
+                        Rp {{ number_format($item->denda_fix, 0, ',', '.') }}
                     </span>
                 </td>
                 <td>

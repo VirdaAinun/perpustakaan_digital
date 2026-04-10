@@ -74,7 +74,7 @@
 
                 <div class="detail-item">
                     <div class="detail-label">Email</div>
-                    <div class="detail-value">{{ $data->email_anggota ?? '-' }}</div>
+                    <div class="detail-value">{{ $data->user->email ?? '-' }}</div>
                 </div>
 
                 <div class="detail-item">
@@ -116,12 +116,6 @@
                     </div>
                 </div>
 
-                <div class="detail-item">
-                    <div class="detail-label">Keterangan</div>
-                    <div class="detail-value">
-                        {{ $data->keterangan ?? 'Tidak ada keterangan' }}
-                    </div>
-                </div>
 
             </div>
         </div>

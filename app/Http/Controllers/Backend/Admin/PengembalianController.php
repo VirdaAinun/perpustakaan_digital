@@ -11,7 +11,7 @@ class PengembalianController extends Controller
     public function index(Request $request)
     {
         // 1. Ambil data dari Peminjaman yang statusnya terkait pengembalian
-        $query = Peminjaman::with('buku')
+        $query = Peminjaman::with('buku', 'user')
             ->whereIn('status', ['menunggu_verifikasi', 'selesai']);
 
         // 2. Fitur Cari Nama Anggota (Beneran Fungsi & Dinamis)
@@ -44,5 +44,11 @@ class PengembalianController extends Controller
         ]);
 
         return back()->with('success', 'Pengembalian berhasil diverifikasi!');
+    }
+    public function show($id)
+    {
+        $item = Peminjaman::with('buku', 'user')->findOrFail($id);
+
+        return view('page.backend.admin.pengembalian.show', compact('item'));
     }
 }

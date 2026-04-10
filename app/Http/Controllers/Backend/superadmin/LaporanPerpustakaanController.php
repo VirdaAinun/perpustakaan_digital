@@ -10,7 +10,7 @@ class LaporanPerpustakaanController extends Controller
 {
     public function index(Request $request)
     {
-        $query = Peminjaman::with(['buku', 'anggota']);
+        $query = Peminjaman::with(['buku', 'user']);
 
         // Filter Rentang Tanggal
         if ($request->filled('tgl_mulai') && $request->filled('tgl_selesai')) {

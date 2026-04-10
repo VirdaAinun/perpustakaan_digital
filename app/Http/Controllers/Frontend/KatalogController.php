@@ -46,8 +46,7 @@ class KatalogController extends Controller
         // VALIDASI
         $request->validate([
             'buku_id' => 'required',
-            'nama' => 'required',
-            'jumlah_pinjam' => 'required|numeric|min:1', // Tambahkan ini
+            'jumlah_pinjam' => 'required|numeric|min:1',
             'tgl_pinjam' => 'required',
             'tgl_kembali' => 'required'
         ]);

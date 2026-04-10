@@ -169,7 +169,7 @@
                     <td>{{ $loop->iteration }}</td>
                     <td style="text-align: left;">
                         <span class="text-main">{{ $item->nama_anggota }}</span>
-                        <span class="text-sub">{{ $item->email_anggota ?? 'user@example.com' }}</span>
+                        <span class="text-sub">{{ $item->user->email ?? '-' }}</span>
                     </td>
                     <td style="text-align: left;">
                         <span class="text-main">{{ $item->buku->judul ?? '-' }}</span>
@@ -191,7 +191,7 @@
                                 <button type="submit" class="btn-verifikasi">Verifikasi</button>
                             </form>
                         @else
-                            <a href="#" class="btn-detail">Lihat Detail</a>
+                           <a href="{{ route('pengembalian.show', $item->id) }}" class="btn-detail">Lihat Detail</a>
                         @endif
                     </td>
                 </tr>
