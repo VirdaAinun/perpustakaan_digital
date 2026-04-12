@@ -5,14 +5,14 @@
     .container-form { padding: 40px; background: #f4f7f6; min-height: 100vh; }
     .form-box { background: white; padding: 30px; border-radius: 12px; box-shadow: 0 5px 20px rgba(0,0,0,0.1); max-width: 600px; margin: auto; }
     .form-group { margin-bottom: 20px; }
-    label { display: block; margin-bottom: 8px; font-weight: bold; color: #f39c12; }
+    label { display: block; margin-bottom: 8px; font-weight: bold; color: #1f5f99; }
     input, select { width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px; box-sizing: border-box; }
-    .btn-update { background: #f39c12; color: white; border: none; padding: 12px 25px; border-radius: 8px; cursor: pointer; font-weight: bold; width: 100%; }
+    .btn-update { background: #1f5f99; color: white; border: none; padding: 12px 25px; border-radius: 8px; cursor: pointer; font-weight: bold; width: 100%; }
 </style>
 
 <div class="container-form">
     <div class="form-box">
-        <h3 style="text-align: center; color: #f39c12; margin-bottom: 25px;">Edit Data Anggota</h3>
+        <h3 style="text-align: center; color: #1f5f99; margin-bottom: 25px;">Edit Data Anggota</h3>
         
         <form action="{{ route('admin.dataanggota.update', $anggota->id) }}" method="POST">
             @csrf

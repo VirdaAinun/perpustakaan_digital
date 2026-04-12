@@ -180,6 +180,8 @@
                     <td>
                         @if($item->status == 'menunggu_verifikasi')
                             <span class="badge-pill-custom status-menunggu">menunggu verifikasi</span>
+                        @elseif($item->status == 'terlambat')
+                            <span class="badge-pill-custom" style="background:#fde8e8;color:#c0392b;">terlambat</span>
                         @else
                             <span class="badge-pill-custom status-selesai">selesai</span>
                         @endif

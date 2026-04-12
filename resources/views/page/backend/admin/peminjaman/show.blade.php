@@ -2,127 +2,200 @@
 
 @section('content')
 <style>
-    .card-detail {
+    .detail-wrapper { padding: 25px; background: #f8f9fa; min-height: 100vh; }
+    
+    .detail-card {
         background: #fff;
-        border-radius: 10px;
-        padding: 30px;
-        box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+        border-radius: 16px;
+        padding: 0;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.06);
+        overflow: hidden;
+        max-width: 900px;
+        margin: 0 auto;
     }
-
+    
+    .detail-header {
+        background: linear-gradient(135deg, #1a5da4 0%, #2980b9 100%);
+        color: #fff;
+        padding: 25px 30px;
+        position: relative;
+    }
+    
+    .detail-header::after {
+        content: '';
+        position: absolute;
+        bottom: -10px;
+        left: 0;
+        right: 0;
+        height: 10px;
+        background: linear-gradient(135deg, #1a5da4 0%, #2980b9 100%);
+        border-radius: 0 0 50% 50%;
+    }
+    
     .detail-title {
-        font-weight: 700;
         font-size: 20px;
+        font-weight: 700;
+        margin: 0;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+    
+    .detail-body { padding: 35px 30px 25px; }
+    
+    .info-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 25px;
         margin-bottom: 25px;
-        color: #2c3e50;
     }
-
-    .detail-item {
-        margin-bottom: 20px;
+    
+    .info-item {
+        background: #f8f9fa;
+        border-radius: 12px;
+        padding: 18px;
+        border-left: 4px solid #1a5da4;
     }
-
-    .detail-label {
-        font-size: 12px;
-        color: #888;
+    
+    .info-label {
+        font-size: 11px;
+        color: #6c757d;
         text-transform: uppercase;
-        font-weight: 600;
+        font-weight: 700;
+        letter-spacing: 0.5px;
+        margin-bottom: 6px;
     }
-
-    .detail-value {
+    
+    .info-value {
         font-size: 15px;
         font-weight: 600;
-        color: #333;
+        color: #2c3e50;
+        line-height: 1.4;
     }
-
-    .badge-status {
-        padding: 6px 15px;
-        border-radius: 50px;
+    
+    .status-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 8px 16px;
+        border-radius: 25px;
         font-size: 12px;
-        font-weight: 600;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.3px;
     }
-
-    .status-menunggu { background: #fff4e0; color: #f39c12; }
-    .status-dipinjam { background: #e1f7ea; color: #27ae60; }
-    .status-selesai { background: #ebf5ff; color: #1a5da4; }
-
+    
+    .status-menunggu { background: #fff3cd; color: #856404; border: 1px solid #ffeaa7; }
+    .status-dipinjam { background: #d1ecf1; color: #0c5460; border: 1px solid #bee5eb; }
+    .status-terlambat { background: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
+    .status-selesai { background: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
+    
     .btn-back {
-        background: #1a5da4;
+        background: #6c757d;
         color: #fff;
-        padding: 10px 18px;
-        border-radius: 6px;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 8px;
+        font-size: 13px;
+        font-weight: 600;
         text-decoration: none;
-        display: inline-block;
-        margin-top: 20px;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        transition: 0.2s;
     }
-
+    
     .btn-back:hover {
-        background: #144a82;
+        background: #5a6268;
         color: #fff;
+        transform: translateY(-1px);
+    }
+    
+    .divider {
+        height: 1px;
+        background: linear-gradient(90deg, transparent, #dee2e6, transparent);
+        margin: 20px 0;
     }
 </style>
 
-<div class="container-main">
-    <div class="card-detail">
-        <div class="detail-title">Detail Peminjaman Buku</div>
-
-        <div class="row">
-            <div class="col-md-6">
-
-                <div class="detail-item">
-                    <div class="detail-label">Nama Anggota</div>
-                    <div class="detail-value">{{ $data->nama_anggota }}</div>
-                </div>
-
-                <div class="detail-item">
-                    <div class="detail-label">Email</div>
-                    <div class="detail-value">{{ $data->user->email ?? '-' }}</div>
-                </div>
-
-                <div class="detail-item">
-                    <div class="detail-label">Judul Buku</div>
-                    <div class="detail-value">{{ $data->buku->judul ?? '-' }}</div>
-                </div>
-
-                <div class="detail-item">
-                    <div class="detail-label">Penulis</div>
-                    <div class="detail-value">{{ $data->buku->penulis ?? '-' }}</div>
-                </div>
-
-            </div>
-
-            <div class="col-md-6">
-
-                <div class="detail-item">
-                    <div class="detail-label">Tanggal Pinjam</div>
-                    <div class="detail-value">
-                        {{ \Carbon\Carbon::parse($data->tgl_pinjam)->format('d - m - Y') }}
-                    </div>
-                </div>
-
-                <div class="detail-item">
-                    <div class="detail-label">Jumlah Pinjam</div>
-                    <div class="detail-value">{{ $data->jumlah_pinjam }} Buku</div>
-                </div>
-
-                <div class="detail-item">
-                    <div class="detail-label">Status</div>
-                    <div class="detail-value">
-                        @if($data->status == 'menunggu')
-                            <span class="badge-status status-menunggu">Menunggu Verifikasi</span>
-                        @elseif($data->status == 'dipinjam')
-                            <span class="badge-status status-dipinjam">Dipinjam</span>
-                        @else
-                            <span class="badge-status status-selesai">{{ $data->status }}</span>
-                        @endif
-                    </div>
-                </div>
-
-
-            </div>
+<div class="detail-wrapper">
+    <div class="detail-card">
+        
+        <div class="detail-header">
+            <h4 class="detail-title">
+                📋 Detail Peminjaman Buku
+            </h4>
         </div>
-
-        <a href="{{ route('peminjaman.index') }}" class="btn-back">
-            ← Kembali ke Data
-        </a>
+        
+        <div class="detail-body">
+            
+            <div class="info-grid">
+                
+                <div class="info-item">
+                    <div class="info-label">👤 Nama Anggota</div>
+                    <div class="info-value">{{ $data->nama_anggota }}</div>
+                </div>
+                
+                <div class="info-item">
+                    <div class="info-label">📧 Email</div>
+                    <div class="info-value">{{ $data->user->email ?? 'Tidak tersedia' }}</div>
+                </div>
+                
+                <div class="info-item">
+                    <div class="info-label">📚 Judul Buku</div>
+                    <div class="info-value">{{ $data->buku->judul ?? 'Buku telah dihapus' }}</div>
+                </div>
+                
+                <div class="info-item">
+                    <div class="info-label">✍️ Penulis</div>
+                    <div class="info-value">{{ $data->buku->penulis ?? 'Tidak tersedia' }}</div>
+                </div>
+                
+                <div class="info-item">
+                    <div class="info-label">📅 Tanggal Pinjam</div>
+                    <div class="info-value">{{ \Carbon\Carbon::parse($data->tgl_pinjam)->format('d F Y') }}</div>
+                </div>
+                
+                <div class="info-item">
+                    <div class="info-label">📊 Jumlah Pinjam</div>
+                    <div class="info-value">{{ $data->jumlah_pinjam }} Buku</div>
+                </div>
+                
+            </div>
+            
+            <div class="divider"></div>
+            
+            <div class="info-item" style="text-align: center; background: #fff; border: 2px dashed #dee2e6;">
+                <div class="info-label">🏷️ Status Peminjaman</div>
+                <div class="info-value">
+                    @if($data->status == 'menunggu')
+                        <span class="status-badge status-menunggu">
+                            ⏳ Menunggu Verifikasi
+                        </span>
+                    @elseif($data->status == 'dipinjam')
+                        <span class="status-badge status-dipinjam">
+                            📖 Sedang Dipinjam
+                        </span>
+                    @elseif($data->status == 'terlambat')
+                        <span class="status-badge status-terlambat">
+                            ⚠️ Terlambat
+                        </span>
+                    @else
+                        <span class="status-badge status-selesai">
+                            ✅ {{ ucfirst($data->status) }}
+                        </span>
+                    @endif
+                </div>
+            </div>
+            
+            <div style="text-align: center; margin-top: 25px;">
+                <a href="{{ route('peminjaman.index') }}" class="btn-back">
+                    ← Kembali ke Daftar Peminjaman
+                </a>
+            </div>
+            
+        </div>
+        
     </div>
 </div>
 @endsection

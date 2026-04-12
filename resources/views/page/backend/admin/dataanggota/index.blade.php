@@ -67,7 +67,7 @@
 }
 
 .table-custom thead {
-    background: #005fa8; /* Header biru pekat */
+    background: #005fa8; 
 }
 
 .table-custom th {
@@ -148,10 +148,10 @@
             <input type="text" name="search" class="form-control-custom" 
                    placeholder="Cari nama atau NIS...." value="{{ request('search') }}">
             
-            <button type="submit" class="btn btn-sm btn-outline-primary rounded-pill px-3">Cari</button>
+            <button type="submit" class="btn btn-sm btn-outline-primary rounded-pill px-3" style="background-color: #045898">Cari</button>
             
             @if(request('kelas') || request('search'))
-                <a href="{{ route('admin.dataanggota.index') }}" class="btn btn-sm btn-outline-secondary rounded-pill">Reset</a>
+                <a href="{{ route('admin.dataanggota.index') }}" class="btn btn-sm btn-outline-secondary rounded-pill" style="text-decoration: none">Reset</a>
             @endif
         </form>
 

@@ -30,9 +30,12 @@ class DendaController extends Controller
             return back()->with('error', 'Denda sudah lunas!');
         }
 
-        $denda->update([
-            'status' => 'selesai'
-        ]);
+        $denda->update(['status' => 'selesai']);
+
+        // Update status peminjaman jadi selesai setelah denda lunas
+        \App\Models\Peminjaman::where('id', $denda->peminjaman_id)
+            ->where('status', 'terlambat')
+            ->update(['status' => 'selesai']);
 
         return back()->with('success', 'Pembayaran denda berhasil dicatat.');
     }

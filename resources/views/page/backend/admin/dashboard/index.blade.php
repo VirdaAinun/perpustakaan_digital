@@ -6,18 +6,23 @@
     .dashboard-page { background: #f4f7fe; padding: 25px; min-height: 100vh; font-family: 'Plus Jakarta Sans', sans-serif; }
     .header-section { margin-bottom: 30px; }
     .header-section h2 { font-weight: 800; color: #2b3674; margin-bottom: 5px; }
-    .header-section p { color: #a3aed0; font-size: 14px; }
+    .header-section p { color: #000000; font-size: 14px; }
 
     /* Info Cards - Perbaikan bayangan & Radius */
     .stat-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin-bottom: 30px; }
     .info-card { background: white; border-radius: 20px; padding: 20px; display: flex; align-items: center; border: none; box-shadow: 14px 17px 40px 4px rgba(112, 144, 176, 0.08); }
+    .card-blue { background-color: #7dd3fc !important; }   /* Biru */
+    .card-yellow { background-color: #fde68a !important; } /* Kuning/Orange Muda */
+    .card-green { background-color: #bbf7d0 !important; }  /* Hijau */
+    .card-red { background-color: #fecaca !important; }    /* Merah Muda */
+
     .icon-box { width: 56px; height: 56px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-right: 15px; font-size: 20px; }
-    .icon-blue { background: #f4f7fe; color: #4318ff; }
+    .icon-blue { background: #c4d9f0; color: #4318ff; }
     .icon-yellow { background: #fff9e6; color: #ffb800; }
     .icon-green { background: #e6faf5; color: #05cd99; }
-    .icon-red { background: #ffebee; color: #ee5d50; }
+    .icon-red { background: #eda3ae; color: #f58e84; }
     
-    .stat-label { color: #a3aed0; font-size: 14px; margin-bottom: 2px; }
+    .stat-label { color: #000000; font-size: 14px; margin-bottom: 2px; }
     .stat-value { color: #2b3674; font-size: 24px; font-weight: 700; margin: 0; }
 
     /* Content Grid 2 Kolom */
@@ -42,28 +47,28 @@
     </div>
 
     <div class="stat-grid">
-        <div class="info-card">
+        <div class="info-card card-blue">
             <div class="icon-box icon-blue">📚</div>
             <div>
                 <p class="stat-label">Total Buku</p>
                 <h4 class="stat-value">{{ $totalBuku }}</h4>
             </div>
         </div>
-        <div class="info-card">
+        <div class="info-card card-yellow">
             <div class="icon-box icon-yellow">📥</div>
             <div>
                 <p class="stat-label">Buku Dipinjam</p>
                 <h4 class="stat-value">{{ $dipinjam }}</h4>
             </div>
         </div>
-        <div class="info-card">
+        <div class="info-card card-green">
             <div class="icon-box icon-green">👥</div>
             <div>
                 <p class="stat-label">Anggota Aktif</p>
                 <h4 class="stat-value">{{ $anggota }}</h4>
             </div>
         </div>
-        <div class="info-card">
+        <div class="info-card card-red">
             <div class="icon-box icon-red">⚠️</div>
             <div>
                 <p class="stat-label">Terlambat</p>

@@ -88,19 +88,30 @@
 
 /* BADGE STATUS (PILL STYLE) */
 .badge-pill-custom {
-    padding: 5px 15px;
-    border-radius: 50px;
+    padding: 6px 14px;
+    border-radius: 20px;
     font-size: 11px;
     font-weight: 600;
-    display: inline-block;
+    letter-spacing: 0.3px;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
 }
 
-.status-belum-bayar { background: #fceaea; color: #e74c3c; } /* Merah Soft */
-.status-lunas { background: #e1f7ea; color: #27ae60; }        /* Hijau Soft */
+.status-belum-bayar { 
+    background: #fef2f2; 
+    color: #dc2626; 
+    border: 1px solid #fecaca;
+} 
+.status-lunas { 
+    background: #f0fdf4; 
+    color: #16a34a;
+    border: 1px solid #bbf7d0;
+}
 
-/* ACTION BUTTONS */
+/* TOMBOL AKSI */
 .btn-bayar {
-    background: #badcfc; /* Biru muda transparan sesuai gambar */
+    background: #badcfc;
     color: #1a5da4;
     border: none;
     padding: 8px 15px;
@@ -125,7 +136,7 @@
     width: 100%;
 }
 
-/* NOTIF CUSTOM */
+/* NOTIFIKASI */
 .notif-popup {
     position: fixed; top: 20px; right: 20px;
     background: #1a5da4; color: white;
@@ -193,9 +204,13 @@
                 </td>
                 <td>
                     @if($item->status == 'menunggu')
-                        <span class="badge-pill-custom status-belum-bayar">belum bayar</span>
+                        <span class="badge-pill-custom status-belum-bayar">
+                             Belum Bayar
+                        </span>
                     @else
-                        <span class="badge-pill-custom status-lunas">Lunas</span>
+                        <span class="badge-pill-custom status-lunas">
+                             Lunas
+                        </span>
                     @endif
                 </td>
                 <td>

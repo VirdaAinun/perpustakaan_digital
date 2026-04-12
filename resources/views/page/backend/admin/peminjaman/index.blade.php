@@ -130,6 +130,10 @@
         padding: 15px 25px; border-radius: 10px;
         z-index: 9999; box-shadow: 0 5px 15px rgba(0,0,0,0.1);
     }
+    .terlambat {
+    background: #f3a2a2;
+    color: #a00000;
+}
 </style>
 
 @if(session('success'))
@@ -177,6 +181,8 @@
                             <span class="badge-pill-custom status-menunggu">menunggu verifikasi</span>
                         @elseif($item->status == 'dipinjam')
                             <span class="badge-pill-custom status-dipinjam">dipinjam</span>
+                        @elseif($item->status == 'terlambat')
+                            <span class="badge-pill-custom" style="background:#fde8e8;color:#c0392b;">terlambat</span>
                         @else
                             <span class="badge-pill-custom status-selesai">{{ $item->status }}</span>
                         @endif

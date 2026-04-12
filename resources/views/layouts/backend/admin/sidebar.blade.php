@@ -2,7 +2,7 @@
 .sidebar {
     width: 220px;
     height: 100vh;
-    background: #2c3e50;
+    background: #ffffff;
     position: fixed;
     top: 70px;
     left: 0;
@@ -17,7 +17,7 @@
     gap: 12px;
     padding: 12px 15px;
     margin: 4px 0;
-    color: #ecf0f1;
+    color: #2c3e50;
     text-decoration: none;
     border-radius: 6px;
     transition: 0.2s;
@@ -36,8 +36,9 @@
 
 /* ACTIVE */
 .sidebar a.active {
-    background: #34495e;
+    background: #005a9e; 
     font-weight: 500;
+    color: white;
 }
 
 /* DIVIDER */
@@ -71,7 +72,7 @@
     <i>👥</i> Data Anggota
 </a>
     
-<a href="{{ route('databuku.index') }}" class="{{ request()->is('databuku*') ? 'active' : '' }}">
+<a href="{{ route('databuku.index') }}" class="{{ Route::is('databuku.*') ? 'active' : '' }}">
     <i>📚</i> Data Buku
 </a>
 
@@ -80,16 +81,19 @@
     <i>🏷️</i> Kategori Buku
 </a>
 
-<a href="{{ route('peminjaman.index') }}">
+<a href="{{ route('peminjaman.index') }}"
+   class="{{ Route::is('peminjaman.*') ? 'active' : '' }}">
     <i>📥</i> Peminjaman
 </a>
 
-<a href="{{ route('pengembalian.index') }}">
+<a href="{{ route('pengembalian.index') }}"
+   class="{{ Route::is('pengembalian.*') ? 'active' : '' }}">
     <i>📤</i> Pengembalian
 </a>
 
-<a href="{{ route('denda.index') }}">
-    <i>📤</i> Denda
+<a href="{{ route('denda.index') }}"
+   class="{{ Route::is('denda.*') ? 'active' : '' }}">
+    <i>💰</i> Denda
 </a>
 
 <a href="{{ route('admin.laporan.index') }}" 

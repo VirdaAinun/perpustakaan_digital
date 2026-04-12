@@ -190,6 +190,8 @@
                                     Ajukan Pengembalian
                                 </button>
                             </form>
+                            @elseif($p->status == 'terlambat')
+                                <span style="color:#c0392b;font-size:12px;font-weight:600;">⚠ Ada denda, segera bayar</span>
                             @elseif($p->status == 'selesai')
                                 -
                             @endif

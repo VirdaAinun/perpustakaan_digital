@@ -9,5 +9,5 @@
 </style>
 
 <div class="footer">
-    © {{ date('Y') }} Perpustakaan Digital | Dibuat dengan ❤️
+    © {{ date('Y') }} Perpustakaan Digital | SMK Negeri 3 Banjar
 </div>

@@ -5,17 +5,17 @@ namespace App\Http\Controllers\backend\admin;
 use App\Http\Controllers\Controller;
 use App\Models\Peminjaman;
 use App\Models\Notifikasi;
+use App\Models\Denda;
 use Illuminate\Http\Request;
+use Carbon\Carbon;
 
 class PengembalianController extends Controller
 {
     public function index(Request $request)
     {
-        // 1. Ambil data dari Peminjaman yang statusnya terkait pengembalian
-        $query = Peminjaman::with('buku', 'user')
-            ->whereIn('status', ['menunggu_verifikasi', 'selesai']);
+        $query = Peminjaman::with('buku', 'user', 'denda')
+            ->whereIn('status', ['menunggu_verifikasi', 'selesai', 'terlambat']);
 
-        // 2. Fitur Cari Nama Anggota (Beneran Fungsi & Dinamis)
         if ($request->filled('search')) {
             $query->where('nama_anggota', 'like', '%' . $request->search . '%');
         }
@@ -25,36 +25,56 @@ class PengembalianController extends Controller
         return view('page.backend.admin.pengembalian.index', compact('data'));
     }
 
-    /**
-     * Verifikasi pengembalian
-     */
     public function verifikasi($id)
     {
-        // Ambil data dari Peminjaman, bukan Pengembalian (sesuaikan dengan index)
-        $data = Peminjaman::findOrFail($id);
+        $data = Peminjaman::with('buku', 'denda')->findOrFail($id);
 
-        // Cek jika sudah diverifikasi sebelumnya
-        if ($data->status == 'selesai') {
+        if (in_array($data->status, ['selesai', 'terlambat'])) {
             return back()->with('error', 'Data ini sudah diverifikasi sebelumnya!');
         }
 
-        // Update status langsung di tabel peminjaman
-        $data->update([
-            'status'     => 'selesai',
-            'tgl_kembali' => now()
-        ]);
+        $today      = Carbon::now()->startOfDay();
+        $jatuhTempo = Carbon::parse($data->tgl_kembali)->startOfDay();
 
+        $denda         = 0;
+        $terlambatHari = 0;
+
+        if ($today->gt($jatuhTempo)) {
+            $terlambatHari = $jatuhTempo->diffInDays($today);
+            $denda         = $terlambatHari * 2000;
+        }
+
+        if ($denda > 0) {
+            Denda::updateOrCreate(
+                ['peminjaman_id' => $data->id],
+                [
+                    'hari_terlambat' => $terlambatHari,
+                    'denda'          => $denda,
+                    'status'         => 'menunggu'
+                ]
+            );
+            $status = 'terlambat';
+        } else {
+            $status = 'selesai';
+        }
+
+        $data->update(['status' => $status]);
+
+        // notifikasi
         Notifikasi::create([
             'user_id' => $data->user_id,
             'judul'   => 'Pengembalian Dikonfirmasi',
-            'pesan'   => 'Pengembalian buku "' . ($data->buku->judul ?? '-') . '" telah dikonfirmasi. Terima kasih!',
+            'pesan'   => $denda > 0
+                ? 'Pengembalian buku "' . ($data->buku->judul ?? '-') . '" terlambat. Denda: Rp ' . number_format($denda)
+                : 'Pengembalian buku "' . ($data->buku->judul ?? '-') . '" telah dikonfirmasi. Terima kasih!',
         ]);
 
         return back()->with('success', 'Pengembalian berhasil diverifikasi!');
     }
+
     public function show($id)
     {
-        $item = Peminjaman::with('buku', 'user')->findOrFail($id);
+        $item = Peminjaman::with('buku', 'user', 'denda')->findOrFail($id);
 
         return view('page.backend.admin.pengembalian.show', compact('item'));
     }

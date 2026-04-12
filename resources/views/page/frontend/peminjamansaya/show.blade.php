@@ -35,6 +35,8 @@ h1 { font-size: 20px; margin-bottom: 20px; text-align: left; color: #2c3e50; }
 .status-selesai { background-color: #27ae60; }
 .status-ditolak { background-color: #c0392b; }
 .status-menunggu_verifikasi { background-color: #8e44ad; }
+.status-terlambat { background-color: #e74c3c; }
+.status-menunggu { background-color: #f39c12; }
 .btn { padding: 6px 12px; border-radius: 4px; text-decoration: none; font-size: 0.85rem; color: white; margin-top:10px; display:inline-block; }
 .btn-back { background-color:#7f8c8d; }
 .btn-back:hover { background-color:#636e72; }
@@ -52,8 +54,8 @@ h1 { font-size: 20px; margin-bottom: 20px; text-align: left; color: #2c3e50; }
             <p><strong>Judul Buku:</strong> {{ $peminjaman->buku->judul }}</p>
             <p><strong>Penulis:</strong> {{ $peminjaman->buku->penulis }}</p>
             <p><strong>Kategori:</strong> {{ $peminjaman->buku->kategori->nama_kategori ?? '-' }}</p>
-            <p><strong>Tanggal Pinjam:</strong> {{ $peminjaman->tanggal_pinjam }}</p>
-            <p><strong>Tanggal Kembali:</strong> {{ $peminjaman->tanggal_kembali }}</p>
+            <p><strong>Tanggal Pinjam:</strong> {{ \Carbon\Carbon::parse($peminjaman->tgl_pinjam)->format('d - m - Y') }}</p>
+            <p><strong>Tanggal Kembali:</strong> {{ $peminjaman->tgl_kembali ? \Carbon\Carbon::parse($peminjaman->tgl_kembali)->format('d - m - Y') : '-' }}</p>
             <p><strong>Status:</strong> <span class="status status-{{ str_replace('_','-',$peminjaman->status) }}">{{ ucfirst(str_replace('_',' ',$peminjaman->status)) }}</span></p>
             <a href="{{ route('peminjamansaya.index') }}" class="btn btn-back">Kembali</a>
         </div>
