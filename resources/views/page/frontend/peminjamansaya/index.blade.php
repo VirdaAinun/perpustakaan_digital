@@ -214,8 +214,19 @@
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
+    // Notifikasi sukses setelah ajukan pengembalian
+    @if(session('success'))
+    Swal.fire({
+        icon: 'success',
+        title: 'Berhasil!',
+        text: '{{ session('success') }}',
+        confirmButtonColor: '#1f5f99',
+        confirmButtonText: 'OK',
+        timer: 3000,
+        timerProgressBar: true,
+    });
+    @endif
     function konfirmasi(event, id, tglKembali, judul, tglPinjam) {
         // 1. Logika Perhitungan Keterlambatan
         const hariIni = new Date();

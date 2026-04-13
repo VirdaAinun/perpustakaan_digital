@@ -2,11 +2,11 @@
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
 
     :root {
-        --active-bg: #707070; /* Warna biru cerah pada tombol aktif */
+        --active-bg: #34495e; /* Warna biru cerah pada tombol aktif */
         --text-active: #ffffff; /* Warna teks putih pada tombol aktif */
-        --text-inactive: #ffffff; /* Warna teks abu-abu pudar */
+        --text-inactive: #000000; /* Warna teks abu-abu pudar */
         --icon-inactive: #ffffff; /* Warna ikon abu-abu */
-        --sidebar-bg: #2c3e50;
+        --sidebar-bg: #ffffff;
         --sidebar-width: 250px; /* Lebar sidebar yang disesuaikan */
     }
 
@@ -49,7 +49,7 @@
 
     .sidebar-brand span {
         font-weight: 700;
-        color: #ffffff;
+        color: #000000;
         font-size: 16px;
         letter-spacing: -0.3px;
     }

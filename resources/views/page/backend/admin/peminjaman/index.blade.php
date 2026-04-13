@@ -7,18 +7,18 @@
 <style>
     /* CONTAINER UTAMA */
     .container-main {
-        background: #ffffff;
+        background: #f4f7fe;
         padding: 30px;
         min-height: 90vh;
         border-radius: 8px;
     }
 
     /* JUDUL HALAMAN */
-    h5 {
+     .page-title {
         font-weight: 700;
-        color: #2c3e50;
-        font-size: 22px;
-        margin-bottom: 25px;
+        color: #005fa8;
+        font-size: 20px;
+        margin: 0;
     }
 
     /* STYLING TABEL CUSTOM */
@@ -143,7 +143,7 @@
 @endif
 
 <div class="container-main">
-    <h5>Data Peminjaman Buku</h5>
+    <h4 class="page-title">Data Peminjaman Buku</h4>
 
     <div class="table-responsive">
         <table id="peminjamanTable" class="table table-hover table-custom text-center" style="width:100%">

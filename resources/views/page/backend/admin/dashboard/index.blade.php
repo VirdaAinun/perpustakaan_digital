@@ -5,7 +5,7 @@
     /* Layout Utama */
     .dashboard-page { background: #f4f7fe; padding: 25px; min-height: 100vh; font-family: 'Plus Jakarta Sans', sans-serif; }
     .header-section { margin-bottom: 30px; }
-    .header-section h2 { font-weight: 800; color: #2b3674; margin-bottom: 5px; }
+     .page-title { font-weight: 900; color: #005fa8; font-size: 30px; margin: 0;}
     .header-section p { color: #000000; font-size: 14px; }
 
     /* Info Cards - Perbaikan bayangan & Radius */
@@ -42,7 +42,7 @@
 
 <div class="dashboard-page">
     <div class="header-section">
-        <h2>Dashboard</h2>
+        <h5 class="page-title">Dashboard</h5>
         <p>Selamat Datang, Petugas</p>
     </div>
 

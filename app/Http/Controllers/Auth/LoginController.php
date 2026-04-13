@@ -45,6 +45,7 @@ class LoginController extends Controller
             return redirect()->route('admin.dashboard');
 
         } elseif ($user->role == 'anggota') {
+            session(['show_welcome' => true]);
             return redirect()->route('katalogbuku.index');
         }
     }
@@ -60,6 +61,7 @@ class LoginController extends Controller
         Auth::loginUsingId($anggota->user_id);
 
         $request->session()->regenerate();
+        session(['show_welcome' => true]);
 
         return redirect()->route('katalogbuku.index');
     }

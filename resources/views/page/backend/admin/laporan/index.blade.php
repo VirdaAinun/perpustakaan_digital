@@ -124,7 +124,7 @@
 <div class="laporan-wrapper">
 
     <div class="laporan-header">
-        <h4>📊 Laporan Operasional Perpustakaan</h4>
+        <h4> Laporan Operasional Perpustakaan</h4>
     </div>
 
     {{-- TAB JENIS LAPORAN --}}

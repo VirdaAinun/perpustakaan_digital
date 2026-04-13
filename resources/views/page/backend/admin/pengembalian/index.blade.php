@@ -7,7 +7,7 @@
 <style>
     /* 1. CONTAINER & TYPOGRAPHY */
     .container-custom {
-        background: #ffffff;
+        background: #f4f7fe;
         padding: 30px;
         min-height: 90vh;
         border-radius: 12px;
@@ -16,11 +16,9 @@
 
     .page-title {
         font-weight: 700;
-        color: #2c3e50;
-        font-size: 22px;
-        margin-bottom: 25px;
-        border-left: 5px solid #1a5da4;
-        padding-left: 15px;
+        color: #005fa8;
+        font-size: 20px;
+        margin: 0;
     }
 
     /* 2. TABLE STYLING */
@@ -141,7 +139,7 @@
 </style>
 
 <div class="container-custom">
-    <h5 class="page-title">Data Pengembalian</h5>
+    <h4 class="page-title">Data Pengembalian</h4>
 
     @if(session('success'))
         <div class="alert alert-success alert-dismissible fade show mb-4" role="alert">

@@ -142,7 +142,6 @@
                     <th>Terlambat</th>
                     <th>Jumlah</th>
                     <th>Status</th>
-                    <th>Aksi</th>
                 </tr>
             </thead>
             <tbody>
@@ -163,20 +162,11 @@
                             <span class="status-lunas">Lunas</span>
                         @endif
                     </td>
-                    <td>
-    @if($item->status == 'menunggu')
-        <form action="{{ route('denda.bayar', $item->id) }}" method="POST">
-            @csrf
-            <button type="submit" class="btn-bayar">Bayar</button>
-        </form>
-    @else
-        <button class="btn-bayar" disabled style="background: #ccc; cursor: not-allowed;">Selesai</button>
-    @endif
-</td>
+                </tr>
                 </tr>
                 @empty
                 <tr>
-                    <td colspan="6" style="text-align: center; padding: 30px; color: #999;">
+                    <td colspan="5" style="text-align: center; padding: 30px; color: #999;">
                         Data denda tidak ditemukan.
                     </td>
                 </tr>

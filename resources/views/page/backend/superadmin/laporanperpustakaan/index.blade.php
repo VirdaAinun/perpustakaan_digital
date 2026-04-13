@@ -5,7 +5,7 @@
 
 <style>
     /* 1. Layout Utama */
-    .report-page { background: #f8f9fa; padding: 30px; min-height: 100vh; font-family: 'Inter', sans-serif; }
+    .report-page { padding: 30px; min-height: 100vh; font-family: 'Inter', sans-serif; }
     
     .header-title { color: #111111; font-weight: 700; font-size: 24px; margin-bottom: 2px; }
     .header-subtitle { color: #888; font-size: 15px; margin-bottom: 25px; }

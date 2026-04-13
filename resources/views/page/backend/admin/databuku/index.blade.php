@@ -5,7 +5,7 @@
 <style>
 .container-custom {
     padding: 30px;
-    background-color: #f8f9fa; /* Background halaman sedikit abu-abu */
+    background-color: #f4f7fe; /* Background halaman sedikit abu-abu */
 }
 
 /* JUDUL & HEADER */
@@ -16,11 +16,11 @@
     margin-bottom: 25px;
 }
 
-.title {
-    color: #000;
-    font-weight: 700;
-    font-size: 24px;
-    margin: 0;
+.page-title-text {
+        font-weight: 700;
+        color: #005fa8;
+        font-size: 20px;
+        margin: 0;
 }
 
 /* FILTER & SEARCH (Simulasi Baris Atas) */
@@ -117,7 +117,7 @@
 </style>
 
 <div class="container-custom">
-    <h2 class="title">Data Buku</h2>
+    <h4 class="page-title-text">Data Buku</h4>
     <br>
 
     <div class="header-flex">
@@ -135,7 +135,7 @@
         <select name="status" class="form-select-custom" onchange="this.form.submit()">
             <option value="">Status Buku</option>
             <option value="Tersedia" {{ request('status') == 'Tersedia' ? 'selected' : '' }}>Tersedia</option>
-            <option value="Habis" {{ request('status') == 'Habis' ? 'selected' : '' }}>Dipinjam/Habis</option>
+            <option value="Habis" {{ request('status') == 'Habis' ? 'selected' : '' }}>Habis</option>
         </select>
 
         <input type="text" name="search" class="form-control-custom" 

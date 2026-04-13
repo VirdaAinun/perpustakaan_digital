@@ -5,7 +5,7 @@
 <style>
 .container-custom {
     padding: 30px;
-    background-color: #f8f9fa; /* Background halaman sedikit abu-abu */
+    background-color: #f4f7fe; /* Background halaman sedikit abu-abu */
 }
 
 /* JUDUL & HEADER */
@@ -16,12 +16,12 @@
     margin-bottom: 25px;
 }
 
-.title {
-    color: #000;
-    font-weight: 700;
-    font-size: 24px;
-    margin: 0;
-}
+ .page-title-text {
+        font-weight: 700;
+        color: #005fa8;
+        font-size: 20px;
+        margin: 0;
+    }
 
 /* FILTER & SEARCH */
 .filter-row {
@@ -123,7 +123,7 @@
 </style>
 
 <div class="container-custom">
-    <h2 class="title">Data Anggota</h2>
+    <h4 class="page-title-text">Data Anggota</h4>
     <br>
 
     @if(session('success'))

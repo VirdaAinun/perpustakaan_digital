@@ -80,6 +80,12 @@ Route::middleware(['auth','cekakses:kepala'])->prefix('superadmin')->group(funct
     
     Route::get('/profile-kepala', [ProfileKepalaController::class, 'index'])
         ->name('superadmin.profilekepala');
+
+    Route::put('/profile-kepala/update', [ProfileKepalaController::class, 'update'])
+        ->name('superadmin.profilekepala.update');
+
+    Route::put('/profile-kepala/password', [ProfileKepalaController::class, 'updatePassword'])
+        ->name('superadmin.profilekepala.password');
 });
 
 
@@ -176,6 +182,8 @@ Route::middleware(['cekakses:anggota'])->group(function () {
     ->name('profile.anggota');
 
     Route::put('/profile/update', [ProfileController::class, 'update'])->name('profile.update');
+
+    Route::put('/profile/password', [ProfileController::class, 'updatePassword'])->name('profile.password');
 
     Route::post('/notifikasi/{id}/baca', [\App\Http\Controllers\Frontend\NotifikasiController::class, 'baca'])
         ->name('notifikasi.baca');

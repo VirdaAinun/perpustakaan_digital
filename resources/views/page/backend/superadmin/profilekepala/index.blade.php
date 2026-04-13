@@ -165,8 +165,9 @@
                 </div>
             @endif
 
-            <form action="#" method="POST">
+            <form action="{{ route('superadmin.profilekepala.update') }}" method="POST">
                 @csrf
+                @method('PUT')
                 <div class="form-group">
                     <label>Nama Lengkap</label>
                     <input type="text" name="name" class="form-control-custom" value="{{ $kepala->name }}">
@@ -185,7 +186,7 @@
             </button>
 
             <div class="password-section" id="passwordSection">
-                <form action="{{ route('admin.profile.password.update') }}" method="POST">
+                <form action="{{ route('superadmin.profilekepala.password') }}" method="POST">
                     @csrf
                     @method('PUT')
                     

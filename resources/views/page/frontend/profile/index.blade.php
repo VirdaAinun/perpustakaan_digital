@@ -2,9 +2,7 @@
 
 @section('content')
 <style>
-    /* Styling khusus agar lebih aesthetic */
     .profile-wrapper {
-        margin-top: 60px;
         display: flex;
         justify-content: center;
     }
@@ -109,7 +107,27 @@
         color: #fff;
     }
 
-    @media (max-width: 768px) {
+    .btn-toggle-pw {
+        background: none;
+        border: none;
+        color: #1f5f99;
+        font-size: 13px;
+        font-weight: 600;
+        cursor: pointer;
+        padding: 0;
+        margin-top: 20px;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+    }
+    .pw-section {
+        display: none;
+        margin-top: 20px;
+        padding-top: 20px;
+        border-top: 1px dashed #e2e8f0;
+    }
+    .pw-section h4 { font-size: 15px; font-weight: 700; color: #1e293b; margin-bottom: 18px; }
+    .text-error { color: #dc2626; font-size: 12px; margin-top: 4px; display: block; }
         .profile-left {
             flex: 1 1 100%;
             border-right: none;
@@ -150,6 +168,13 @@
         <div class="profile-right">
             <h3 style="margin-bottom:25px; color:#1e293b; font-weight:700;">Pengaturan Profil</h3>
 
+            @if(session('success'))
+                <div style="background:#e1f7ea;color:#27ae60;padding:12px 16px;border-radius:8px;margin-bottom:20px;font-size:13px;">✅ {{ session('success') }}</div>
+            @endif
+            @if(session('success_password'))
+                <div style="background:#e1f7ea;color:#27ae60;padding:12px 16px;border-radius:8px;margin-bottom:20px;font-size:13px;">✅ {{ session('success_password') }}</div>
+            @endif
+
             @if(!$anggota)
                 <div style="padding:20px; background:#fff1f2; color:#be123c; border-radius:10px; border:1px solid #fecdd3;">
                     <strong>⚠️ Data anggota belum terhubung!</strong><br>
@@ -189,9 +214,63 @@
                 </button>
 
             </form>
+
+            {{-- GANTI PASSWORD --}}
+            <button type="button" class="btn-toggle-pw" id="togglePw" onclick="togglePassword()">
+                🔑 Ganti Password
+            </button>
+
+            <div class="pw-section" id="pwSection">
+                <h4>🔒 Ganti Password</h4>
+                <form action="{{ route('profile.password') }}" method="POST">
+                    @csrf
+                    @method('PUT')
+
+                    <div class="form-group" style="margin-bottom:15px;">
+                        <label>Password Saat Ini</label>
+                        <input type="password" name="current_password" class="form-control" placeholder="Masukkan password lama" required>
+                        @error('current_password') <span class="text-error">{{ $message }}</span> @enderror
+                    </div>
+
+                    <div class="form-group" style="margin-bottom:15px;">
+                        <label>Password Baru</label>
+                        <input type="password" name="new_password" class="form-control" placeholder="Minimal 6 karakter" required>
+                        @error('new_password') <span class="text-error">{{ $message }}</span> @enderror
+                    </div>
+
+                    <div class="form-group" style="margin-bottom:20px;">
+                        <label>Konfirmasi Password Baru</label>
+                        <input type="password" name="new_password_confirmation" class="form-control" placeholder="Ulangi password baru" required>
+                    </div>
+
+                    <button type="submit" class="btn-save">Update Password</button>
+                </form>
+            </div>
+
             @endif
         </div>
 
     </div>
 </div>
+
+<script>
+function togglePassword() {
+    const section = document.getElementById('pwSection');
+    const btn = document.getElementById('togglePw');
+    if (section.style.display === 'none' || section.style.display === '') {
+        section.style.display = 'block';
+        btn.innerHTML = '✕ Batal Ganti Password';
+    } else {
+        section.style.display = 'none';
+        btn.innerHTML = '🔑 Ganti Password';
+    }
+}
+// Buka otomatis jika ada error password
+@if($errors->hasAny(['current_password','new_password']))
+    document.addEventListener('DOMContentLoaded', () => {
+        document.getElementById('pwSection').style.display = 'block';
+        document.getElementById('togglePw').innerHTML = '✕ Batal Ganti Password';
+    });
+@endif
+</script>
 @endsection

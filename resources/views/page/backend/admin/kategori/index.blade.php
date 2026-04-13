@@ -2,10 +2,10 @@
 
 @section('content')
 <style>
-    .kategori-wrapper { padding: 30px; background: #f8f9fa; min-height: 100vh; }
+    .kategori-wrapper { padding: 30px; background: #f4f7fe; min-height: 100vh; }
 
     .header-flex { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
-    .title { color: #1a1a2e; font-weight: 700; font-size: 22px; margin: 0; }
+    .page-title-text { font-weight: 700; color: #005fa8; font-size: 20px; margin: 0; }
 
     .btn-add {
         background: #005fa8; color: #fff; border: none;
@@ -60,7 +60,7 @@
 <div class="kategori-wrapper">
 
     <div class="header-flex">
-        <h2 class="title">Data Kategori</h2>
+        <h4 class="page-title-text">Data Kategori</h4>
         <button class="btn-add" onclick="openModal('modalTambah')">
             <i class="fas fa-plus"></i> Tambah Kategori
         </button>

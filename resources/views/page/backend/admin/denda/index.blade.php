@@ -4,7 +4,7 @@
 <style>
 /* CONTAINER */
 .container-custom {
-    background: #ffffff;
+    background: #f4f7fe;
     padding: 30px;
     min-height: 90vh;
 }
@@ -146,7 +146,7 @@
 </style>
 
 <div class="container-custom">
-    <h5 class="page-title">Denda & Pembayaran</h5>
+    <h4 class="page-title">Denda & Pembayaran</h4>
 
     {{-- Alert Notification --}}
     @if(session('success'))

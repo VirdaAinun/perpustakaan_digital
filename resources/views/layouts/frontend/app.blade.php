@@ -215,6 +215,33 @@ min-height:100vh;
        Denda
     </a>
 </div>
+
+@if(session('show_welcome'))
+    {{ session()->forget('show_welcome') }}
+    <div id="welcome-alert" style="
+        position: fixed; top: 20px; left: 50%; transform: translateX(-50%);
+        background: #1f5f99; color: white;
+        padding: 14px 30px; border-radius: 10px;
+        box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+        z-index: 9999; font-size: 15px; font-weight: 600;
+        display: flex; align-items: center; gap: 10px;
+        animation: slideDown 0.4s ease;
+    ">
+        👋 Selamat datang, <span style="color:#a8d4ff; margin-left:5px;">{{ Auth::user()->name }}</span>!
+    </div>
+    <style>
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateX(-50%) translateY(-20px); }
+            to   { opacity: 1; transform: translateX(-50%) translateY(0); }
+        }
+    </style>
+    <script>
+        setTimeout(() => {
+            const el = document.getElementById('welcome-alert');
+            if(el){ el.style.transition='0.5s'; el.style.opacity='0'; setTimeout(()=>el.remove(),500); }
+        }, 3000);
+    </script>
+@endif
    
 
     <div class="content">

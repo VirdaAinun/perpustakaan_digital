@@ -4,77 +4,91 @@
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
 <style>
-    .super-wrapper { 
-        background: #f8f9fd; 
-        padding: 30px; 
-        min-height: 100vh; 
-        font-family: 'Plus Jakarta Sans', sans-serif; 
+    .super-wrapper {
+        padding: 30px;
+        min-height: 100vh;
+        font-family: 'Plus Jakarta Sans', sans-serif;
     }
 
-    /* Judul Header */
-    .dashboard-header h2 { color: #2b3674; font-weight: 800; font-size: 24px; margin-bottom: 2px; }
-    .dashboard-header p { color: #a3aed0; font-size: 14px; margin-bottom: 30px; }
+    .dashboard-header { margin-bottom: 28px; }
+    .dashboard-header h2 { color: #2b3674; font-weight: 800; font-size: 24px; margin-bottom: 4px; }
+    .dashboard-header p { color: #a3aed0; font-size: 14px; margin: 0; }
 
-    /* --- STAT CARDS (Dibuat Pendek & Ramping) --- */
+    /* STAT CARDS */
+    .stat-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 20px;
+        margin-bottom: 24px;
+    }
+
     .card-stat {
-        border: none;
         border-radius: 16px;
-        padding: 18px 22px;
-        height: 100px; /* Tinggi dikunci agar proporsional */
+        padding: 20px 24px;
         display: flex;
-        flex-direction: column;
-        justify-content: center;
-        box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.02);
+        align-items: center;
+        gap: 16px;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.06);
     }
-    
-    /* Warna Pastel Sesuai Gambar */
-    .bg-soft-blue { background-color: #a3d9ff; }
-    .bg-soft-cyan { background-color: #c0e5f0; }
-    .bg-soft-green { background-color: #b2f5b5; }
-    .bg-soft-red { background-color: #ff9b9b; }
 
-    .stat-label { 
-        font-size: 11px; 
-        font-weight: 800; 
-        text-transform: uppercase; 
-        color: #2b3674; 
-        margin-bottom: 4px;
-        letter-spacing: 0.5px;
+    .card-stat-icon {
+        width: 50px;
+        height: 50px;
+        border-radius: 12px;
+        background: rgba(255,255,255,0.5);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 22px;
+        flex-shrink: 0;
     }
-    .stat-value { 
-        font-size: 28px; 
-        font-weight: 800; 
-        color: #2b3674; 
-        margin: 0; 
+
+    .bg-soft-blue  { background: #a3d9ff; }
+    .bg-soft-cyan  { background: #c0e5f0; }
+    .bg-soft-green { background: #b2f5b5; }
+    .bg-soft-red   { background: #ff9b9b; }
+
+    .stat-label {
+        font-size: 11px;
+        font-weight: 700;
+        text-transform: uppercase;
+        color: #2b3674;
+        letter-spacing: 0.5px;
+        margin-bottom: 4px;
+        opacity: 0.8;
+    }
+    .stat-value {
+        font-size: 24px;
+        font-weight: 800;
+        color: #2b3674;
+        margin: 0;
         line-height: 1;
     }
 
-    /* --- MAIN CONTENT CARDS --- */
+    /* BOTTOM GRID */
+    .content-grid {
+        display: grid;
+        grid-template-columns: 1.6fr 1fr;
+        gap: 20px;
+    }
+
     .card-white {
         background: #ffffff;
-        border-radius: 20px;
-        border: none;
+        border-radius: 16px;
         padding: 24px;
-        height: 100%;
-        box-shadow: 0px 10px 30px rgba(0, 0, 0, 0.03);
+        box-shadow: 0 4px 20px rgba(0,0,0,0.05);
     }
 
-    .card-title-main { font-size: 16px; font-weight: 800; color: #2b3674; margin-bottom: 2px; }
+    .card-title-main { font-size: 15px; font-weight: 800; color: #2b3674; margin-bottom: 2px; }
     .card-subtitle-main { font-size: 12px; color: #a3aed0; font-weight: 500; margin-bottom: 20px; }
 
-    /* Dropdown Tahun Style */
     .select-custom {
-        background: #f4f7fe;
-        border: none;
-        font-size: 12px;
-        font-weight: 600;
-        color: #2b3674;
-        padding: 6px 12px;
-        border-radius: 10px;
-        cursor: pointer;
+        background: #f4f7fe; border: none; font-size: 12px;
+        font-weight: 600; color: #2b3674; padding: 6px 12px;
+        border-radius: 10px; cursor: pointer;
     }
 
-    /* --- LIST BUKU TERPOPULER --- */
+    /* BUKU POPULER */
     .book-list-item {
         display: flex;
         align-items: center;
@@ -84,144 +98,115 @@
     .book-list-item:last-child { border-bottom: none; }
 
     .rank-indicator {
-        width: 28px;
-        height: 28px;
-        background: #111111;
-        color: #ffffff;
-        border-radius: 6px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-weight: 800;
-        font-size: 13px;
-        margin-right: 15px;
-        flex-shrink: 0;
+        width: 30px; height: 30px;
+        background: #2b3674; color: #fff;
+        border-radius: 8px; display: flex;
+        align-items: center; justify-content: center;
+        font-weight: 800; font-size: 13px;
+        margin-right: 14px; flex-shrink: 0;
     }
 
     .book-details { flex-grow: 1; }
     .book-title-text { font-weight: 700; color: #2b3674; font-size: 13px; margin: 0; display: block; }
     .book-author-text { color: #a3aed0; font-size: 11px; }
 
-    .progress-box { width: 100px; margin: 0 20px; }
-    .progress-bar-bg { height: 7px; border-radius: 10px; background: #eeeeee; overflow: hidden; }
+    .progress-box { width: 90px; margin: 0 16px; }
+    .progress-bar-bg { height: 6px; border-radius: 10px; background: #eeeeee; overflow: hidden; }
     .progress-bar-fill { background: #4318ff; height: 100%; border-radius: 10px; }
 
-    .loan-total-text { color: #a3aed0; font-size: 11px; font-weight: 600; text-align: right; min-width: 90px; }
-    .card-stat {
-        border: none;
-        border-radius: 16px;
-        padding: 15px 20px;
-        height: 85px; /* Tinggi dikunci agar pendek */
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.02);
-        min-width: 0; /* Mencegah overflow */
-    }
-
-    .stat-label { 
-        font-size: 10px; /* Ukuran font label diperkecil */
-        font-weight: 800; 
-        text-transform: uppercase; 
-        color: #2b3674; 
-        margin-bottom: 2px;
-        opacity: 0.9;
-    }
-
-    .stat-value { 
-        font-size: 22px; /* Ukuran angka disesuaikan agar pas */
-        font-weight: 800; 
-        color: #2b3674; 
-        margin: 0; 
-    }
+    .loan-total-text { color: #a3aed0; font-size: 11px; font-weight: 600; text-align: right; min-width: 80px; }
 </style>
 
 <div class="super-wrapper">
+
     <div class="dashboard-header">
         <h2>Dashboard</h2>
         <p>Selamat Datang, Kepala Perpustakaan</p>
     </div>
 
-    <div class="row mb-4" style="display: flex; flex-wrap: nowrap; gap: 15px; margin: 0;">
-        <div style="flex: 1;">
-            <div class="card-stat bg-soft-blue">
-                <span class="stat-label">Total Anggota</span>
+    {{-- STAT CARDS --}}
+    <div class="stat-grid">
+        <div class="card-stat bg-soft-blue">
+            <div class="card-stat-icon">👥</div>
+            <div>
+                <div class="stat-label">Total Anggota</div>
                 <h3 class="stat-value">{{ $stats['totalAnggota'] }}</h3>
             </div>
         </div>
-        <div style="flex: 1;">
-            <div class="card-stat bg-soft-cyan">
-                <span class="stat-label">Total Buku</span>
+        <div class="card-stat bg-soft-cyan">
+            <div class="card-stat-icon">📚</div>
+            <div>
+                <div class="stat-label">Total Buku</div>
                 <h3 class="stat-value">{{ number_format($stats['totalBuku']) }}</h3>
             </div>
         </div>
-        <div style="flex: 1;">
-            <div class="card-stat bg-soft-green">
-                <span class="stat-label">Total Peminjaman</span>
+        <div class="card-stat bg-soft-green">
+            <div class="card-stat-icon">📥</div>
+            <div>
+                <div class="stat-label">Total Peminjaman</div>
                 <h3 class="stat-value">{{ $stats['totalPinjam'] }}</h3>
             </div>
         </div>
-        <div style="flex: 1;">
-            <div class="card-stat bg-soft-red">
-                <span class="stat-label">Total Denda</span>
-                <h3 class="stat-value">Rp {{ number_format(abs($stats['totalDenda']), 0, ',', '.') }}</h3>
+        <div class="card-stat bg-soft-red">
+            <div class="card-stat-icon">💰</div>
+            <div>
+                <div class="stat-label">Total Denda</div>
+                <h3 class="stat-value" style="font-size:18px;">Rp {{ number_format(abs($stats['totalDenda']), 0, ',', '.') }}</h3>
             </div>
         </div>
     </div>
 
-    <div class="row">
-        <div class="col-lg-7 mb-4">
-            <div class="card-white">
-                <div class="d-flex justify-content-between align-items-start">
-                    <div>
-                        <h5 class="card-title-main">Statistik Peminjaman Buku</h5>
-                        <p class="card-subtitle-main">Tren peminjaman buku per bulan</p>
-                    </div>
-                    <select class="select-custom">
-                        <option>Pilih Tahun: 2024</option>
-                    </select>
+    {{-- GRAFIK & BUKU POPULER --}}
+    <div class="content-grid">
+        <div class="card-white">
+            <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+                <div>
+                    <h5 class="card-title-main">Statistik Peminjaman Buku</h5>
+                    <p class="card-subtitle-main">Tren peminjaman buku per bulan</p>
                 </div>
-                <div style="height: 280px;">
-                    <canvas id="loanChart"></canvas>
-                </div>
+                <select class="select-custom">
+                    <option>Tahun {{ date('Y') }}</option>
+                </select>
+            </div>
+            <div style="height: 280px;">
+                <canvas id="loanChart"></canvas>
             </div>
         </div>
 
-        <div class="col-lg-5 mb-4">
-            <div class="card-white">
-                <h5 class="card-title-main">Buku paling sering dipinjam</h5>
-                <p class="card-subtitle-main">Daftar buku dengan jumlah peminjaman tertinggi</p>
-                
-                @foreach($bukuPopuler->take(3) as $index => $buku)
-                <div class="book-list-item">
-                    <div class="rank-indicator">{{ $index + 1 }}</div>
-                    <div class="book-details">
-                        <span class="book-title-text">{{ Str::limit($buku->judul, 25) }}</span>
-                        <span class="book-author-text">{{ $buku->penulis }}</span>
-                    </div>
-                    <div class="progress-box">
-                        <div class="progress-bar-bg">
-                            @php
-                                $maxTotal = $bukuPopuler->first()->total ?? 1;
-                                $percent = round(($buku->total / $maxTotal) * 100);
-                            @endphp
-                            <div class="progress-bar-fill" style="width: {{ $percent }}%;"></div>
-                        </div>
-                    </div>
-                    <div class="loan-total-text">{{ $buku->total }} Peminjaman</div>
+        <div class="card-white">
+            <h5 class="card-title-main">Buku Paling Sering Dipinjam</h5>
+            <p class="card-subtitle-main">Daftar buku dengan peminjaman tertinggi</p>
+
+            @forelse($bukuPopuler->take(3) as $index => $buku)
+            <div class="book-list-item">
+                <div class="rank-indicator">{{ $index + 1 }}</div>
+                <div class="book-details">
+                    <span class="book-title-text">{{ Str::limit($buku->judul, 22) }}</span>
+                    <span class="book-author-text">{{ $buku->penulis }}</span>
                 </div>
-                @endforeach
+                <div class="progress-box">
+                    <div class="progress-bar-bg">
+                        @php
+                            $maxTotal = $bukuPopuler->first()->total ?? 1;
+                            $percent  = round(($buku->total / $maxTotal) * 100);
+                        @endphp
+                        <div class="progress-bar-fill" style="width: {{ $percent }}%;"></div>
+                    </div>
+                </div>
+                <div class="loan-total-text">{{ $buku->total }}x</div>
             </div>
+            @empty
+            <p style="color:#a3aed0; font-size:13px; text-align:center; padding:20px 0;">Belum ada data peminjaman.</p>
+            @endforelse
         </div>
     </div>
+
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
     document.addEventListener("DOMContentLoaded", function() {
         const ctx = document.getElementById('loanChart').getContext('2d');
-        
-        // Efek Gradient persis gambar
         const gradient = ctx.createLinearGradient(0, 0, 0, 280);
         gradient.addColorStop(0, 'rgba(67, 24, 255, 0.2)');
         gradient.addColorStop(1, 'rgba(67, 24, 255, 0)');
@@ -236,7 +221,7 @@
                     borderWidth: 3,
                     backgroundColor: gradient,
                     fill: true,
-                    tension: 0.4, // Membuat garis melengkung lembut
+                    tension: 0.4,
                     pointRadius: 4,
                     pointBackgroundColor: '#ffffff',
                     pointBorderColor: '#4318ff',
@@ -248,12 +233,12 @@
                 maintainAspectRatio: false,
                 plugins: { legend: { display: false } },
                 scales: {
-                    y: { 
-                        beginAtZero: true, 
-                        grid: { color: '#f1f4f9', drawBorder: false },
+                    y: {
+                        beginAtZero: true,
+                        grid: { color: '#f1f4f9' },
                         ticks: { color: '#a3aed0', font: { size: 11 } }
                     },
-                    x: { 
+                    x: {
                         grid: { display: false },
                         ticks: { color: '#a3aed0', font: { size: 11 } }
                     }

@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Anggota;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 
 class ProfileController extends Controller
 {
@@ -47,6 +48,27 @@ public function update(Request $request)
         ]);
 
         return redirect()->back()->with('success', 'Profil berhasil diperbarui!');
+    }
+
+    public function updatePassword(Request $request)
+    {
+        $request->validate([
+            'current_password' => 'required',
+            'new_password'     => 'required|min:6|confirmed',
+        ], [
+            'new_password.confirmed' => 'Konfirmasi password tidak cocok.',
+            'new_password.min'       => 'Password baru minimal 6 karakter.',
+        ]);
+
+        if (!Hash::check($request->current_password, Auth::user()->password)) {
+            return back()->withErrors(['current_password' => 'Password saat ini tidak sesuai.'])->withInput();
+        }
+
+        Auth::user()->update([
+            'password' => Hash::make($request->new_password),
+        ]);
+
+        return back()->with('success_password', 'Password berhasil diperbarui!');
     }
 
 }

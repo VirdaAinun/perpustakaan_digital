@@ -2,62 +2,178 @@
 
 @section('content')
 <style>
-.container {
-    max-width: 800px;
-    margin: 20px auto;
-    padding: 0 15px;
-}
-h1 { font-size: 20px; margin-bottom: 20px; text-align: left; color: #2c3e50; }
-.card {
-    background-color: white;
-    border-radius: 8px;
-    box-shadow: 0 3px 8px rgba(0,0,0,0.1);
-    padding: 20px;
-}
-.card img {
-    width: 150px;
-    height: 200px;
-    object-fit: cover;
-    float: left;
-    margin-right: 20px;
-}
-.card-body { overflow: hidden; }
-.card-body p { margin: 6px 0; }
-.status {
-    padding: 4px 8px;
-    border-radius: 4px;
-    font-size: 0.85rem;
-    font-weight: 600;
-    color: white;
-}
-.status-dipinjam { background-color: #2980b9; }
-.status-mengajukan_pengembalian { background-color: #f39c12; }
-.status-selesai { background-color: #27ae60; }
-.status-ditolak { background-color: #c0392b; }
-.status-menunggu_verifikasi { background-color: #8e44ad; }
-.status-terlambat { background-color: #e74c3c; }
-.status-menunggu { background-color: #f39c12; }
-.btn { padding: 6px 12px; border-radius: 4px; text-decoration: none; font-size: 0.85rem; color: white; margin-top:10px; display:inline-block; }
-.btn-back { background-color:#7f8c8d; }
-.btn-back:hover { background-color:#636e72; }
+    .detail-wrapper {
+        max-width: 800px;
+        margin: 40px auto;
+        padding: 0 20px 60px;
+    }
+
+    .detail-title {
+        font-size: 20px;
+        font-weight: 700;
+        color: #1f5f99;
+        margin-bottom: 20px;
+        border-left: 4px solid #1f5f99;
+        padding-left: 12px;
+    }
+
+    .detail-card {
+        background: white;
+        border-radius: 14px;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+        overflow: hidden;
+        display: flex;
+        gap: 0;
+    }
+
+    .detail-cover {
+        width: 180px;
+        min-height: 260px;
+        flex-shrink: 0;
+        background: #f0f4f8;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .detail-cover img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        min-height: 260px;
+    }
+
+    .detail-body {
+        padding: 28px;
+        flex: 1;
+    }
+
+    .detail-book-title {
+        font-size: 18px;
+        font-weight: 700;
+        color: #1f5f99;
+        margin-bottom: 4px;
+    }
+
+    .detail-book-author {
+        font-size: 13px;
+        color: #888;
+        margin-bottom: 20px;
+    }
+
+    .detail-divider {
+        border: none;
+        border-top: 1px solid #f0f0f0;
+        margin-bottom: 20px;
+    }
+
+    .detail-row {
+        display: flex;
+        align-items: center;
+        margin-bottom: 12px;
+        font-size: 14px;
+    }
+
+    .detail-row .label {
+        width: 150px;
+        color: #888;
+        font-weight: 600;
+        flex-shrink: 0;
+    }
+
+    .detail-row .value {
+        color: #333;
+        font-weight: 500;
+    }
+
+    /* STATUS BADGE */
+    .badge-status {
+        padding: 5px 14px;
+        border-radius: 20px;
+        font-size: 12px;
+        font-weight: 700;
+        display: inline-block;
+    }
+    .status-dipinjam          { background: #dbeafe; color: #1d4ed8; }
+    .status-menunggu          { background: #fef3c7; color: #d97706; }
+    .status-menunggu-verifikasi { background: #ede9fe; color: #7c3aed; }
+    .status-selesai           { background: #dcfce7; color: #16a34a; }
+    .status-terlambat         { background: #fee2e2; color: #dc2626; }
+    .status-ditolak           { background: #fee2e2; color: #dc2626; }
+
+    .btn-back {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        margin-top: 24px;
+        background: #1f5f99;
+        color: white;
+        padding: 10px 20px;
+        border-radius: 8px;
+        text-decoration: none;
+        font-size: 13px;
+        font-weight: 600;
+        transition: 0.2s;
+    }
+    .btn-back:hover { background: #164a7a; color: white; }
+
+    @media (max-width: 600px) {
+        .detail-card { flex-direction: column; }
+        .detail-cover { width: 100%; min-height: 200px; }
+        .detail-cover img { min-height: 200px; }
+    }
 </style>
 
-<div class="container">
-    <h1>Detail Peminjaman</h1>
-    <div class="card">
-        @if($peminjaman->buku->photo && file_exists(public_path('storage/'.$peminjaman->buku->photo)))
-            <img src="{{ asset('storage/'.$peminjaman->buku->photo) }}" alt="{{ $peminjaman->buku->judul }}">
-        @else
-            <img src="{{ asset('images/no-image.png') }}" alt="No Image">
-        @endif
-        <div class="card-body">
-            <p><strong>Judul Buku:</strong> {{ $peminjaman->buku->judul }}</p>
-            <p><strong>Penulis:</strong> {{ $peminjaman->buku->penulis }}</p>
-            <p><strong>Kategori:</strong> {{ $peminjaman->buku->kategori->nama_kategori ?? '-' }}</p>
-            <p><strong>Tanggal Pinjam:</strong> {{ \Carbon\Carbon::parse($peminjaman->tgl_pinjam)->format('d - m - Y') }}</p>
-            <p><strong>Tanggal Kembali:</strong> {{ $peminjaman->tgl_kembali ? \Carbon\Carbon::parse($peminjaman->tgl_kembali)->format('d - m - Y') : '-' }}</p>
-            <p><strong>Status:</strong> <span class="status status-{{ str_replace('_','-',$peminjaman->status) }}">{{ ucfirst(str_replace('_',' ',$peminjaman->status)) }}</span></p>
-            <a href="{{ route('peminjamansaya.index') }}" class="btn btn-back">Kembali</a>
+<div class="detail-wrapper">
+    <h2 class="detail-title">Detail Peminjaman</h2>
+
+    <div class="detail-card">
+        <div class="detail-cover">
+            @if($peminjaman->buku->photo && file_exists(public_path('storage/'.$peminjaman->buku->photo)))
+                <img src="{{ asset('storage/'.$peminjaman->buku->photo) }}" alt="{{ $peminjaman->buku->judul }}">
+            @else
+                <img src="https://via.placeholder.com/180x260?text=No+Image" alt="No Image">
+            @endif
+        </div>
+
+        <div class="detail-body">
+            <div class="detail-book-title">{{ $peminjaman->buku->judul }}</div>
+            <div class="detail-book-author">{{ $peminjaman->buku->penulis }}</div>
+
+            <hr class="detail-divider">
+
+            <div class="detail-row">
+                <span class="label">Kategori</span>
+                <span class="value">{{ $peminjaman->buku->kategori->nama_kategori ?? '-' }}</span>
+            </div>
+            <div class="detail-row">
+                <span class="label">Peminjam</span>
+                <span class="value">{{ $peminjaman->nama_anggota }}</span>
+            </div>
+            <div class="detail-row">
+                <span class="label">Tanggal Pinjam</span>
+                <span class="value">{{ \Carbon\Carbon::parse($peminjaman->tgl_pinjam)->format('d M Y') }}</span>
+            </div>
+            <div class="detail-row">
+                <span class="label">Tanggal Kembali</span>
+                <span class="value">{{ $peminjaman->tgl_kembali ? \Carbon\Carbon::parse($peminjaman->tgl_kembali)->format('d M Y') : '-' }}</span>
+            </div>
+            <div class="detail-row">
+                <span class="label">Jumlah Pinjam</span>
+                <span class="value">{{ $peminjaman->jumlah_pinjam }} Buku</span>
+            </div>
+            <div class="detail-row">
+                <span class="label">Status</span>
+                <span class="value">
+                    <span class="badge-status status-{{ str_replace('_','-',$peminjaman->status) }}">
+                        {{ ucfirst(str_replace('_',' ',$peminjaman->status)) }}
+                    </span>
+                </span>
+            </div>
+
+            <a href="{{ route('peminjamansaya.index') }}" class="btn-back">
+                ← Kembali
+            </a>
         </div>
     </div>
 </div>

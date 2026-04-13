@@ -5,13 +5,14 @@
 <style>
 .form-card {
     background: #ffffff;
-    padding: 25px;
+    padding: 50px;
     border-radius: 10px;
     border: 1px solid #ddd;
     max-width: 600px;
+    margin: 40px auto;
 }
 
-.title {
+.page-title-text {
     font-size: 20px;
     font-weight: 600;
     color: #2c3e50;
@@ -72,7 +73,7 @@
 
 <div class="form-card">
     
-<h2 class="title">Tambah Buku</h2>
+<h2 class="page-title-text">Tambah Buku</h2>
 
 {{-- ERROR --}}
 @if ($errors->any())

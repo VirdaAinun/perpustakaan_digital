@@ -5,12 +5,7 @@
 <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css">
 
 <style>
-    .container-custom {
-        background: #ffffff;
-        padding: 30px;
-        border-radius: 12px;
-        box-shadow: 0 4px 20px rgba(0,0,0,0.05);
-    }
+    .page-wrapper { padding: 30px; min-height: 100vh; }
     .page-title {
         font-weight: 700; color: #2c3e50; font-size: 22px;
         margin-bottom: 5px; border-left: 5px solid #1a5da4; padding-left: 15px;
@@ -21,7 +16,7 @@
         color: white !important; text-align: center; font-size: 11px;
         text-transform: uppercase; padding: 15px; border: none !important;
     }
-    .table-custom td { padding: 15px; border-bottom: 1px solid #f8f9fa; font-size: 13px; vertical-align: middle; }
+    .table-custom td { padding: 15px; border-bottom: 1px solid #f8f9fa; font-size: 13px; vertical-align: middle; background: white;}
     
     .badge-aktif { background: #e1f7ea; color: #27ae60; padding: 5px 15px; border-radius: 50px; font-weight: 600; }
     .badge-tidak { background: #fff4e0; color: #f39c12; padding: 5px 15px; border-radius: 50px; font-weight: 600; }
@@ -49,7 +44,7 @@
     }
 </style>
 
-<div class="container-custom">
+<div class="page-wrapper">
     <div class="d-flex justify-content-between align-items-center mb-4">
         <div>
             <h5 class="page-title">Laporan Data Anggota</h5>

@@ -3,7 +3,7 @@
 @section('content')
 <style>
     /* ... CSS yang sudah ada tetap dipertahankan ... */
-    .profile-wrapper { min-height: 80vh; display: flex; justify-content: center; align-items: center; background: #f0f2f5; padding: 20px; }
+    .profile-wrapper { min-height: 80vh; display: flex; justify-content: center; align-items: center; background: #f4f7fe; padding: 20px; }
     .profile-card { background: white; border-radius: 20px; width: 100%; max-width: 750px; display: flex; flex-wrap: wrap; box-shadow: 0 10px 30px rgba(0,0,0,0.15); position: relative; overflow: hidden; }
     .profile-left { flex: 1; background: #e8f0fe; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 40px; min-width: 250px; }
     .avatar-wrapper { width: 150px; height: 150px; border-radius: 50%; background: #dbeafe; margin-bottom: 20px; overflow: hidden; border: 4px solid white; }
