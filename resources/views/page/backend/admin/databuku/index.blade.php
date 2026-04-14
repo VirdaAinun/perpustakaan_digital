@@ -114,6 +114,60 @@
     border-radius: 4px;
     display: inline-flex;
 }
+
+/* PAGINATION */
+.pagination-wrapper {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 20px;
+    padding: 15px 20px;
+    background: #fff;
+    border-top: 1px solid #f0f0f0;
+}
+.pagination-info {
+    font-size: 13px;
+    color: #6c757d;
+}
+.pagination-links {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+.pagination-links li a,
+.pagination-links li span {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 34px;
+    height: 34px;
+    border-radius: 6px;
+    font-size: 13px;
+    font-weight: 500;
+    text-decoration: none;
+    border: 1px solid #e2e8f0;
+    color: #005fa8;
+    background: #fff;
+    transition: 0.15s;
+}
+.pagination-links li a:hover {
+    background: #e8f0fe;
+    border-color: #005fa8;
+}
+.pagination-links li.active span {
+    background: #005fa8;
+    border-color: #005fa8;
+    color: #fff;
+}
+.pagination-links li.disabled span {
+    color: #cbd5e1;
+    border-color: #f1f5f9;
+    background: #f8f9fa;
+    cursor: not-allowed;
+}
 </style>
 
 <div class="container-custom">
@@ -204,8 +258,44 @@
         </table>
     </div>
 
-    <div class="mt-4 d-flex justify-content-center">
-    {{ $bukus->links('pagination::bootstrap-5') }}
-</div>
+    <div class="pagination-wrapper">
+        <div class="pagination-info">
+            @if($bukus->total() > 0)
+                Menampilkan <strong>{{ $bukus->firstItem() }}</strong> - <strong>{{ $bukus->lastItem() }}</strong> dari <strong>{{ $bukus->total() }}</strong> data
+            @else
+                Tidak ada data
+            @endif
+        </div>
+        <ul class="pagination-links">
+            {{-- Prev --}}
+            <li class="{{ $bukus->onFirstPage() ? 'disabled' : '' }}">
+                @if($bukus->onFirstPage())
+                    <span>&#8592;</span>
+                @else
+                    <a href="{{ $bukus->previousPageUrl() }}">&#8592;</a>
+                @endif
+            </li>
+
+            {{-- Pages --}}
+            @foreach($bukus->getUrlRange(1, $bukus->lastPage()) as $page => $url)
+                <li class="{{ $page == $bukus->currentPage() ? 'active' : '' }}">
+                    @if($page == $bukus->currentPage())
+                        <span>{{ $page }}</span>
+                    @else
+                        <a href="{{ $url }}">{{ $page }}</a>
+                    @endif
+                </li>
+            @endforeach
+
+            {{-- Next --}}
+            <li class="{{ !$bukus->hasMorePages() ? 'disabled' : '' }}">
+                @if($bukus->hasMorePages())
+                    <a href="{{ $bukus->nextPageUrl() }}">&#8594;</a>
+                @else
+                    <span>&#8594;</span>
+                @endif
+            </li>
+        </ul>
+    </div>
 
 @endsection

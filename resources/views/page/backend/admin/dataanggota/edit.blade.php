@@ -37,7 +37,7 @@
                 <label>Status</label>
                 <select name="status" required>
                     <option value="aktif" {{ $anggota->status == 'aktif' ? 'selected' : '' }}>Aktif</option>
-                    <option value="nonaktif" {{ $anggota->status == 'nonaktif' ? 'selected' : '' }}>Non-Aktif</option>
+                    <option value="tidak_aktif" {{ $anggota->status == 'tidak_aktif' ? 'selected' : '' }}>Non-Aktif</option>
                 </select>
             </div>
 

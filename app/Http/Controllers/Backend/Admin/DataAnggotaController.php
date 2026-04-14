@@ -50,7 +50,7 @@ class DataAnggotaController extends Controller
             'nama'   => 'required',
             'nis'    => 'required|unique:anggotas,nis',
             'kelas'  => 'required',
-            'status' => 'required'
+            'status' => 'required|in:aktif,tidak_aktif'
         ]);
 
         // 🔥 1. BUAT USER LOGIN OTOMATIS
@@ -101,7 +101,7 @@ class DataAnggotaController extends Controller
             'nama'   => 'required',
             'nis'    => 'required',
             'kelas'  => 'required',
-            'status' => 'required'
+            'status' => 'required|in:aktif,tidak_aktif'
         ]);
 
         $anggota = Anggota::findOrFail($id);

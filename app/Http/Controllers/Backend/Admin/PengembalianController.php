@@ -20,7 +20,7 @@ class PengembalianController extends Controller
             $query->where('nama_anggota', 'like', '%' . $request->search . '%');
         }
 
-        $data = $query->latest()->get();
+        $data = $query->latest()->paginate(10)->withQueryString();
 
         return view('page.backend.admin.pengembalian.index', compact('data'));
     }

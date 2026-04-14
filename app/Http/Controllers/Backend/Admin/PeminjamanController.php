@@ -19,8 +19,7 @@ class PeminjamanController extends Controller
             $query->where('nama_anggota', 'like', '%' . $request->search . '%');
         }
 
-        // 3. Ambil datanya (yang sudah difilter maupun tidak)
-        $data = $query->latest()->get();
+        $data = $query->latest()->paginate(10)->withQueryString();
         return view('page/backend/admin/peminjaman.index', compact('data'));
     }
     /**

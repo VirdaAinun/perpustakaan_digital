@@ -37,7 +37,7 @@
                 <label>Status</label>
                 <select name="status" required>
                     <option value="aktif">Aktif</option>
-                    <option value="nonaktif">Non-Aktif</option>
+                    <option value="tidak_aktif">Non-Aktif</option>
                 </select>
             </div>
 

@@ -2,189 +2,113 @@
 
 @section('content')
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-<link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css">
 
 <style>
-    /* CONTAINER UTAMA */
-    .container-main {
-        background: #f4f7fe;
-        padding: 30px;
-        min-height: 90vh;
-        border-radius: 8px;
-    }
+.container-custom { background: #f4f7fe; padding: 30px; min-height: 90vh; }
+.page-title { font-weight: 700; color: #005fa8; font-size: 20px; margin: 0 0 20px 0; }
 
-    /* JUDUL HALAMAN */
-     .page-title {
-        font-weight: 700;
-        color: #005fa8;
-        font-size: 20px;
-        margin: 0;
-    }
+/* FILTER */
+.filter-row { display: flex; gap: 10px; align-items: center; margin-bottom: 20px; }
+.form-control-custom { padding: 8px 12px; border: 1px solid #ced4da; border-radius: 8px; font-size: 14px; color: #495057; outline: none; }
+.form-control-custom:focus { border-color: #005fa8; }
+.btn-cari { background: #005fa8; color: #fff; border: none; padding: 8px 16px; border-radius: 8px; font-size: 13px; cursor: pointer; }
+.btn-reset { background: #f1f3f5; color: #555; border: 1px solid #dee2e6; padding: 8px 16px; border-radius: 8px; font-size: 13px; text-decoration: none; }
 
-    /* STYLING TABEL CUSTOM */
-    .table-custom {
-        width: 100% !important;
-        border-collapse: separate;
-        border-spacing: 0;
-        border: 1px solid #f0f0f0;
-    }
+/* TABLE */
+.table-container { background: #fff; overflow: hidden; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
+.table-custom { width: 100%; border-collapse: collapse; }
+.table-custom thead { background: #1a5da4; }
+.table-custom th { padding: 13px 15px; color: #fff; text-transform: uppercase; font-size: 11px; font-weight: 600; border: none; letter-spacing: 0.5px; }
+.table-custom td { padding: 13px 15px; border-bottom: 1px solid #f0f0f0; font-size: 13px; vertical-align: middle; }
+.table-custom tbody tr:last-child td { border-bottom: none; }
+.table-custom tbody tr:hover { background: #f9fbff; }
 
-    .table-custom thead {
-        background: #1a5da4 !important; /* Warna Biru Header */
-    }
+.text-main { font-weight: 600; color: #333; display: block; }
+.text-sub { font-size: 11px; color: #888; }
 
-    .table-custom th {
-        color: white !important;
-        text-align: center;
-        font-size: 11px;
-        text-transform: uppercase;
-        letter-spacing: 1px;
-        padding: 15px;
-        border: none;
-    }
+/* BADGE */
+.badge-status { padding: 5px 12px; border-radius: 20px; font-size: 11px; font-weight: 600; display: inline-block; }
+.status-menunggu  { background: #fff4e0; color: #f39c12; border: 1px solid #fde8b4; }
+.status-dipinjam  { background: #e1f7ea; color: #27ae60; border: 1px solid #c3e6cb; }
+.status-terlambat { background: #fde8e8; color: #c0392b; border: 1px solid #f5c6cb; }
+.status-selesai   { background: #ebf5ff; color: #1a5da4; border: 1px solid #bee3f8; }
+.status-ditolak   { background: #f8d7da; color: #dc3545; border: 1px solid #f5c6cb; }
 
-    .table-custom td {
-        padding: 15px;
-        border-bottom: 1px solid #f8f9fa;
-        font-size: 13px;
-        color: #333;
-        vertical-align: middle;
-    }
+/* AKSI */
+.btn-aksi { width: 32px; height: 32px; display: inline-flex; align-items: center; justify-content: center; border-radius: 6px; border: none; cursor: pointer; font-size: 14px; transition: 0.2s; text-decoration: none; }
+.btn-check { background: #d4edda; color: #27ae60; }
+.btn-cross { background: #f8d7da; color: #c0392b; }
+.btn-view  { background: #dbeafe; color: #1a5da4; }
+.btn-aksi:hover { opacity: 0.8; transform: scale(1.05); }
 
-    /* TEKS DETAIL DALAM TABEL */
-    .text-name { font-weight: 600; color: #444; display: block; }
-    .text-email { font-size: 11px; color: #999; }
-    .text-book { font-weight: 600; color: #444; display: block; }
-    .text-author { font-size: 11px; color: #888; }
-    .text-date { font-weight: 800; color: #333; }
-
-    /* BADGE STATUS (PILL STYLE) */
-    .badge-pill-custom {
-        padding: 6px 15px;
-        border-radius: 50px;
-        font-size: 11px;
-        font-weight: 600;
-        display: inline-block;
-    }
-    .status-menunggu { background: #fff4e0; color: #f39c12; }
-    .status-dipinjam { background: #e1f7ea; color: #27ae60; }
-    .status-selesai { background: #ebf5ff; color: #1a5da4; }
-
-    /* TOMBOL AKSI */
-    .btn-action {
-        width: 35px;
-        height: 35px;
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        border-radius: 8px;
-        border: none;
-        margin: 0 2px;
-        transition: 0.3s;
-        text-decoration: none;
-    }
-    .btn-check { background: #bdf9b1; color: #27ae60; }
-    .btn-cross { background: #f9b1b1; color: #c0392b; }
-    .btn-view { background: #96b9f9; color: #1a5da4; }
-    .btn-action:hover { opacity: 0.8; transform: scale(1.08); }
-
-    /* PENYESUAIAN TAMPILAN PLUGIN DATATABLES & PAGINATION */
-    .dataTables_wrapper .pagination {
-        display: flex !important;
-        list-style: none !important;
-        padding: 0 !important;
-        margin: 15px 0 0 0 !important;
-        justify-content: flex-end;
-    }
-
-    .dataTables_wrapper .pagination li {
-        margin: 0 2px;
-        display: inline-block !important;
-    }
-
-    .dataTables_wrapper .pagination li a {
-        text-decoration: none !important;
-        padding: 8px 14px;
-        border-radius: 6px;
-        border: 1px solid #dee2e6;
-        display: block;
-        color: #1a5da4;
-    }
-
-    .page-item.active .page-link {
-        background-color: #1a5da4 !important;
-        border-color: #1a5da4 !important;
-        color: white !important;
-    }
-
-    .dataTables_info {
-        padding-top: 20px !important;
-        font-size: 13px;
-        color: #777;
-    }
-
-    /* NOTIFIKASI */
-    .notif-toast {
-        position: fixed; top: 20px; right: 20px;
-        background: #1a5da4; color: white;
-        padding: 15px 25px; border-radius: 10px;
-        z-index: 9999; box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-    }
-    .terlambat {
-    background: #f3a2a2;
-    color: #a00000;
-}
+/* PAGINATION */
+.pagination-wrapper { display: flex; justify-content: space-between; align-items: center; padding: 14px 20px; background: #fff; border-top: 1px solid #f0f0f0; }
+.pagination-info { font-size: 13px; color: #6c757d; }
+.pagination-links { display: flex; align-items: center; gap: 4px; list-style: none; margin: 0; padding: 0; }
+.pagination-links li a,
+.pagination-links li span { display: inline-flex; align-items: center; justify-content: center; width: 34px; height: 34px; border-radius: 6px; font-size: 13px; font-weight: 500; text-decoration: none; border: 1px solid #e2e8f0; color: #1a5da4; background: #fff; transition: 0.15s; }
+.pagination-links li a:hover { background: #e8f0fe; border-color: #1a5da4; }
+.pagination-links li.active span { background: #1a5da4; border-color: #1a5da4; color: #fff; }
+.pagination-links li.disabled span { color: #cbd5e1; border-color: #f1f5f9; background: #f8f9fa; cursor: not-allowed; }
 </style>
 
-@if(session('success'))
-    <div id="notif-box" class="notif-toast">
-        {{ session('success') }}
-    </div>
-@endif
-
-<div class="container-main">
+<div class="container-custom">
     <h4 class="page-title">Data Peminjaman Buku</h4>
 
-    <div class="table-responsive">
-        <table id="peminjamanTable" class="table table-hover table-custom text-center" style="width:100%">
+    @if(session('success'))
+        <div style="background:#d4edda; color:#155724; padding:12px 15px; border-radius:6px; margin-bottom:20px; font-size:13px;">
+            ✅ {{ session('success') }}
+        </div>
+    @endif
+
+    {{-- FILTER --}}
+    <form action="{{ route('peminjaman.index') }}" method="GET" class="filter-row">
+        <input type="text" name="search" class="form-control-custom"
+               placeholder="Cari nama anggota..." value="{{ request('search') }}" style="width:260px;">
+        <button type="submit" class="btn-cari"><i class="fas fa-search"></i> Cari</button>
+        @if(request('search'))
+            <a href="{{ route('peminjaman.index') }}" class="btn-reset">Reset</a>
+        @endif
+    </form>
+
+    <div class="table-container">
+        <table class="table-custom text-center">
             <thead>
                 <tr>
-                    <th width="50">NO</th>
-                    <th style="text-align: left;">NAMA ANGGOTA</th>
-                    <th style="text-align: left;">JUDUL BUKU</th>
-                    <th>TGL PINJAM</th>
-                    <th>JUMLAH</th>
-                    <th>STATUS</th>
-                    <th width="120">AKSI</th>
+                    <th width="50">No</th>
+                    <th style="text-align:left;">Nama Anggota</th>
+                    <th style="text-align:left;">Judul Buku</th>
+                    <th>Tgl Pinjam</th>
+                    <th>Jumlah</th>
+                    <th>Status</th>
+                    <th width="100">Aksi</th>
                 </tr>
             </thead>
             <tbody>
-                @foreach($data as $item)
+                @forelse($data as $item)
                 <tr>
-                    <td>{{ $loop->iteration }}</td>
-                    <td style="text-align: left;">
-                        <span class="text-name">{{ $item->nama_anggota }}</span>
-                        <span class="text-email">{{ $item->user->email ?? '-' }}</span>
+                    <td>{{ $data->firstItem() + $loop->index }}</td>
+                    <td style="text-align:left;">
+                        <span class="text-main">{{ $item->nama_anggota }}</span>
+                        <span class="text-sub">{{ $item->user->email ?? '-' }}</span>
                     </td>
-                    <td style="text-align: left;">
-                        <span class="text-book">{{ $item->buku->judul ?? '-' }}</span>
-                        <span class="text-author">{{ $item->buku->penulis ?? 'Penulis Tidak Diketahui' }}</span>
+                    <td style="text-align:left;">
+                        <span class="text-main">{{ $item->buku->judul ?? '-' }}</span>
+                        <span class="text-sub">{{ $item->buku->penulis ?? '-' }}</span>
                     </td>
-                    <td>
-                        <span class="text-date">
-                            {{ \Carbon\Carbon::parse($item->tgl_pinjam)->format('d - m - Y') }}
-                        </span>
-                    </td>
-                    <td><span style="font-weight: 800;">{{ $item->jumlah_pinjam }} Buku</span></td>
+                    <td>{{ \Carbon\Carbon::parse($item->tgl_pinjam)->format('d/m/Y') }}</td>
+                    <td>{{ $item->jumlah_pinjam }} Buku</td>
                     <td>
                         @if($item->status == 'menunggu')
-                            <span class="badge-pill-custom status-menunggu">menunggu verifikasi</span>
+                            <span class="badge-status status-menunggu">Menunggu</span>
                         @elseif($item->status == 'dipinjam')
-                            <span class="badge-pill-custom status-dipinjam">dipinjam</span>
+                            <span class="badge-status status-dipinjam">Dipinjam</span>
                         @elseif($item->status == 'terlambat')
-                            <span class="badge-pill-custom" style="background:#fde8e8;color:#c0392b;">terlambat</span>
+                            <span class="badge-status status-terlambat">Terlambat</span>
+                        @elseif($item->status == 'ditolak')
+                            <span class="badge-status status-ditolak">Ditolak</span>
                         @else
-                            <span class="badge-pill-custom status-selesai">{{ $item->status }}</span>
+                            <span class="badge-status status-selesai">{{ ucfirst($item->status) }}</span>
                         @endif
                     </td>
                     <td>
@@ -192,61 +116,60 @@
                             <form action="{{ route('peminjaman.verifikasi', $item->id) }}" method="POST" style="display:inline;">
                                 @csrf
                                 <input type="hidden" name="aksi" value="setuju">
-                                <button type="submit" class="btn-action btn-check" title="Setuju">✔</button>
+                                <button type="submit" class="btn-aksi btn-check" title="Setuju">✔</button>
                             </form>
                             <form action="{{ route('peminjaman.verifikasi', $item->id) }}" method="POST" style="display:inline;">
                                 @csrf
                                 <input type="hidden" name="aksi" value="tolak">
-                                <button type="submit" class="btn-action btn-cross" title="Tolak">✖</button>
+                                <button type="submit" class="btn-aksi btn-cross" title="Tolak">✖</button>
                             </form>
                         @else
-                            <a href="{{ route('peminjaman.show', $item->id) }}" class="btn-action btn-view" title="Detail">👁</a>
+                            <a href="{{ route('peminjaman.show', $item->id) }}" class="btn-aksi btn-view" title="Detail">👁</a>
                         @endif
                     </td>
                 </tr>
-                @endforeach
+                @empty
+                <tr>
+                    <td colspan="7" style="padding:40px; color:#999;">Belum ada data peminjaman.</td>
+                </tr>
+                @endforelse
             </tbody>
         </table>
-    </div>
 
+        <div class="pagination-wrapper">
+            <div class="pagination-info">
+                @if($data->total() > 0)
+                    Menampilkan <strong>{{ $data->firstItem() }}</strong> - <strong>{{ $data->lastItem() }}</strong> dari <strong>{{ $data->total() }}</strong> data
+                @else
+                    Tidak ada data
+                @endif
+            </div>
+            <ul class="pagination-links">
+                <li class="{{ $data->onFirstPage() ? 'disabled' : '' }}">
+                    @if($data->onFirstPage())
+                        <span>&#8592;</span>
+                    @else
+                        <a href="{{ $data->previousPageUrl() }}">&#8592;</a>
+                    @endif
+                </li>
+                @foreach($data->getUrlRange(1, $data->lastPage()) as $page => $url)
+                    <li class="{{ $page == $data->currentPage() ? 'active' : '' }}">
+                        @if($page == $data->currentPage())
+                            <span>{{ $page }}</span>
+                        @else
+                            <a href="{{ $url }}">{{ $page }}</a>
+                        @endif
+                    </li>
+                @endforeach
+                <li class="{{ !$data->hasMorePages() ? 'disabled' : '' }}">
+                    @if($data->hasMorePages())
+                        <a href="{{ $data->nextPageUrl() }}">&#8594;</a>
+                    @else
+                        <span>&#8594;</span>
+                    @endif
+                </li>
+            </ul>
+        </div>
     </div>
 </div>
-
-<script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-<script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
-<script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
-
-<script>
-    $(document).ready(function() {
-        // Inisialisasi DataTables (HANYA SATU KALI)
-        $('#peminjamanTable').DataTable({
-            "pageLength": 10,
-            "lengthMenu": [5, 10, 25, 50],
-            "ordering": true,
-            "responsive": true,
-            "language": {
-                "search": "Cari data:",
-                "lengthMenu": "Tampilkan _MENU_ entri",
-                "info": "Menampilkan _START_ sampai _END_ dari _TOTAL_ data",
-                "paginate": {
-                    "first": "Awal",
-                    "last": "Akhir",
-                    "next": '<i class="fas fa-chevron-right"></i>',
-                    "previous": '<i class="fas fa-chevron-left"></i>'
-                }
-            }
-        });
-
-        // Auto hide notifikasi sukses
-        setTimeout(() => {
-            let notif = document.getElementById('notif-box');
-            if(notif){
-                notif.style.transition = "0.5s";
-                notif.style.opacity = "0";
-                setTimeout(()=> notif.remove(), 500);
-            }
-        }, 3000);
-    });
-</script>
 @endsection
