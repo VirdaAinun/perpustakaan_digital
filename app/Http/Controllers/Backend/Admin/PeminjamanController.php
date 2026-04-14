@@ -43,6 +43,16 @@ class PeminjamanController extends Controller
         }
 
         if ($request->aksi == 'setuju') {
+            // Cek stok buku
+            $buku = $peminjaman->buku;
+            if (!$buku || $buku->stok < $peminjaman->jumlah_pinjam) {
+                $stokTersedia = $buku ? $buku->stok : 0;
+                return back()->with('warning', 
+                    'Stok buku "' . ($buku->judul ?? '-') . '" tidak mencukupi! ' .
+                    'Diminta: ' . $peminjaman->jumlah_pinjam . ' buku, ' .
+                    'Tersedia: ' . $stokTersedia . ' buku. Silakan tolak atau hubungi anggota.');
+            }
+
             $peminjaman->status = 'dipinjam';
             Notifikasi::create([
                 'user_id' => $peminjaman->user_id,

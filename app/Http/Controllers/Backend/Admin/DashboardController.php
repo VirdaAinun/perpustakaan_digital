@@ -33,9 +33,13 @@ class DashboardController extends Controller
             ->take(3)
             ->get();
 
-        // Pengajuan menunggu verifikasi
-        $peminjamanMenunggu   = Peminjaman::where('status', 'menunggu')->count();
-        $pengembalianMenunggu = Peminjaman::where('status', 'menunggu_verifikasi')->count();
+        // Pengajuan menunggu verifikasi (hitung anggota unik)
+        $peminjamanMenunggu   = Peminjaman::where('status', 'menunggu')
+            ->distinct('user_id')
+            ->count('user_id');
+        $pengembalianMenunggu = Peminjaman::where('status', 'menunggu_verifikasi')
+            ->distinct('user_id')
+            ->count('user_id');
 
         // Data Grafik Statistik 
         $peminjamanPerBulan = Peminjaman::select(DB::raw('MONTH(created_at) as bulan'), DB::raw('count(*) as total'))

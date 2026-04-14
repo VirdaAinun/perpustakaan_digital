@@ -61,6 +61,22 @@
         </div>
     @endif
 
+    @if(session('warning'))
+        <div style="background:#fff3cd; color:#856404; padding:14px 18px; border-radius:8px; margin-bottom:20px; font-size:13px; border: 1px solid #ffc107; display:flex; align-items:flex-start; gap:10px;">
+            <span style="font-size:18px;">⚠️</span>
+            <div>
+                <strong>Stok Tidak Mencukupi!</strong><br>
+                {{ session('warning') }}
+            </div>
+        </div>
+    @endif
+
+    @if(session('error'))
+        <div style="background:#f8d7da; color:#721c24; padding:12px 15px; border-radius:6px; margin-bottom:20px; font-size:13px;">
+            ❌ {{ session('error') }}
+        </div>
+    @endif
+
     {{-- FILTER --}}
     <form action="{{ route('peminjaman.index') }}" method="GET" class="filter-row">
         <input type="text" name="search" class="form-control-custom"
@@ -123,16 +139,21 @@
                     </td>
                     <td>
                         @if($item->status == 'menunggu')
+                            @php $stokKurang = $item->buku && $item->buku->stok < $item->jumlah_pinjam; @endphp
                             <form action="{{ route('peminjaman.verifikasi', $item->id) }}" method="POST" style="display:inline;">
                                 @csrf
                                 <input type="hidden" name="aksi" value="setuju">
-                                <button type="submit" class="btn-aksi btn-check" title="Setuju">✔</button>
+                                <button type="submit" class="btn-aksi btn-check" title="Setuju{{ $stokKurang ? ' (Stok kurang!)' : '' }}" 
+                                    {{ $stokKurang ? 'style=opacity:0.4' : '' }}>✔</button>
                             </form>
                             <form action="{{ route('peminjaman.verifikasi', $item->id) }}" method="POST" style="display:inline;">
                                 @csrf
                                 <input type="hidden" name="aksi" value="tolak">
                                 <button type="submit" class="btn-aksi btn-cross" title="Tolak">✖</button>
                             </form>
+                            @if($stokKurang)
+                                <div style="font-size:10px; color:#dc2626; margin-top:4px; font-weight:600;">⚠️ Stok: {{ $item->buku->stok }}/{{ $item->jumlah_pinjam }}</div>
+                            @endif
                         @else
                             <a href="{{ route('peminjaman.show', $item->id) }}" class="btn-aksi btn-view" title="Detail">👁</a>
                         @endif

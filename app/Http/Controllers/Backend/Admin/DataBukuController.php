@@ -110,6 +110,15 @@ class DataBukuController extends Controller
     {
         $buku = Buku::findOrFail($id);
 
+        $sedangDipinjam = $buku->peminjaman()
+            ->whereIn('status', ['dipinjam', 'menunggu', 'menunggu_verifikasi', 'terlambat'])
+            ->exists();
+
+        if ($sedangDipinjam) {
+            return redirect()->route('databuku.index')
+                ->with('error', 'Buku "' . $buku->judul . '" tidak dapat dihapus karena sedang dalam proses peminjaman!');
+        }
+
         if ($buku->photo && Storage::disk('public')->exists($buku->photo)) {
             Storage::disk('public')->delete($buku->photo);
         }

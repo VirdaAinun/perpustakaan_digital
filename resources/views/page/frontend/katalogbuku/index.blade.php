@@ -310,9 +310,9 @@ to{opacity:1;transform:translateX(0);}
 
 <input type="hidden" name="buku_id" id="mIdBuku">
 <p style="margin-bottom:10px;"><b>Peminjam:</b> {{ Auth::user()->name }}</p>
-<input type="number" name="jumlah_pinjam" placeholder="Jumlah Pinjam" required>
-<input type="date" name="tgl_pinjam" required>
-<input type="date" name="tgl_kembali" required>
+<input type="number" name="jumlah_pinjam" placeholder="Jumlah Pinjam" min="1" required>
+<input type="date" name="tgl_pinjam" id="tgl_pinjam" required>
+<input type="date" name="tgl_kembali" id="tgl_kembali" required>
 
 <button type="button" onclick="tutupModal()" style="background:#ffffff20; color:white; border:1px solid rgba(255,255,255,0.4); padding:9px 20px; border-radius:6px; cursor:pointer; font-weight:600; font-size:14px; transition:0.2s;" onmouseover="this.style.background='rgba(255,255,255,0.15)'" onmouseout="this.style.background='rgba(255,255,255,0.125)'">Batal</button>
 <button type="submit" style="background:#ffffff; color:#1f5f99; border:none; padding:9px 20px; border-radius:6px; cursor:pointer; font-weight:700; font-size:14px; transition:0.2s;" onmouseover="this.style.background='#e8f0fe'" onmouseout="this.style.background='#ffffff'">Ajukan</button>
@@ -325,10 +325,36 @@ to{opacity:1;transform:translateX(0);}
 {{-- SCRIPT --}}
 <script>
 function openModal(id,judul,penulis){
-document.getElementById("modalPinjam").style.display="flex";
-document.getElementById("mIdBuku").value=id;
-document.getElementById("mJudul").innerText=judul;
-document.getElementById("mPenulis").innerText=penulis;
+    const today = new Date().toISOString().split('T')[0];
+    const tomorrow = new Date();
+    tomorrow.setDate(tomorrow.getDate() + 1);
+    const tomorrowStr = tomorrow.toISOString().split('T')[0];
+
+    document.getElementById("modalPinjam").style.display="flex";
+    document.getElementById("mIdBuku").value=id;
+    document.getElementById("mJudul").innerText=judul;
+    document.getElementById("mPenulis").innerText=penulis;
+
+    // Tgl pinjam minimal hari ini
+    const tglPinjam = document.getElementById('tgl_pinjam');
+    tglPinjam.min = today;
+    tglPinjam.value = '';
+
+    // Tgl kembali minimal besok
+    const tglKembali = document.getElementById('tgl_kembali');
+    tglKembali.min = tomorrowStr;
+    tglKembali.value = '';
+
+    // Update min tgl kembali saat tgl pinjam berubah
+    tglPinjam.addEventListener('change', function() {
+        const next = new Date(this.value);
+        next.setDate(next.getDate() + 1);
+        const nextStr = next.toISOString().split('T')[0];
+        tglKembali.min = nextStr;
+        if (tglKembali.value <= this.value) {
+            tglKembali.value = nextStr;
+        }
+    });
 }
 
 function tutupModal(){

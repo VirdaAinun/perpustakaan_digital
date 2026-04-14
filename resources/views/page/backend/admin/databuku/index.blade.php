@@ -174,6 +174,18 @@
     <h4 class="page-title-text">Data Buku</h4>
     <br>
 
+    @if(session('success'))
+        <div style="background:#d4edda; color:#155724; padding:12px 15px; border-radius:6px; margin-bottom:20px; font-size:13px;">
+            ✅ {{ session('success') }}
+        </div>
+    @endif
+
+    @if(session('error'))
+        <div style="background:#f8d7da; color:#721c24; padding:12px 15px; border-radius:6px; margin-bottom:20px; font-size:13px;">
+            ⚠️ {{ session('error') }}
+        </div>
+    @endif
+
     <div class="header-flex">
     <form action="{{ route('databuku.index') }}" method="GET" class="filter-row">
         
