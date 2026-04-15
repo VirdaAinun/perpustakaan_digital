@@ -10,13 +10,11 @@ use Illuminate\Support\Facades\Hash;
 
 class LoginController extends Controller
 {
-    // 📌 HALAMAN LOGIN
     public function index()
     {
         return view('auth.login');
     }
 
-    // 📌 PROSES LOGIN
     public function login(Request $request)
 {
     $request->validate([
@@ -24,9 +22,6 @@ class LoginController extends Controller
         'password' => 'required'
     ]);
 
-    // ======================
-    // 🔵 LOGIN USER (ADMIN / PETUGAS / KEPALA)
-    // ======================
     $credentials = [
         'email' => $request->login,
         'password' => $request->password
@@ -50,14 +45,10 @@ class LoginController extends Controller
         }
     }
 
-    // ======================
-    // 🟢 LOGIN ANGGOTA (DARI TABEL ANGGOTA)
-    // ======================
     $anggota = Anggota::where('nis', $request->login)->first();
 
     if ($anggota && Hash::check($request->password, $anggota->password)) {
 
-        // 🔥 MASUKKAN KE AUTH BIAR LOLOS MIDDLEWARE
         Auth::loginUsingId($anggota->user_id);
 
         $request->session()->regenerate();
@@ -66,12 +57,10 @@ class LoginController extends Controller
         return redirect()->route('katalogbuku.index');
     }
 
-    // ❌ GAGAL LOGIN
     return back()->withErrors([
         'login' => 'Login gagal!'
     ]);
 }
-    // 📌 LOGOUT
     public function logout(Request $request)
     {
         Auth::logout();

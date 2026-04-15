@@ -162,8 +162,14 @@
         <button type="submit" class="btn-search-custom">
             <i class="fas fa-search me-2"></i> Cari
         </button>
+
+        <select name="status" onchange="this.form.submit()" style="margin-left:12px; padding:10px 15px; border:1px solid #e0e0e0; border-radius:10px; font-size:14px; outline:none; background:#fafafa; color:#333; cursor:pointer;">
+            <option value="">Semua Status</option>
+            <option value="menunggu" {{ request('status') == 'menunggu' ? 'selected' : '' }}>Belum Bayar</option>
+            <option value="selesai" {{ request('status') == 'selesai' ? 'selected' : '' }}>Lunas</option>
+        </select>
         
-        @if(request('search'))
+        @if(request('search') || request('status'))
             <a href="{{ route('denda.index') }}" class="btn-reset-custom">Reset</a>
         @endif
     </form>

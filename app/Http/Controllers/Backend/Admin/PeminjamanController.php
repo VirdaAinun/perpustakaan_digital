@@ -19,6 +19,10 @@ class PeminjamanController extends Controller
             $query->where('nama_anggota', 'like', '%' . $request->search . '%');
         }
 
+        if ($request->filled('status')) {
+            $query->where('status', $request->status);
+        }
+
         $data = $query->latest()->paginate(10)->withQueryString();
         return view('page/backend/admin/peminjaman.index', compact('data'));
     }
@@ -47,6 +51,15 @@ class PeminjamanController extends Controller
             ]);
         } else {
             $peminjaman->status = 'ditolak';
+
+            // Kembalikan stok karena peminjaman ditolak
+            $buku = $peminjaman->buku;
+            if ($buku) {
+                $buku->stok += $peminjaman->jumlah_pinjam;
+                $buku->status = 'Tersedia';
+                $buku->save();
+            }
+
             Notifikasi::create([
                 'user_id' => $peminjaman->user_id,
                 'judul'   => 'Peminjaman Ditolak',

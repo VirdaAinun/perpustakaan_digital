@@ -65,8 +65,16 @@
     <form action="{{ route('peminjaman.index') }}" method="GET" class="filter-row">
         <input type="text" name="search" class="form-control-custom"
                placeholder="Cari nama anggota..." value="{{ request('search') }}" style="width:260px;">
+        <select name="status" class="form-control-custom" onchange="this.form.submit()">
+            <option value="">Semua Status</option>
+            <option value="menunggu"   {{ request('status') == 'menunggu'   ? 'selected' : '' }}>Menunggu</option>
+            <option value="dipinjam"   {{ request('status') == 'dipinjam'   ? 'selected' : '' }}>Dipinjam</option>
+            <option value="terlambat"  {{ request('status') == 'terlambat'  ? 'selected' : '' }}>Terlambat</option>
+            <option value="selesai"    {{ request('status') == 'selesai'    ? 'selected' : '' }}>Selesai</option>
+            <option value="ditolak"    {{ request('status') == 'ditolak'    ? 'selected' : '' }}>Ditolak</option>
+        </select>
         <button type="submit" class="btn-cari"><i class="fas fa-search"></i> Cari</button>
-        @if(request('search'))
+        @if(request('search') || request('status'))
             <a href="{{ route('peminjaman.index') }}" class="btn-reset">Reset</a>
         @endif
     </form>
@@ -108,7 +116,9 @@
                         @elseif($item->status == 'ditolak')
                             <span class="badge-status status-ditolak">Ditolak</span>
                         @else
-                            <span class="badge-status status-selesai">{{ ucfirst($item->status) }}</span>
+                            <span class="badge-status status-selesai">
+                                {{ ucwords(str_replace('_', ' ', $item->status)) }}
+                            </span>
                         @endif
                     </td>
                     <td>

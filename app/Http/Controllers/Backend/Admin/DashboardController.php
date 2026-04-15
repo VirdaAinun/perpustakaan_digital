@@ -21,20 +21,23 @@ class DashboardController extends Controller
             ->where('tgl_kembali', '<', now()->toDateString())
             ->count();
 
-        // 1. Data Buku Terpopuler (Progress Bar)
+        // Data Buku Terpopuler 
         $bukuPopuler = Buku::withCount('peminjaman')
             ->orderBy('peminjaman_count', 'desc')
             ->take(3)
             ->get();
 
-        // 2. Data Peminjaman Terbaru (List Kiri Bawah)
+        // Data Peminjaman Terbaru 
         $peminjamanTerbaru = Peminjaman::with('buku')
             ->latest()
             ->take(3)
             ->get();
 
-        // 3. Data Grafik Statistik (Tren per Bulan di tahun berjalan)
-        // Mengambil jumlah peminjaman per bulan secara dinamis dari database
+        // Pengajuan menunggu verifikasi
+        $peminjamanMenunggu   = Peminjaman::where('status', 'menunggu')->count();
+        $pengembalianMenunggu = Peminjaman::where('status', 'menunggu_verifikasi')->count();
+
+        // Data Grafik Statistik 
         $peminjamanPerBulan = Peminjaman::select(DB::raw('MONTH(created_at) as bulan'), DB::raw('count(*) as total'))
             ->whereYear('created_at', date('Y'))
             ->groupBy('bulan')
@@ -55,6 +58,8 @@ class DashboardController extends Controller
             'terlambat',
             'bukuPopuler',
             'peminjamanTerbaru',
+            'peminjamanMenunggu',
+            'pengembalianMenunggu',
             'dataGrafik'
         ));
     }

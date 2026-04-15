@@ -15,6 +15,7 @@ class DendaController extends Controller
     $userId = auth()->id();
 
     $query = Denda::with(['peminjaman.buku'])
+        ->where('status', 'menunggu')
         ->whereHas('peminjaman', function ($q) use ($userId) {
             $q->where('user_id', $userId);
         })

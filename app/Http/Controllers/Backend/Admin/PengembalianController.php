@@ -20,6 +20,10 @@ class PengembalianController extends Controller
             $query->where('nama_anggota', 'like', '%' . $request->search . '%');
         }
 
+        if ($request->filled('status')) {
+            $query->where('status', $request->status);
+        }
+
         $data = $query->latest()->paginate(10)->withQueryString();
 
         return view('page.backend.admin.pengembalian.index', compact('data'));
@@ -59,6 +63,13 @@ class PengembalianController extends Controller
         }
 
         $data->update(['status' => $status]);
+
+        // Kembalikan stok buku
+        if ($data->buku) {
+            $data->buku->stok += $data->jumlah_pinjam;
+            $data->buku->status = 'Tersedia';
+            $data->buku->save();
+        }
 
         // notifikasi
         Notifikasi::create([

@@ -11,7 +11,19 @@ class DendaController extends Controller
     public function index()
     {
         $dendaPerHari = 2000;
-        $data = Denda::with('peminjaman.buku', 'peminjaman.user')->latest()->get();
+        $query = Denda::with('peminjaman.buku', 'peminjaman.user')->latest();
+
+        if (request('search')) {
+            $query->whereHas('peminjaman', function ($q) {
+                $q->where('nama_anggota', 'like', '%' . request('search') . '%');
+            });
+        }
+
+        if (request('status')) {
+            $query->where('status', request('status'));
+        }
+
+        $data = $query->get();
 
         $data->transform(function ($item) {
             $item->hari_fix = abs($item->hari_terlambat);

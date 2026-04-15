@@ -62,8 +62,14 @@
     <form action="{{ route('pengembalian.index') }}" method="GET" class="filter-row">
         <input type="text" name="search" class="form-control-custom" 
                placeholder="Cari nama anggota..." value="{{ request('search') }}" style="width:260px;">
+        <select name="status" class="form-control-custom" onchange="this.form.submit()">
+            <option value="">Semua Status</option>
+            <option value="menunggu_verifikasi" {{ request('status') == 'menunggu_verifikasi' ? 'selected' : '' }}>Menunggu Verifikasi</option>
+            <option value="terlambat"           {{ request('status') == 'terlambat'           ? 'selected' : '' }}>Terlambat</option>
+            <option value="selesai"             {{ request('status') == 'selesai'             ? 'selected' : '' }}>Selesai</option>
+        </select>
         <button type="submit" class="btn-cari"><i class="fas fa-search"></i> Cari</button>
-        @if(request('search'))
+        @if(request('search') || request('status'))
             <a href="{{ route('pengembalian.index') }}" class="btn-reset">Reset</a>
         @endif
     </form>

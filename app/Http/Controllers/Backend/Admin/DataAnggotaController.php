@@ -10,9 +10,7 @@ use Illuminate\Support\Facades\Hash;
 
 class DataAnggotaController extends Controller
 {
-    // ======================
-    // TAMPIL DATA
-    // ======================
+
     public function index(Request $request)
     {
         $kelasList = Anggota::select('kelas')->distinct()->orderBy('kelas', 'asc')->get();
@@ -33,17 +31,11 @@ class DataAnggotaController extends Controller
         return view('page.backend.admin.dataanggota.index', compact('anggota', 'kelasList'));
     }
 
-    // ======================
-    // FORM TAMBAH
-    // ======================
     public function create()
     {
         return view('page.backend.admin.dataanggota.create');
     }
 
-    // ======================
-    // SIMPAN DATA (AUTO USER + ANGGOTA)
-    // ======================
     public function store(Request $request)
     {
         $request->validate([
@@ -53,14 +45,14 @@ class DataAnggotaController extends Controller
             'status' => 'required|in:aktif,tidak_aktif'
         ]);
 
-        // 🔥 1. BUAT USER LOGIN OTOMATIS
+        // BUAT USER LOGIN OTOMATIS
         $user = User::create([
             'name'     => $request->nama,
             'email'    => $request->nis . '@mail.com',
             'password' => Hash::make($request->nis),
         ]);
 
-        // 🔥 2. BUAT ANGGOTA & HUBUNGKAN USER
+        //  BUAT ANGGOTA & HUBUNGKAN USER
         Anggota::create([
             'nama'     => $request->nama,
             'nis'      => $request->nis,
@@ -124,7 +116,6 @@ class DataAnggotaController extends Controller
     {
         $anggota = Anggota::findOrFail($id);
 
-        // optional: hapus user juga biar bersih
         if ($anggota->user_id) {
             User::where('id', $anggota->user_id)->delete();
         }

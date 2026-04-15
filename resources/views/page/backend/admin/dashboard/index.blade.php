@@ -8,14 +8,13 @@
      .page-title { font-weight: 900; color: #005fa8; font-size: 30px; margin: 0;}
     .header-section p { color: #000000; font-size: 14px; }
 
-    /* Info Cards - Perbaikan bayangan & Radius */
+    /* Info Cards  */
     .stat-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin-bottom: 30px; }
     .info-card { background: white; border-radius: 20px; padding: 20px; display: flex; align-items: center; border: none; box-shadow: 14px 17px 40px 4px rgba(112, 144, 176, 0.08); }
-    .card-blue { background-color: #7dd3fc !important; }   /* Biru */
-    .card-yellow { background-color: #fde68a !important; } /* Kuning/Orange Muda */
-    .card-green { background-color: #bbf7d0 !important; }  /* Hijau */
-    .card-red { background-color: #fecaca !important; }    /* Merah Muda */
-
+    .card-blue { background-color: #7dd3fc !important; }   
+    .card-yellow { background-color: #fde68a !important; } 
+    .card-green { background-color: #bbf7d0 !important; }  
+    .card-red { background-color: #fecaca !important; }   
     .icon-box { width: 56px; height: 56px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-right: 15px; font-size: 20px; }
     .icon-blue { background: #c4d9f0; color: #4318ff; }
     .icon-yellow { background: #fff9e6; color: #ffb800; }
@@ -45,6 +44,33 @@
         <h5 class="page-title">Dashboard</h5>
         <p>Selamat Datang, Petugas</p>
     </div>
+
+    {{-- NOTIFIKASI PENGAJUAN --}}
+    @if($peminjamanMenunggu > 0 || $pengembalianMenunggu > 0)
+    <div style="display:flex; gap:12px; margin-bottom:20px; flex-wrap:wrap;">
+        @if($peminjamanMenunggu > 0)
+        <a href="{{ route('peminjaman.index') }}?status=menunggu" style="text-decoration:none; display:flex; align-items:center; gap:10px; background:#fffbeb; border:1px solid #fde68a; border-left:4px solid #f59e0b; padding:12px 18px; border-radius:8px; flex:1; min-width:220px;">
+            <span style="font-size:20px;">📥</span>
+            <div>
+                <div style="font-weight:700; font-size:13px; color:#92400e;">Pengajuan Peminjaman</div>
+                <div style="font-size:12px; color:#b45309;">{{ $peminjamanMenunggu }} anggota menunggu verifikasi</div>
+            </div>
+            <span style="margin-left:auto; background:#f59e0b; color:white; font-size:11px; font-weight:700; padding:3px 10px; border-radius:20px;">{{ $peminjamanMenunggu }}</span>
+        </a>
+        @endif
+
+        @if($pengembalianMenunggu > 0)
+        <a href="{{ route('pengembalian.index') }}?status=menunggu_verifikasi" style="text-decoration:none; display:flex; align-items:center; gap:10px; background:#f0fdf4; border:1px solid #bbf7d0; border-left:4px solid #22c55e; padding:12px 18px; border-radius:8px; flex:1; min-width:220px;">
+            <span style="font-size:20px;">📤</span>
+            <div>
+                <div style="font-weight:700; font-size:13px; color:#14532d;">Pengajuan Pengembalian</div>
+                <div style="font-size:12px; color:#15803d;">{{ $pengembalianMenunggu }} anggota menunggu verifikasi</div>
+            </div>
+            <span style="margin-left:auto; background:#22c55e; color:white; font-size:11px; font-weight:700; padding:3px 10px; border-radius:20px;">{{ $pengembalianMenunggu }}</span>
+        </a>
+        @endif
+    </div>
+    @endif
 
     <div class="stat-grid">
         <div class="info-card card-blue">
