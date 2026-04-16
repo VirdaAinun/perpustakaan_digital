@@ -18,31 +18,36 @@ class DendaController extends Controller
         ->where('status', 'menunggu')
         ->whereHas('peminjaman', function ($q) use ($userId) {
             $q->where('user_id', $userId);
-        })
-        ->when($namaAnggota, function ($query) use ($namaAnggota) {
-            $query->whereHas('peminjaman', function ($q) use ($namaAnggota) {
-                $q->where('nama_anggota', 'like', '%' . $namaAnggota . '%');
-            });
         });
 
-    // Hitung total denda aktif dari SEMUA data (bukan hanya halaman aktif)
-    $totalDendaAktif = (clone $query)
-        ->where('status', 'menunggu')
-        ->get()
-        ->sum(fn($item) => abs($item->denda));
+    $totalDendaAktif = (clone $query)->get()->sum(fn($item) => abs($item->denda));
 
     $dendas = $query->latest()->paginate(10);
 
-    $dendas->getCollection()->transform(function ($item) use ($dendaPerHari) {
-        $item->hari_fix = abs($item->hari_terlambat);
+    $dendas->getCollection()->transform(function ($item) {
+        $item->hari_fix  = abs($item->hari_terlambat);
         $item->denda_fix = abs($item->denda);
         return $item;
     });
 
+    // Riwayat lunas
+    $riwayat = Denda::with(['peminjaman.buku'])
+        ->where('status', 'selesai')
+        ->whereHas('peminjaman', function ($q) use ($userId) {
+            $q->where('user_id', $userId);
+        })
+        ->latest()->get()
+        ->map(function ($item) {
+            $item->hari_fix  = abs($item->hari_terlambat);
+            $item->denda_fix = abs($item->denda);
+            return $item;
+        });
+
     return view('page.frontend.denda.index', compact(
         'dendas',
         'namaAnggota',
-        'totalDendaAktif'
+        'totalDendaAktif',
+        'riwayat'
     ));
 }
 }

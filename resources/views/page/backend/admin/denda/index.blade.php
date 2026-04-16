@@ -207,6 +207,11 @@
                     <span style="font-weight: 700; color: #333;">
                         Rp {{ number_format($item->denda_fix, 0, ',', '.') }}
                     </span>
+                    @if(isset($item->jenis) && $item->jenis == 'kerusakan')
+                        <br><span style="font-size:10px;background:#fde8e8;color:#c0392b;padding:2px 8px;border-radius:10px;">Kerusakan</span>
+                    @else
+                        <br><span style="font-size:10px;background:#fff4e0;color:#f39c12;padding:2px 8px;border-radius:10px;">Keterlambatan</span>
+                    @endif
                 </td>
                 <td>
                     @if($item->status == 'menunggu')

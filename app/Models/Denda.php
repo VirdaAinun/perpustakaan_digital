@@ -15,9 +15,10 @@ class Denda extends Model
     // Field yang bisa diisi massal
     protected $fillable = [
         'peminjaman_id',
-        'hari_terlambat',  // jumlah hari terlambat
-        'denda',     // jumlah denda
-        'status'           // menunggu / selesai
+        'jenis',
+        'hari_terlambat',
+        'denda',
+        'status'
     ];
 
     /**

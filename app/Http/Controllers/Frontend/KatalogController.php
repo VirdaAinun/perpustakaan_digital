@@ -12,17 +12,17 @@ use Illuminate\Support\Facades\Auth;
 class KatalogController extends Controller
 {
 
-   // ✅ HALAMAN KATALOG + FILTER
+   // HALAMAN KATALOG + FILTER
     public function index(Request $request)
     {
         $query = Buku::with('kategori');
 
-        // 🔍 SEARCH
+        // SEARCH
         if ($request->filled('search')) {
             $query->where('judul', 'like', '%' . $request->search . '%');
         }
 
-        // 🔍 FILTER KATEGORI
+        // FILTER KATEGORI
         if ($request->filled('kategori_id')) {
             $query->where('kategori_id', $request->kategori_id);
         }
@@ -63,30 +63,19 @@ class KatalogController extends Controller
 
         // SIMPAN PEMINJAMAN
         Peminjaman::create([
-    'user_id' => Auth::id(), // 🔥 fix utama
-    'buku_id' => $request->buku_id,
-    'nama_anggota' => Auth::user()->name, // 🔥 ambil dari login
-    'jumlah_pinjam' => $request->jumlah_pinjam,
-    'tgl_pinjam' => $request->tgl_pinjam,
-    'tgl_kembali' => $request->tgl_kembali,
-    'status' => 'menunggu'
-]);
+            'user_id'      => Auth::id(),
+            'buku_id'      => $request->buku_id,
+            'nama_anggota' => Auth::user()->name,
+            'jumlah_pinjam'=> $request->jumlah_pinjam,
+            'tgl_pinjam'   => $request->tgl_pinjam,
+            'tgl_kembali'  => $request->tgl_kembali,
+            'status'       => 'menunggu'
+        ]);
 
-        // KURANGI STOK
-        $buku->stok = $buku->stok - $request->jumlah_pinjam;
+        // Stok TIDAK dikurangi dulu, baru dikurangi saat petugas verifikasi setuju
 
-        // UPDATE STATUS BUKU
-        if($buku->stok == 0){
-            $buku->status = 'Habis';
-        }else{
-            $buku->status = 'Tersedia';
-        }
-
-        $buku->save();
-
-        // KIRIM NOTIF SUCCESS
-       return redirect()->route('katalogbuku.index')
-    ->with('success','Peminjaman berhasil diajukan!');
+        return redirect()->route('katalogbuku.index')
+            ->with('success', 'Peminjaman berhasil diajukan! Menunggu verifikasi petugas.');
     }
 
 }

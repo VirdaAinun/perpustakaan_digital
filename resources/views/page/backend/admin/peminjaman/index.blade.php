@@ -146,11 +146,8 @@
                                 <button type="submit" class="btn-aksi btn-check" title="Setuju{{ $stokKurang ? ' (Stok kurang!)' : '' }}" 
                                     {{ $stokKurang ? 'style=opacity:0.4' : '' }}>✔</button>
                             </form>
-                            <form action="{{ route('peminjaman.verifikasi', $item->id) }}" method="POST" style="display:inline;">
-                                @csrf
-                                <input type="hidden" name="aksi" value="tolak">
-                                <button type="submit" class="btn-aksi btn-cross" title="Tolak">✖</button>
-                            </form>
+                            <button type="button" class="btn-aksi btn-cross" title="Tolak"
+                                onclick="openTolak({{ $item->id }}, '{{ addslashes($item->buku->judul ?? '-') }}', '{{ $item->nama_anggota }}')">✖</button>
                             @if($stokKurang)
                                 <div style="font-size:10px; color:#dc2626; margin-top:4px; font-weight:600;">⚠️ Stok: {{ $item->buku->stok }}/{{ $item->jumlah_pinjam }}</div>
                             @endif
@@ -204,3 +201,46 @@
     </div>
 </div>
 @endsection
+
+{{-- MODAL TOLAK --}}
+<div id="modalTolak" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.5); z-index:9999; justify-content:center; align-items:center;">
+    <div style="background:#fff; border-radius:12px; padding:28px; width:420px; box-shadow:0 10px 30px rgba(0,0,0,0.15);">
+        <h5 style="margin:0 0 6px; font-weight:700; color:#dc2626;">&#10060; Tolak Peminjaman</h5>
+        <p style="font-size:13px; color:#666; margin-bottom:20px;">Berikan alasan penolakan agar anggota mengetahui informasinya.</p>
+
+        <div style="background:#fef2f2; border:1px solid #fecaca; border-radius:8px; padding:12px 15px; margin-bottom:18px; font-size:13px;">
+            <div><strong>Anggota:</strong> <span id="tolakNamaAnggota"></span></div>
+            <div><strong>Buku:</strong> <span id="tolakJudulBuku"></span></div>
+        </div>
+
+        <form id="formTolak" method="POST">
+            @csrf
+            <input type="hidden" name="aksi" value="tolak">
+            <label style="font-size:13px; font-weight:600; display:block; margin-bottom:6px;">Alasan Penolakan</label>
+            <textarea name="alasan" rows="3" required
+                placeholder="Contoh: Stok buku tidak mencukupi, buku sedang dalam perbaikan, dll..."
+                style="width:100%; padding:10px 12px; border:1.5px solid #dde3ec; border-radius:8px; font-size:13px; resize:none; outline:none; box-sizing:border-box;"></textarea>
+            <div style="display:flex; justify-content:flex-end; gap:8px; margin-top:16px;">
+                <button type="button" onclick="closeTolak()" 
+                    style="background:#f1f3f5; color:#555; border:none; padding:9px 20px; border-radius:6px; font-size:13px; font-weight:600; cursor:pointer;">Batal</button>
+                <button type="submit"
+                    style="background:#dc2626; color:#fff; border:none; padding:9px 20px; border-radius:6px; font-size:13px; font-weight:600; cursor:pointer;">Tolak & Kirim Info</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+function openTolak(id, judul, nama) {
+    document.getElementById('tolakJudulBuku').textContent = judul;
+    document.getElementById('tolakNamaAnggota').textContent = nama;
+    document.getElementById('formTolak').action = '/admin/peminjaman/' + id + '/verifikasi';
+    document.getElementById('modalTolak').style.display = 'flex';
+}
+function closeTolak() {
+    document.getElementById('modalTolak').style.display = 'none';
+}
+document.getElementById('modalTolak').addEventListener('click', function(e) {
+    if (e.target === this) closeTolak();
+});
+</script>

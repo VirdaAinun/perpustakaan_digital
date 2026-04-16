@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\LoginController;
 
 // ===============================
-// 🔴 SUPER ADMIN
+//  SUPER ADMIN
 // ===============================
 use App\Http\Controllers\Backend\SuperAdmin\DashboardController as SuperAdminDashboard;
 use App\Http\Controllers\Backend\SuperAdmin\LaporanPerpustakaanController;
@@ -13,7 +13,7 @@ use App\Http\Controllers\Backend\SuperAdmin\DataUserController;
 use App\Http\Controllers\Backend\SuperAdmin\ProfileKepalaController;
 
 // ===============================
-// 🔵 ADMIN / PETUGAS
+// ADMIN / PETUGAS
 // ===============================
 use App\Http\Controllers\Backend\Admin\DashboardController;
 use App\Http\Controllers\Backend\Admin\DataBukuController;
@@ -26,7 +26,7 @@ use App\Http\Controllers\Backend\Admin\ProfilePetugasController;
 use App\Http\Controllers\Backend\Admin\KategoriController;
 
 // ===============================
-// 🟢 ANGGOTA (FRONTEND)
+// ANGGOTA (FRONTEND)
 // ===============================
 use App\Http\Controllers\Frontend\KatalogController;
 use App\Http\Controllers\Frontend\PeminjamanSayaController;
@@ -38,7 +38,7 @@ Route::get('/', function () {
 });
 
 // ===============================
-// 🔐 AUTH
+//  AUTH
 // ===============================
 Route::get('/login', [LoginController::class, 'index'])->name('login');
 Route::post('/login', [LoginController::class, 'login'])->name('login.proses');
@@ -50,7 +50,7 @@ Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 
 
 // ===============================
-// 🔴 SUPER ADMIN
+// SUPER ADMIN
 // ===============================
 Route::middleware(['auth','cekakses:kepala'])->prefix('superadmin')->group(function () {
 
@@ -93,7 +93,7 @@ Route::middleware(['auth','cekakses:kepala'])->prefix('superadmin')->group(funct
 
 
 // ===============================
-// 🔵 ADMIN / PETUGAS
+// ADMIN / PETUGAS
 // ===============================
 Route::middleware(['auth','cekakses:petugas'])->prefix('admin')->group(function () {
 
@@ -119,7 +119,11 @@ Route::middleware(['auth','cekakses:petugas'])->prefix('admin')->group(function 
 
     Route::post('/pengembalian/{id}/verifikasi', [PengembalianController::class, 'verifikasi'])
         ->name('pengembalian.verifikasi');
-    Route::get('/pengembalian/{id}', [PengembalianController::class, 'show'])->name('pengembalian.show'); // route show detail
+
+    Route::post('/pengembalian/{id}/tolak', [PengembalianController::class, 'tolak'])
+        ->name('pengembalian.tolak');
+
+    Route::get('/pengembalian/{id}', [PengembalianController::class, 'show'])->name('pengembalian.show');
 
     Route::get('/denda', [AdminDendaController::class, 'index'])
         ->name('denda.index');
@@ -150,7 +154,7 @@ Route::middleware(['auth','cekakses:petugas'])->prefix('admin')->group(function 
 
 
 // ===============================
-// 🟢 ANGGOTA
+// ANGGOTA
 // ===============================
 Route::middleware(['cekakses:anggota'])->group(function () {
 

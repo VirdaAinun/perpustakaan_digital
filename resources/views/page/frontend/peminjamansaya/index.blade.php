@@ -182,7 +182,7 @@
                                 Detail
                             </a>
 
-                            @if($p->status == 'dipinjam')
+                            @if($p->status == 'dipinjam' && !$p->alasan_tolak_pengembalian)
                             <form id="form-{{ $p->id }}" action="{{ route('peminjamansaya.ajukan', $p->id) }}" method="POST" style="display:inline;">
                                 @csrf
                                 <button type="button" class="btn-kembali" 
@@ -190,6 +190,17 @@
                                     Ajukan Pengembalian
                                 </button>
                             </form>
+                            @elseif($p->status == 'dipinjam' && $p->alasan_tolak_pengembalian)
+                                <div style="font-size:12px;color:#c0392b;margin-bottom:6px;">
+                                    <b>⚠ Ditolak:</b> {{ $p->alasan_tolak_pengembalian }}
+                                </div>
+                                <form id="form-{{ $p->id }}" action="{{ route('peminjamansaya.ajukan', $p->id) }}" method="POST" style="display:inline;">
+                                    @csrf
+                                    <button type="button" class="btn-kembali" style="background:#e67e22;"
+                                        onclick="konfirmasi(event, {{ $p->id }}, '{{ $p->tgl_kembali }}', '{{ $p->buku->judul }}', '{{ $p->tgl_pinjam }}')">
+                                        Ajukan Ulang
+                                    </button>
+                                </form>
                             @elseif($p->status == 'terlambat')
                                 <span style="color:#c0392b;font-size:12px;font-weight:600;">⚠ Ada denda, segera bayar</span>
                             @elseif($p->status == 'selesai')

@@ -49,7 +49,10 @@ class PeminjamanSayaController extends Controller
         $tglDeadline = Carbon::parse($peminjaman->tgl_kembali)->startOfDay();
         $tglSekarang = Carbon::now()->startOfDay();
 
-        $peminjaman->update(['status' => 'menunggu_verifikasi']);
+        $peminjaman->update([
+            'status' => 'menunggu_verifikasi',
+            'alasan_tolak_pengembalian' => null,
+        ]);
 
         \App\Models\Pengembalian::updateOrCreate(
             ['peminjaman_id' => $id],

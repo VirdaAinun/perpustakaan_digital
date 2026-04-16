@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\backend\admin;
+namespace App\Http\Controllers\Backend\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Peminjaman;
@@ -14,14 +14,24 @@ class PengembalianController extends Controller
     public function index(Request $request)
     {
         $query = Peminjaman::with('buku', 'user', 'denda')
-            ->whereIn('status', ['menunggu_verifikasi', 'selesai', 'terlambat']);
+            ->where(function($q) {
+                $q->whereIn('status', ['menunggu_verifikasi', 'selesai', 'terlambat'])
+                  ->orWhere(function($q2) {
+                      $q2->where('status', 'dipinjam')
+                         ->whereNotNull('alasan_tolak_pengembalian');
+                  });
+            });
 
         if ($request->filled('search')) {
             $query->where('nama_anggota', 'like', '%' . $request->search . '%');
         }
 
         if ($request->filled('status')) {
-            $query->where('status', $request->status);
+            if ($request->status === 'ditolak') {
+                $query->where('status', 'dipinjam')->whereNotNull('alasan_tolak_pengembalian');
+            } else {
+                $query->where('status', $request->status);
+            }
         }
 
         $data = $query->latest()->paginate(10)->withQueryString();
@@ -81,6 +91,46 @@ class PengembalianController extends Controller
         ]);
 
         return back()->with('success', 'Pengembalian berhasil diverifikasi!');
+    }
+
+    public function tolak(Request $request, $id)
+    {
+        $request->validate([
+            'alasan'          => 'required|string|max:500',
+            'denda_kerusakan' => 'nullable|numeric|min:0',
+        ]);
+
+        $data = Peminjaman::with('buku')->findOrFail($id);
+
+        $data->update([
+            'status'                    => 'dipinjam',
+            'alasan_tolak_pengembalian' => $request->alasan,
+        ]);
+
+        // Jika ada denda kerusakan
+        if ($request->filled('denda_kerusakan') && $request->denda_kerusakan > 0) {
+            Denda::updateOrCreate(
+                ['peminjaman_id' => $data->id, 'jenis' => 'kerusakan'],
+                [
+                    'jenis'         => 'kerusakan',
+                    'hari_terlambat'=> 0,
+                    'denda'         => $request->denda_kerusakan,
+                    'status'        => 'menunggu',
+                ]
+            );
+
+            $pesanDenda = ' Denda kerusakan: Rp ' . number_format($request->denda_kerusakan, 0, ',', '.');
+        } else {
+            $pesanDenda = '';
+        }
+
+        Notifikasi::create([
+            'user_id' => $data->user_id,
+            'judul'   => 'Pengembalian Ditolak',
+            'pesan'   => 'Pengajuan pengembalian buku "' . ($data->buku->judul ?? '-') . '" ditolak. Alasan: ' . $request->alasan . $pesanDenda . '. Silakan ajukan kembali.',
+        ]);
+
+        return back()->with('success', 'Pengajuan pengembalian berhasil ditolak.');
     }
 
     public function show($id)

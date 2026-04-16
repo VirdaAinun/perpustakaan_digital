@@ -98,7 +98,6 @@
         color: white;
     }
 
-    /* Form Pencarian Styling agar tetap rapi */
     .search-section {
         margin-bottom: 20px;
     }
@@ -152,6 +151,9 @@
                         {{ $item->peminjaman->buku->judul ?? 'Buku telah dihapus' }}
                         <br>
                         <small>Peminjam: {{ $item->peminjaman->nama_anggota }}</small>
+                        @if($item->jenis == 'kerusakan')
+                            <br><span style="font-size:11px;background:#fde8e8;color:#c0392b;padding:2px 8px;border-radius:10px;">⚠ Denda Kerusakan Buku</span>
+                        @endif
                     </td>
                     <td>{{ $item->hari_fix }} Hari</td>
                     <td>Rp {{ number_format($item->denda_fix, 0, ',', '.') }}</td>
@@ -179,5 +181,45 @@
     <div class="mt-4 d-flex justify-content-center">
         {{ $dendas->appends(['nama' => $namaAnggota])->links() }}
     </div>
+
+    {{-- RIWAYAT LUNAS --}}
+    @if($riwayat->count() > 0)
+    <h4 style="margin-top:40px; margin-bottom:15px; font-size:18px; font-weight:700; color:#1f5f99; border-left:4px solid #1f5f99; padding-left:12px;">Riwayat Pembayaran</h4>
+    <div class="table-box">
+        <table class="table-custom">
+            <thead>
+                <tr>
+                    <th>No</th>
+                    <th>Judul Buku</th>
+                    <th>Jenis</th>
+                    <th>Jumlah</th>
+                    <th>Tanggal Lunas</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach($riwayat as $i => $item)
+                <tr>
+                    <td>{{ $i + 1 }}</td>
+                    <td>
+                        {{ $item->peminjaman->buku->judul ?? 'Buku telah dihapus' }}
+                        <br><small>{{ $item->peminjaman->nama_anggota }}</small>
+                    </td>
+                    <td>
+                        @if($item->jenis == 'kerusakan')
+                            <span style="font-size:12px;background:#fde8e8;color:#c0392b;padding:3px 10px;border-radius:10px;">Kerusakan</span>
+                        @else
+                            <span style="font-size:12px;background:#fff4e0;color:#f39c12;padding:3px 10px;border-radius:10px;">Keterlambatan</span>
+                        @endif
+                    </td>
+                    <td><b>Rp {{ number_format($item->denda_fix, 0, ',', '.') }}</b></td>
+                    <td style="font-size:13px;color:#555;">{{ $item->updated_at->format('d M Y') }}</td>
+                    <td><span class="status-lunas">Lunas</span></td>
+                </tr>
+                @endforeach
+            </tbody>
+        </table>
+    </div>
+    @endif
 </div>
 @endsection

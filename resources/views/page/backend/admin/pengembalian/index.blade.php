@@ -31,6 +31,19 @@
 .status-menunggu { background: #fff4e0; color: #f39c12; border: 1px solid #fde8b4; }
 .status-terlambat { background: #fde8e8; color: #c0392b; border: 1px solid #f5c6cb; }
 .status-selesai { background: #e1f7ea; color: #27ae60; border: 1px solid #c3e6cb; }
+.status-ditolak-kembali { background: #fde8e8; color: #c0392b; border: 1px solid #f5c6cb; }
+.status-ditolak { background: #fde8e8; color: #7b1d1d; border: 1px solid #f5c6cb; }
+
+/* MODAL TOLAK */
+.modal-tolak { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.45); z-index:9999; justify-content:center; align-items:center; }
+.modal-tolak.active { display:flex; }
+.modal-tolak-box { background:#fff; border-radius:12px; padding:28px; width:420px; box-shadow:0 10px 30px rgba(0,0,0,0.15); }
+.modal-tolak-box h5 { font-weight:700; font-size:16px; color:#c0392b; margin-bottom:16px; }
+.modal-tolak-box textarea { width:100%; padding:10px 12px; border:1.5px solid #dde3ec; border-radius:7px; font-size:13px; resize:vertical; min-height:100px; outline:none; font-family:inherit; }
+.modal-tolak-box textarea:focus { border-color:#c0392b; }
+.modal-footer-btn { display:flex; justify-content:flex-end; gap:8px; margin-top:16px; }
+.btn-cancel-modal { background:#f1f3f5; color:#555; border:none; padding:9px 20px; border-radius:7px; font-size:13px; font-weight:600; cursor:pointer; }
+.btn-tolak-submit { background:#c0392b; color:#fff; border:none; padding:9px 22px; border-radius:7px; font-size:13px; font-weight:600; cursor:pointer; }
 
 /* BUTTONS */
 .btn-verifikasi { background: #1a5da4; color: #fff; border: none; padding: 6px 14px; border-radius: 6px; font-size: 12px; font-weight: 600; cursor: pointer; }
@@ -67,6 +80,7 @@
             <option value="menunggu_verifikasi" {{ request('status') == 'menunggu_verifikasi' ? 'selected' : '' }}>Menunggu Verifikasi</option>
             <option value="terlambat"           {{ request('status') == 'terlambat'           ? 'selected' : '' }}>Terlambat</option>
             <option value="selesai"             {{ request('status') == 'selesai'             ? 'selected' : '' }}>Selesai</option>
+            <option value="ditolak"             {{ request('status') == 'ditolak'             ? 'selected' : '' }}>Ditolak</option>
         </select>
         <button type="submit" class="btn-cari"><i class="fas fa-search"></i> Cari</button>
         @if(request('search') || request('status'))
@@ -106,16 +120,26 @@
                             <span class="badge-status status-menunggu">Menunggu</span>
                         @elseif($item->status == 'terlambat')
                             <span class="badge-status status-terlambat">Terlambat</span>
+                        @elseif($item->status == 'dipinjam' && $item->alasan_tolak_pengembalian)
+                            <span class="badge-status status-ditolak-kembali">Ditolak</span>
                         @else
                             <span class="badge-status status-selesai">Selesai</span>
                         @endif
                     </td>
                     <td>
                         @if($item->status == 'menunggu_verifikasi')
-                            <form action="{{ route('pengembalian.verifikasi', $item->id) }}" method="POST">
-                                @csrf
-                                <button type="submit" class="btn-verifikasi">Verifikasi</button>
-                            </form>
+                            <div style="display:flex;gap:6px;justify-content:center;">
+                                <form action="{{ route('pengembalian.verifikasi', $item->id) }}" method="POST">
+                                    @csrf
+                                    <button type="submit" class="btn-verifikasi">✔ Verifikasi</button>
+                                </form>
+                                <button type="button" class="btn-detail" style="color:#c0392b;border-color:#c0392b;" onclick="openTolak({{ $item->id }}, '{{ addslashes($item->nama_anggota) }}', '{{ addslashes($item->buku->judul ?? '-') }}')">✖ Tolak</button>
+                            </div>
+                        @elseif($item->status == 'dipinjam' && $item->alasan_tolak_pengembalian)
+                            <div style="font-size:11px;color:#c0392b;text-align:left;">
+                                <b>Alasan:</b> {{ $item->alasan_tolak_pengembalian }}<br>
+                                <span style="color:#888;">Anggota perlu ajukan ulang</span>
+                            </div>
                         @else
                             <a href="{{ route('pengembalian.show', $item->id) }}" class="btn-detail">Detail</a>
                         @endif
@@ -165,4 +189,62 @@
         </div>
     </div>
 </div>
+
+{{-- MODAL TOLAK --}}
+<div class="modal-tolak" id="modalTolak">
+    <div class="modal-tolak-box">
+        <h5>✖ Tolak Pengajuan Pengembalian</h5>
+        <p style="font-size:13px;color:#555;margin-bottom:12px;">Anggota: <b id="tolakNama"></b> &mdash; Buku: <b id="tolakBuku"></b></p>
+        <form id="formTolak" method="POST">
+            @csrf
+            <label style="font-size:13px;font-weight:600;color:#444;display:block;margin-bottom:6px;">Alasan Penolakan <span style="color:#c0392b;">*</span></label>
+            <textarea name="alasan" id="alasanInput" placeholder="Contoh: Buku belum dikembalikan ke rak, kondisi buku rusak, dll..." required></textarea>
+
+            {{-- CHECKBOX BUKU RUSAK --}}
+            <div style="margin-top:14px;padding:12px;background:#fff5f5;border-radius:8px;border:1px solid #fecaca;">
+                <label style="display:flex;align-items:center;gap:8px;cursor:pointer;font-size:13px;font-weight:600;color:#c0392b;">
+                    <input type="checkbox" id="bukuRusakCheck" onchange="toggleDendaKerusakan()" style="width:16px;height:16px;cursor:pointer;">
+                    Buku dalam kondisi rusak (kenakan denda kerusakan)
+                </label>
+                <div id="dendaKerusakanBox" style="display:none;margin-top:12px;">
+                    <label style="font-size:12px;font-weight:600;color:#444;display:block;margin-bottom:6px;">Nominal Denda Kerusakan (Rp)</label>
+                    <input type="number" name="denda_kerusakan" id="dendaKerusakanInput" placeholder="Contoh: 50000" min="0"
+                        style="width:100%;padding:9px 12px;border:1.5px solid #fecaca;border-radius:7px;font-size:13px;outline:none;">
+                    <p style="font-size:11px;color:#888;margin-top:5px;">Denda akan otomatis muncul di halaman denda anggota.</p>
+                </div>
+            </div>
+
+            <div class="modal-footer-btn">
+                <button type="button" class="btn-cancel-modal" onclick="closeTolak()">Batal</button>
+                <button type="submit" class="btn-tolak-submit">✖ Tolak Pengembalian</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+function openTolak(id, nama, buku) {
+    document.getElementById('tolakNama').textContent = nama;
+    document.getElementById('tolakBuku').textContent = buku;
+    document.getElementById('formTolak').action = '/admin/pengembalian/' + id + '/tolak';
+    document.getElementById('bukuRusakCheck').checked = false;
+    document.getElementById('dendaKerusakanBox').style.display = 'none';
+    document.getElementById('dendaKerusakanInput').value = '';
+    document.getElementById('alasanInput').value = '';
+    document.getElementById('modalTolak').classList.add('active');
+}
+function closeTolak() {
+    document.getElementById('modalTolak').classList.remove('active');
+}
+function toggleDendaKerusakan() {
+    const checked = document.getElementById('bukuRusakCheck').checked;
+    document.getElementById('dendaKerusakanBox').style.display = checked ? 'block' : 'none';
+    if (checked && document.getElementById('alasanInput').value === '') {
+        document.getElementById('alasanInput').value = 'Buku dikembalikan dalam kondisi rusak';
+    }
+}
+document.getElementById('modalTolak').addEventListener('click', function(e) {
+    if (e.target === this) closeTolak();
+});
+</script>
 @endsection

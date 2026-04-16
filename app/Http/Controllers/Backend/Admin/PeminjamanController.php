@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\backend\admin;
+namespace App\Http\Controllers\Backend\Admin;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
@@ -9,7 +9,7 @@ use App\Models\Notifikasi;
 
 class PeminjamanController extends Controller
 {
-    public function index(Request $request) // <-- Tambahkan Request $request di sini
+    public function index(Request $request) 
     {
         // 1. Mulai query dengan relasi buku
         $query = Peminjaman::with('buku', 'user');
@@ -24,10 +24,10 @@ class PeminjamanController extends Controller
         }
 
         $data = $query->latest()->paginate(10)->withQueryString();
-        return view('page/backend/admin/peminjaman.index', compact('data'));
+        return view('page.backend.admin.peminjaman.index', compact('data'));
     }
     /**
-     * Verifikasi peminjaman (Setuju / Tolak)
+     * Verifikasi peminjaman 
      */
     public function verifikasi(Request $request, $id)
     {
@@ -53,6 +53,11 @@ class PeminjamanController extends Controller
                     'Tersedia: ' . $stokTersedia . ' buku. Silakan tolak atau hubungi anggota.');
             }
 
+            // Kurangi stok saat disetujui
+            $buku->stok -= $peminjaman->jumlah_pinjam;
+            $buku->status = $buku->stok == 0 ? 'Habis' : 'Tersedia';
+            $buku->save();
+
             $peminjaman->status = 'dipinjam';
             Notifikasi::create([
                 'user_id' => $peminjaman->user_id,
@@ -62,18 +67,14 @@ class PeminjamanController extends Controller
         } else {
             $peminjaman->status = 'ditolak';
 
-            // Kembalikan stok karena peminjaman ditolak
-            $buku = $peminjaman->buku;
-            if ($buku) {
-                $buku->stok += $peminjaman->jumlah_pinjam;
-                $buku->status = 'Tersedia';
-                $buku->save();
-            }
+            // Stok tidak perlu dikembalikan karena belum dikurangi saat pengajuan
+
+            $alasan = $request->filled('alasan') ? $request->alasan : 'Tidak ada keterangan dari petugas.';
 
             Notifikasi::create([
                 'user_id' => $peminjaman->user_id,
-                'judul'   => 'Peminjaman Ditolak',
-                'pesan'   => 'Peminjaman buku "' . ($peminjaman->buku->judul ?? '-') . '" ditolak oleh petugas.',
+                'judul'   => '❌ Peminjaman Ditolak',
+                'pesan'   => 'Peminjaman buku "' . ($peminjaman->buku->judul ?? '-') . '" ditolak oleh petugas. Alasan: ' . $alasan,
             ]);
         }
 
@@ -86,6 +87,6 @@ class PeminjamanController extends Controller
 {
     $data = \App\Models\Peminjaman::with('buku.kategori', 'user')->findOrFail($id);
 
-    return view('page/backend/admin/peminjaman/show', compact('data'));
+    return view('page.backend.admin.peminjaman.show', compact('data'));
 }
 }
